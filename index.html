@@ -25,12 +25,19 @@
             padding: 0.75rem;
             border: 1px solid #E2E8F0;
             border-radius: 0.5rem;
-            transition: border-color 0.2s;
+            transition: border-color 0.2s, background-color 0.2s;
         }
         .input-field:focus {
             outline: none;
             border-color: #14B8A6; /* Teal color for focus */
             box-shadow: 0 0 0 2px rgba(20, 184, 166, 0.4);
+        }
+        .input-field:read-only {
+            background-color: #F7FAFC;
+        }
+        .input-field:disabled {
+            background-color: #F7FAFC;
+            color: #718096;
         }
         .info-icon {
             cursor: pointer;
@@ -86,7 +93,7 @@
                     LLM 碳足跡計算器
                 </span>
             </h1>
-            <p class="mt-3 text-lg text-gray-600">基於 LLMCarbon 模型，評估您的大型語言模型端到端碳足跡。<br><span class="text-sm text-gray-500 mt-1 block">Developed By 黃子瑄</span></p>
+            <p class="mt-3 text-lg text-gray-600">基於 LLMCarbon 模型，評估您的大型語言模型端到端碳足跡。</p>
         </header>
 
         <div class="grid grid-cols-1 xl:grid-cols-2 gap-8">
@@ -97,6 +104,12 @@
                 <!-- LLM 模型設定 -->
                 <section>
                     <h3 class="text-xl font-semibold text-blue-700 mb-4">1. LLM 模型設定</h3>
+                    <div class="input-group">
+                        <label for="modelPreset" class="input-label">模型預設</label>
+                        <select id="modelPreset" class="input-field bg-white">
+                             <!-- Options populated by JS -->
+                        </select>
+                    </div>
                     <div class="grid grid-cols-1 md:grid-cols-2 gap-6 input-group">
                         <div>
                             <label for="modelType" class="input-label">模型類型</label>
@@ -113,7 +126,7 @@
                                     <span class="tooltiptext">模型的總參數數量，單位為十億 (Billion)。</span>
                                 </span>
                             </label>
-                            <input type="number" id="parametersB" class="input-field" value="175">
+                            <input type="number" id="parametersB" class="input-field">
                         </div>
                         <div id="baseModelParamsContainer" class="hidden">
                             <label for="baseModelParamsB" class="input-label">
@@ -123,7 +136,7 @@
                                     <span class="tooltiptext">對於 MoE 模型，其對應的密集基礎模型參數數量。</span>
                                 </span>
                             </label>
-                            <input type="number" id="baseModelParamsB" class="input-field" value="2.3">
+                            <input type="number" id="baseModelParamsB" class="input-field">
                         </div>
                         <div>
                             <label for="tokensB" class="input-label">
@@ -133,7 +146,7 @@
                                     <span class="tooltiptext">模型在訓練或推論過程中處理的 Token 總數，單位為十億 (Billion)。</span>
                                 </span>
                             </label>
-                            <input type="number" id="tokensB" class="input-field" value="300">
+                            <input type="number" id="tokensB" class="input-field">
                         </div>
                     </div>
                 </section>
@@ -195,6 +208,16 @@
                                 </span>
                             </label>
                             <input type="number" id="co2eqkwh" class="input-field" value="0.429" step="0.001">
+                        </div>
+                        <div class="md:col-span-2">
+                             <label for="gpuCostPerHour" class="input-label">
+                                GPU 單位成本 ($/小時)
+                                 <span class="tooltip">
+                                    <svg class="info-icon inline w-4 h-4" fill="currentColor" viewBox="0 0 20 20"><path fill-rule="evenodd" d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-7-4a1 1 0 11-2 0 1 1 0 012 0zM9 9a1 1 0 000 2v3a1 1 0 001 1h1a1 1 0 100-2v-3a1 1 0 00-1-1H9z" clip-rule="evenodd"></path></svg>
+                                    <span class="tooltiptext">單一 GPU 每小時的運算成本。預設值參考 Microsoft Azure V100 隨用隨付價格。</span>
+                                </span>
+                            </label>
+                            <input type="number" id="gpuCostPerHour" class="input-field" value="3.09" step="0.01">
                         </div>
                     </div>
                 </section>
@@ -271,6 +294,14 @@
         const calculateBtn = document.getElementById('calculateBtn');
         const resultsContainer = document.getElementById('results-container');
         const deviceTypeSelect = document.getElementById('deviceType');
+        const modelPresetSelect = document.getElementById('modelPreset');
+
+        // 模型預設資料庫
+        const modelPresets = {
+            'GPT3': { name: 'GPT-3 (175B)', type: 'dense', params: 175, baseParams: '', tokens: 300 },
+            'GPT4': { name: 'GPT-4 (1.8T)', type: 'MoE', params: 1800, baseParams: 111, tokens: 13000 },
+            'custom': { name: '自訂模型' },
+        };
 
         // 預設硬體參數 (參考 LLMCarbon 論文 Table 3 & 4)
         const hardwarePresets = {
@@ -315,9 +346,71 @@
 
         // 圖表實例
         let carbonChartInstance = null;
+        
+        // ===== 初始化 =====
+        document.addEventListener('DOMContentLoaded', () => {
+            // Populate model presets dropdown
+            for (const key in modelPresets) {
+                const option = document.createElement('option');
+                option.value = key;
+                option.textContent = modelPresets[key].name;
+                modelPresetSelect.appendChild(option);
+            }
+            // Set initial state to GPT-3
+            modelPresetSelect.value = 'GPT3';
+            modelPresetSelect.dispatchEvent(new Event('change'));
+        });
+
 
         // ===== 事件監聽 =====
         
+        modelPresetSelect.addEventListener('change', (e) => {
+            const selectedModelKey = e.target.value;
+            const preset = modelPresets[selectedModelKey];
+
+            // Get input elements
+            const modelTypeInput = document.getElementById('modelType');
+            const parametersBInput = document.getElementById('parametersB');
+            const baseModelParamsBInput = document.getElementById('baseModelParamsB');
+            const tokensBInput = document.getElementById('tokensB');
+            
+            const isCustom = selectedModelKey === 'custom';
+
+            // Toggle disabled state
+            modelTypeInput.disabled = !isCustom;
+            parametersBInput.disabled = !isCustom;
+            baseModelParamsBInput.disabled = !isCustom;
+            tokensBInput.disabled = !isCustom;
+            
+            if (!isCustom) {
+                // Populate fields from preset
+                modelTypeInput.value = preset.type;
+                parametersBInput.value = preset.params;
+                tokensBInput.value = preset.tokens;
+                
+                if (preset.type === 'MoE') {
+                    baseModelParamsContainer.classList.remove('hidden');
+                    baseModelParamsBInput.value = preset.baseParams;
+                } else {
+                    baseModelParamsContainer.classList.add('hidden');
+                    baseModelParamsBInput.value = '';
+                }
+            } else {
+                 // Unlock and clear fields for custom input
+                modelTypeInput.disabled = false;
+                parametersBInput.disabled = false;
+                baseModelParamsBInput.disabled = false;
+                tokensBInput.disabled = false;
+                
+                parametersBInput.value = '';
+                baseModelParamsBInput.value = '';
+                tokensBInput.value = '';
+                modelTypeInput.value = 'dense';
+                baseModelParamsContainer.classList.add('hidden');
+            }
+        });
+
+
         modelTypeSelect.addEventListener('change', () => {
             baseModelParamsContainer.classList.toggle('hidden', modelTypeSelect.value !== 'MoE');
         });
@@ -352,6 +445,7 @@
                 hardwareEfficiency: parseFloat(document.getElementById('hardwareEfficiency').value),
                 pue: parseFloat(document.getElementById('pue').value),
                 co2eqkwh: parseFloat(document.getElementById('co2eqkwh').value),
+                gpuCostPerHour: parseFloat(document.getElementById('gpuCostPerHour').value),
                 gpusPerServer: parseInt(document.getElementById('gpusPerServer').value),
                 cpusPerServer: parseInt(document.getElementById('cpusPerServer').value),
                 dramGb: parseFloat(document.getElementById('dramGb').value),
@@ -361,12 +455,16 @@
 
         function validateInputs(inputs) {
             for (const key in inputs) {
+                // For dense models, skip the validation for baseModelParamsB as it's not applicable and will be NaN
+                if (inputs.modelType === 'dense' && key === 'baseModelParamsB') {
+                    continue;
+                }
+
                 if (isNaN(inputs[key]) && typeof inputs[key] !== 'string') {
-                    // 使用更友善的提示框取代 alert
-                    showModal(`請輸入有效的數值: ${key}`);
+                    showModal(`請輸入有效的數值 for: ${key}`);
                     return false;
                 }
-                 if (inputs[key] <= 0 && key !== 'baseModelParamsB' && key !== 'modelType' && key !== 'deviceType') {
+                 if (inputs[key] <= 0 && key !== 'baseModelParamsB' && key !== 'modelType' && key !== 'deviceType' && key !== 'modelPreset') {
                     showModal(`數值 "${key}" 必須大於 0`);
                     return false;
                 }
@@ -407,7 +505,7 @@
             const trainingSeconds = totalFLOPs / (inputs.deviceNum * TFLOPsPerSecond * 1e12);
             const trainingDays = trainingSeconds / (3600 * 24);
 
-            // 3. 計算營運碳排 (Operational Carbon)
+            // 3. 計算訓練碳排 (Operational Carbon)
             // 根據論文公式 8, 9, 10
             const totalPowerKW = (inputs.systemPower * inputs.deviceNum) / 1000;
             const totalEnergyKWh = totalPowerKW * (trainingDays * 24) * inputs.pue;
@@ -436,7 +534,12 @@
             // 5. 計算總碳排
             const totalCo2 = operationalCo2 + embodiedCo2;
 
-            return { totalCo2, operationalCo2, embodiedCo2, trainingDays, totalEnergyMWh };
+            // 6. 計算訓練成本
+            const totalGpuHours = trainingDays * 24 * inputs.deviceNum;
+            const trainingCost = totalGpuHours * inputs.gpuCostPerHour;
+
+
+            return { totalCo2, operationalCo2, embodiedCo2, trainingDays, totalEnergyMWh, trainingCost };
         }
 
         function displayResults(results) {
@@ -446,7 +549,7 @@
             const keyMetricsContainer = document.getElementById('key-metrics');
             keyMetricsContainer.innerHTML = `
                 <div class="bg-blue-100 p-4 rounded-lg border border-blue-200 flex flex-col justify-center">
-                    <h4 class="font-medium text-blue-800">訓練模型碳排</h4>
+                    <h4 class="font-medium text-blue-800">訓練碳排</h4>
                     <p class="text-2xl font-semibold text-blue-900">${results.operationalCo2.toFixed(2)} <span class="text-base font-normal">tCO₂eq</span></p>
                 </div>
                 <div class="bg-teal-100 p-4 rounded-lg border border-teal-200 flex flex-col justify-center">
@@ -460,6 +563,10 @@
                 <div class="bg-orange-100 p-4 rounded-lg border border-orange-200 flex flex-col justify-center">
                     <h4 class="font-medium text-orange-800">總消耗電量</h4>
                     <p class="text-2xl font-semibold text-orange-900">${results.totalEnergyMWh.toFixed(2)} <span class="text-base font-normal">MWh</span></p>
+                </div>
+                <div class="bg-purple-100 p-4 rounded-lg border border-purple-200 flex flex-col justify-center col-span-2">
+                    <h4 class="font-medium text-purple-800">預估訓練成本 (USD)</h4>
+                    <p class="text-2xl font-semibold text-purple-900">$${(results.trainingCost / 1000000).toFixed(2)} M</p>
                 </div>
             `;
 
@@ -488,7 +595,7 @@
         function updateChart(operational, embodied) {
             const ctx = document.getElementById('carbonChart').getContext('2d');
             const data = {
-                labels: ['訓練模型碳排 (Training)', '隱含碳排 (Embodied)'],
+                labels: ['訓練碳排 (Training)', '隱含碳排 (Embodied)'],
                 datasets: [{
                     data: [operational, embodied],
                     backgroundColor: ['#2563EB', '#14B8A6'], // Blue and Teal
