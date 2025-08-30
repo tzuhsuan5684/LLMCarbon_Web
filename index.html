@@ -447,11 +447,11 @@
             keyMetricsContainer.innerHTML = `
                 <div class="bg-blue-100 p-4 rounded-lg border border-blue-200 flex flex-col justify-center">
                     <h4 class="font-medium text-blue-800">訓練模型碳排</h4>
-                    <p class="text-2xl font-semibold text-blue-900">${results.operationalCo2.toFixed(2)}</p>
+                    <p class="text-2xl font-semibold text-blue-900">${results.operationalCo2.toFixed(2)} <span class="text-base font-normal">tCO₂eq</span></p>
                 </div>
                 <div class="bg-teal-100 p-4 rounded-lg border border-teal-200 flex flex-col justify-center">
                     <h4 class="font-medium text-teal-800">隱含碳排</h4>
-                    <p class="text-2xl font-semibold text-teal-900">${results.embodiedCo2.toFixed(2)}</p>
+                    <p class="text-2xl font-semibold text-teal-900">${results.embodiedCo2.toFixed(2)} <span class="text-base font-normal">tCO₂eq</span></p>
                 </div>
                  <div class="bg-gray-100 p-4 rounded-lg border border-gray-200 flex flex-col justify-center">
                     <h4 class="font-medium text-gray-800">預估訓練時間</h4>
@@ -561,3 +561,4 @@
     </script>
 </body>
 </html>
+
