@@ -86,7 +86,7 @@
                     LLM 碳足跡計算器
                 </span>
             </h1>
-            <p class="mt-3 text-lg text-gray-600">基於 LLMCarbon 模型，評估您的大型語言模型端到端碳足跡。</p>
+            <p class="mt-3 text-lg text-gray-600">基於 LLMCarbon 模型，評估您的大型語言模型端到端碳足跡。<br><span class="text-sm text-gray-500 mt-1 block">Developed By 黃子瑄</span></p>
         </header>
 
         <div class="grid grid-cols-1 xl:grid-cols-2 gap-8">
@@ -126,14 +126,14 @@
                             <input type="number" id="baseModelParamsB" class="input-field" value="2.3">
                         </div>
                         <div>
-                            <label for="tokensT" class="input-label">
-                                處理 Token 數量 (T)
+                            <label for="tokensB" class="input-label">
+                                處理 Token 數量 (B)
                                  <span class="tooltip">
                                     <svg class="info-icon inline w-4 h-4" fill="currentColor" viewBox="0 0 20 20"><path fill-rule="evenodd" d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-7-4a1 1 0 11-2 0 1 1 0 012 0zM9 9a1 1 0 000 2v3a1 1 0 001 1h1a1 1 0 100-2v-3a1 1 0 00-1-1H9z" clip-rule="evenodd"></path></svg>
-                                    <span class="tooltiptext">模型在訓練或推論過程中處理的 Token 總數，單位為萬億 (Trillion)。</span>
+                                    <span class="tooltiptext">模型在訓練或推論過程中處理的 Token 總數，單位為十億 (Billion)。</span>
                                 </span>
                             </label>
-                            <input type="number" id="tokensT" class="input-field" value="300">
+                            <input type="number" id="tokensB" class="input-field" value="300">
                         </div>
                     </div>
                 </section>
@@ -188,13 +188,13 @@
                         </div>
                         <div>
                             <label for="co2eqkwh" class="input-label">
-                                碳強度 (gCO₂eq/kWh)
+                                碳強度 (kgCO₂eq/kWh)
                                  <span class="tooltip">
                                     <svg class="info-icon inline w-4 h-4" fill="currentColor" viewBox="0 0 20 20"><path fill-rule="evenodd" d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-7-4a1 1 0 11-2 0 1 1 0 012 0zM9 9a1 1 0 000 2v3a1 1 0 001 1h1a1 1 0 100-2v-3a1 1 0 00-1-1H9z" clip-rule="evenodd"></path></svg>
-                                    <span class="tooltiptext">資料中心每消耗一度電（kWh）所產生的二氧化碳當量。預設值為美國平均。</span>
+                                    <span class="tooltiptext">資料中心每消耗一度電（kWh）所產生的二氧化碳當量(公斤)。預設值為美國平均。</span>
                                 </span>
                             </label>
-                            <input type="number" id="co2eqkwh" class="input-field" value="429">
+                            <input type="number" id="co2eqkwh" class="input-field" value="0.429" step="0.001">
                         </div>
                     </div>
                 </section>
@@ -242,29 +242,15 @@
                         <p id="totalCo2" class="text-5xl font-bold text-transparent bg-clip-text bg-gradient-to-r from-blue-600 to-teal-500 my-2">0.00</p>
                     </div>
                     
-                    <div class="grid grid-cols-2 gap-4 text-center">
-                        <div class="bg-blue-100 p-4 rounded-lg border border-blue-200">
-                            <h4 class="font-medium text-blue-800">營運碳排</h4>
-                            <p id="operationalCo2" class="text-2xl font-semibold text-blue-900">0.00</p>
-                        </div>
-                        <div class="bg-teal-100 p-4 rounded-lg border border-teal-200">
-                            <h4 class="font-medium text-teal-800">隱含碳排</h4>
-                            <p id="embodiedCo2" class="text-2xl font-semibold text-teal-900">0.00</p>
-                        </div>
-                    </div>
-
-                    <div class="max-w-xs mx-auto">
+                    <div class="max-w-xs mx-auto mb-6">
                         <canvas id="carbonChart"></canvas>
                     </div>
 
-                    <div class="border-t pt-6 mt-6 space-y-6">
-                        <!-- ===== 詳細資訊 ===== -->
-                        <div>
-                            <h3 class="text-lg font-semibold text-gray-600 mb-3">詳細資訊</h3>
-                            <div id="details" class="grid grid-cols-2 gap-4">
-                                <!-- JS will populate this -->
-                            </div>
-                        </div>
+                    <div id="key-metrics" class="grid grid-cols-2 gap-4 text-center">
+                        <!-- JS will populate key metrics here -->
+                    </div>
+
+                    <div class="border-t pt-6 mt-6">
                         <!-- ===== 日常物品換算區 ===== -->
                         <div>
                             <h3 class="text-lg font-semibold text-gray-600 mb-3">日常換算</h3>
@@ -359,7 +345,7 @@
                 modelType: modelTypeSelect.value,
                 parametersB: parseFloat(document.getElementById('parametersB').value),
                 baseModelParamsB: parseFloat(document.getElementById('baseModelParamsB').value),
-                tokensT: parseFloat(document.getElementById('tokensT').value),
+                tokensB: parseFloat(document.getElementById('tokensB').value),
                 deviceType: deviceTypeSelect.value,
                 deviceNum: parseInt(document.getElementById('deviceNum').value),
                 systemPower: parseFloat(document.getElementById('systemPower').value),
@@ -391,13 +377,27 @@
             }
             return true;
         }
+        
+        function formatTrainingDuration(totalDays) {
+            if (totalDays < 365) {
+                return `${totalDays.toFixed(2)} 天`;
+            } else {
+                const years = Math.floor(totalDays / 365);
+                const remainingDays = Math.round(totalDays % 365);
+                if (remainingDays === 0) {
+                    return `${years} 年`;
+                }
+                return `${years} 年 ${remainingDays} 天`;
+            }
+        }
 
         function calculateCarbonFootprint(inputs) {
             // 1. 計算總 FLOPs (Floating Point Operations)
             const activeParamsB = inputs.modelType === 'MoE' ? inputs.baseModelParamsB : inputs.parametersB;
             // 根據論文公式 4: TC ≈ 6PD (P=參數, D=Tokens)
-            // 單位轉換: P (Billion), D (Trillion) -> 1e9 * 1e12 = 1e21 (Zetta)
-            const totalZettaFLOPs = 6 * activeParamsB * inputs.tokensT / 1000; // 修正單位錯誤
+            // 單位轉換: P (Billion), D (Billion) -> 1e9 * 1e9 = 1e18 (Exa)
+            // 轉換為 ZettaFLOPs (1e21)
+            const totalZettaFLOPs = 6 * activeParamsB * inputs.tokensB / 1000;
             const totalFLOPs = totalZettaFLOPs * 1e21;
 
             // 2. 計算訓練時間
@@ -411,8 +411,9 @@
             // 根據論文公式 8, 9, 10
             const totalPowerKW = (inputs.systemPower * inputs.deviceNum) / 1000;
             const totalEnergyKWh = totalPowerKW * (trainingDays * 24) * inputs.pue;
+            // inputs.co2eqkwh is now in kg/kWh. Convert kg to tonnes (t).
+            const operationalCo2 = (totalEnergyKWh * inputs.co2eqkwh) / 1000;
             const totalEnergyMWh = totalEnergyKWh / 1000;
-            const operationalCo2 = totalEnergyMWh * (inputs.co2eqkwh / 1000); // g to t (1000*1000)
 
             // 4. 計算隱含碳排 (Embodied Carbon)
             // 根據論文公式 11, 12
@@ -440,28 +441,27 @@
 
         function displayResults(results) {
             document.getElementById('totalCo2').textContent = results.totalCo2.toFixed(2);
-            document.getElementById('operationalCo2').textContent = results.operationalCo2.toFixed(2);
-            document.getElementById('embodiedCo2').textContent = results.embodiedCo2.toFixed(2);
-
-            // 更新詳細資訊
-            const detailsContainer = document.getElementById('details');
-            detailsContainer.innerHTML = `
-                <div class="bg-white p-3 rounded-lg text-center border">
-                    <svg xmlns="http://www.w3.org/2000/svg" class="h-8 w-8 mx-auto mb-2 text-gray-500" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.5">
-                        <path stroke-linecap="round" stroke-linejoin="round" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z" />
-                    </svg>
-                    <p class="text-xl font-bold text-gray-800">${results.trainingDays.toFixed(2)}</p>
-                    <p class="text-xs text-gray-600 mt-1">預估訓練天數</p>
+            
+            // 更新關鍵數據區
+            const keyMetricsContainer = document.getElementById('key-metrics');
+            keyMetricsContainer.innerHTML = `
+                <div class="bg-blue-100 p-4 rounded-lg border border-blue-200 flex flex-col justify-center">
+                    <h4 class="font-medium text-blue-800">訓練模型碳排</h4>
+                    <p class="text-2xl font-semibold text-blue-900">${results.operationalCo2.toFixed(2)}</p>
                 </div>
-                <div class="bg-white p-3 rounded-lg text-center border">
-                    <svg xmlns="http://www.w3.org/2000/svg" class="h-8 w-8 mx-auto mb-2 text-orange-500" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.5">
-                        <path stroke-linecap="round" stroke-linejoin="round" d="M13 10V3L4 14h7v7l9-11h-7z" />
-                    </svg>
-                    <p class="text-xl font-bold text-gray-800">${results.totalEnergyMWh.toFixed(2)} <span class="text-sm font-normal">MWh</span></p>
-                    <p class="text-xs text-gray-600 mt-1">總消耗電量</p>
+                <div class="bg-teal-100 p-4 rounded-lg border border-teal-200 flex flex-col justify-center">
+                    <h4 class="font-medium text-teal-800">隱含碳排</h4>
+                    <p class="text-2xl font-semibold text-teal-900">${results.embodiedCo2.toFixed(2)}</p>
+                </div>
+                 <div class="bg-gray-100 p-4 rounded-lg border border-gray-200 flex flex-col justify-center">
+                    <h4 class="font-medium text-gray-800">預估訓練時間</h4>
+                    <p class="text-2xl font-semibold text-gray-900">${formatTrainingDuration(results.trainingDays)}</p>
+                </div>
+                <div class="bg-orange-100 p-4 rounded-lg border border-orange-200 flex flex-col justify-center">
+                    <h4 class="font-medium text-orange-800">總消耗電量</h4>
+                    <p class="text-2xl font-semibold text-orange-900">${results.totalEnergyMWh.toFixed(2)} <span class="text-base font-normal">MWh</span></p>
                 </div>
             `;
-
 
             // 更新日常物品換算
             const equivalentsContainer = document.getElementById('equivalents');
@@ -488,7 +488,7 @@
         function updateChart(operational, embodied) {
             const ctx = document.getElementById('carbonChart').getContext('2d');
             const data = {
-                labels: ['營運碳排 (Operational)', '隱含碳排 (Embodied)'],
+                labels: ['訓練模型碳排 (Training)', '隱含碳排 (Embodied)'],
                 datasets: [{
                     data: [operational, embodied],
                     backgroundColor: ['#2563EB', '#14B8A6'], // Blue and Teal
