@@ -97,7 +97,7 @@
             <p class="mt-2 text-sm text-gray-500">Developed By 黃子瑄</p>
         </header>
 
-        <div class="grid grid-cols-1 xl:grid-cols-2 gap-8">
+        <div id="main-content" class="grid grid-cols-1 xl:grid-cols-2 gap-8">
             <!-- ===== 輸入參數區 ===== -->
             <div class="card p-8">
                 <h2 class="text-2xl font-semibold mb-6 border-b-2 border-gray-200 pb-4">參數設定</h2>
@@ -457,6 +457,15 @@
             const results = calculateCarbonFootprint(inputs);
             displayResults(results);
             resultsContainer.classList.remove('hidden');
+
+            // 針對不同螢幕尺寸，滾動到結果區
+            // 大螢幕：滾動到主內容區塊的頂部
+            // 小螢幕：直接滾動到結果卡片的位置
+            if (window.innerWidth >= 1280) {
+                 document.getElementById('main-content').scrollIntoView({ behavior: 'smooth' });
+            } else {
+                resultsContainer.scrollIntoView({ behavior: 'smooth' });
+            }
         });
 
         // ===== 核心功能函式 =====
@@ -640,5 +649,6 @@
     </script>
 </body>
 </html>
+
 
 
