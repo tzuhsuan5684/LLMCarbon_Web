@@ -3,40 +3,49 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>NVIDIA 晶片碳足跡計算器</title>
+    <title>AI晶片LCA評估</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
     <style>
         body {
             font-family: 'Inter', sans-serif;
+            -webkit-font-smoothing: antialiased;
+            -moz-osx-font-smoothing: grayscale;
         }
+        /* 自定義卡片樣式 */
         .card {
             background-color: white;
-            border-radius: 1rem;
-            box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05);
-            transition: transform 0.3s ease, box-shadow 0.3s ease;
+            border-radius: 1.5rem; /* 更大的圓角 */
+            box-shadow: 0 10px 25px -3px rgba(0, 0, 0, 0.1), 0 4px 10px -2px rgba(0, 0, 0, 0.05);
+            transition: transform 0.3s cubic-bezier(0.25, 0.46, 0.45, 0.94), box-shadow 0.3s cubic-bezier(0.25, 0.46, 0.45, 0.94);
         }
         .card:hover {
-            transform: translateY(-5px);
-            box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.1), 0 10px 10px -5px rgba(0, 0, 0, 0.04);
+            transform: translateY(-8px);
+            box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.15);
         }
+        /* 輸入欄位樣式 */
         .input-field {
             width: 100%;
-            padding: 0.75rem;
-            border: 1px solid #E2E8F0;
-            border-radius: 0.5rem;
-            transition: border-color 0.2s;
+            padding: 0.875rem; /* 稍微增加內距 */
+            border: 2px solid #E2E8F0;
+            border-radius: 0.75rem; /* 圓角與卡片保持一致 */
+            transition: border-color 0.3s ease, box-shadow 0.3s ease;
         }
         .input-field:focus {
             outline: none;
             border-color: #14B8A6; /* Teal color for focus */
-            box-shadow: 0 0 0 2px rgba(20, 184, 166, 0.4);
+            box-shadow: 0 0 0 3px rgba(20, 184, 166, 0.4);
         }
+        /* 提示工具樣式 */
         .info-icon {
             cursor: pointer;
             margin-left: 8px;
             color: #A0AEC0;
+            transition: color 0.3s;
+        }
+        .info-icon:hover {
+            color: #14B8A6;
         }
         .tooltip {
             position: relative;
@@ -48,85 +57,91 @@
             background-color: #1F2937;
             color: #fff;
             text-align: center;
-            border-radius: 6px;
-            padding: 8px;
+            border-radius: 0.5rem;
+            padding: 0.75rem;
             position: absolute;
-            z-index: 1;
+            z-index: 10;
             bottom: 125%;
             left: 50%;
             margin-left: -125px;
             opacity: 0;
-            transition: opacity 0.3s;
+            transition: opacity 0.3s, transform 0.3s;
             font-size: 0.875rem;
+            box-shadow: 0 5px 15px -3px rgba(0, 0, 0, 0.2);
         }
         .tooltip:hover .tooltiptext {
             visibility: visible;
             opacity: 1;
-        }
-        .grid-item {
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            flex-direction: column;
-            text-align: center;
+            transform: translateY(-5px);
         }
     </style>
 </head>
 <body class="bg-gradient-to-br from-blue-50 to-green-50 text-gray-800 p-4 md:p-8">
 
-    <div class="container mx-auto max-w-5xl">
-        <header class="text-center mb-10">
+    <div class="container mx-auto max-w-6xl">
+        <header class="text-center mb-12">
             <h1 class="text-4xl md:text-5xl font-bold text-gray-900 flex items-center justify-center">
+                <!-- SVG Icon for sustainability -->
                 <svg xmlns="http://www.w3.org/2000/svg" class="h-10 w-10 md:h-12 md:w-12 mr-3 text-green-500" viewBox="0 0 24 24" fill="currentColor">
                     <path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm0 18c-4.41 0-8-3.59-8-8s3.59-8 8-8 8 3.59 8 8-3.59 8-8 8zm-1-12h2v6h-2v-6zm0 8h2v2h-2v-2z"/>
                 </svg>
                 <span class="bg-clip-text text-transparent bg-gradient-to-r from-blue-600 to-teal-500">
-                    NVIDIA 晶片碳足跡評估工具
+                    AI晶片LCA評估
                 </span>
             </h1>
-            <p class="mt-3 text-lg text-gray-600">快速估算NVIDIA晶片的生命週期環境影響。</p>
+            <p class="mt-3 text-lg text-gray-600">快速估算 AI 晶片的生命週期環境影響。 </p>
         </header>
 
         <div class="grid grid-cols-1 xl:grid-cols-2 gap-8">
-            <!-- ===== 輸入區 ===== -->
-            <div class="card p-6 md:p-8">
+            <!-- ===== 輸入區 (Input Section) ===== -->
+            <div class="card p-6 md:p-10">
                 <h2 class="text-2xl font-semibold mb-6 border-b-2 border-gray-200 pb-4">參數設定</h2>
                 
+                <!-- 晶片選擇 -->
                 <div class="mb-6">
                     <label for="gpuChip" class="block text-gray-700 font-bold mb-2">
-                        選擇 NVIDIA GPU 晶片
+                        選擇 AI 晶片模型
                     </label>
-                    <select id="gpuChip" class="input-field bg-white">
-                        <option value="A100">NVIDIA A100</option>
-                        <option value="H100">NVIDIA H100</option>
-                        <option value="B200">NVIDIA B200</option>
-                        <option value="B300">NVIDIA B300</option>
-                    </select>
+                    <div class="relative">
+                        <select id="gpuChip" class="input-field appearance-none bg-white">
+                            <option value="A100">NVIDIA A100</option>
+                            <option value="H100">NVIDIA H100</option>
+                            <option value="B200">NVIDIA B200</option>
+                            <option value="B300">NVIDIA B300</option>
+                        </select>
+                        <!-- 下拉式選單箭頭 -->
+                        <div class="pointer-events-none absolute inset-y-0 right-0 flex items-center px-2 text-gray-700">
+                            <svg class="fill-current h-4 w-4" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20"><path d="M9.293 12.95l.707.707L15 9.707l-1.414-1.414L10 11.586l-3.586-3.586L5 9.707z"/></svg>
+                        </div>
+                    </div>
                 </div>
                 
                 <div class="grid grid-cols-1 sm:grid-cols-2 gap-6 mb-6">
+                    <!-- 預估使用年限 -->
                     <div>
                         <label for="lifespan" class="block text-gray-700 font-bold mb-2">
                             預估使用年限 (年)
                             <span class="tooltip">
                                 <svg class="info-icon inline w-4 h-4" fill="currentColor" viewBox="0 0 20 20"><path fill-rule="evenodd" d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-7-4a1 1 0 11-2 0 1 1 0 012 0zM9 9a1 1 0 000 2v3a1 1 0 001 1h1a1 1 0 100-2v-3a1 1 0 00-1-1H9z" clip-rule="evenodd"></path></svg>
-                                <span class="tooltiptext">資料中心硬體的典型壽命，通常為 5 年。</span>
+                                <span class="tooltiptext">AI 晶片在資料中心或伺服器環境中的典型運作壽命，通常為 5 年。</span>
                             </span>
                         </label>
                         <input type="number" id="lifespan" class="input-field" value="5" min="1">
                     </div>
+                    <!-- 每日運作時數 -->
                     <div>
                         <label for="utilization" class="block text-gray-700 font-bold mb-2">
                             每日運作時數 (小時)
                             <span class="tooltip">
                                 <svg class="info-icon inline w-4 h-4" fill="currentColor" viewBox="0 0 20 20"><path fill-rule="evenodd" d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-7-4a1 1 0 11-2 0 1 1 0 012 0zM9 9a1 1 0 000 2v3a1 1 0 001 1h1a1 1 0 100-2v-3a1 1 0 00-1-1H9z" clip-rule="evenodd"></path></svg>
-                                <span class="tooltiptext">晶片在一天中實際運行的平均時間，建議值為 24 小時。</span>
+                                <span class="tooltiptext">AI 晶片在一天中進行訓練或推論任務的平均時間，建議值為 24 小時。</span>
                             </span>
                         </label>
                         <input type="number" id="utilization" class="input-field" value="24" min="0" max="24">
                     </div>
                 </div>
 
+                <!-- 電網碳強度 -->
                 <div class="mb-6">
                     <label for="carbonIntensity" class="block text-gray-700 font-bold mb-2">
                         電網碳強度 (kgCO₂e/kWh)
@@ -139,64 +154,79 @@
                 </div>
 
                 <div class="text-center mt-8">
-                    <button id="calculateBtn" class="bg-gradient-to-r from-blue-600 to-teal-500 text-white font-bold py-3 px-8 rounded-lg hover:from-blue-700 hover:to-teal-600 transition-all duration-300 text-lg shadow-lg hover:shadow-xl transform hover:-translate-y-1">
+                    <button id="calculateBtn" class="w-full bg-gradient-to-r from-blue-600 to-teal-500 text-white font-bold py-4 px-8 rounded-xl hover:from-blue-700 hover:to-teal-600 transition-all duration-300 text-lg shadow-lg hover:shadow-xl transform hover:-translate-y-1">
                         開始計算
                     </button>
                 </div>
             </div>
 
-            <!-- ===== 結果顯示區 ===== -->
-            <div id="results-container" class="card p-6 md:p-8 hidden xl:sticky xl:top-8">
+            <!-- ===== 結果顯示區 (Results Section) ===== -->
+            <div id="results-container" class="card p-6 md:p-10 hidden xl:sticky xl:top-8 self-start">
                 <h2 class="text-2xl font-semibold mb-6 border-b-2 border-gray-200 pb-4">計算結果</h2>
                 
-                <div class="space-y-6">
-                    <div class="text-center">
-                        <h3 class="text-lg font-semibold text-gray-600">總碳足跡</h3>
-                        <p id="totalCo2" class="text-5xl font-bold text-transparent bg-clip-text bg-gradient-to-r from-blue-600 to-teal-500 my-2">0.00 <span class="text-2xl">tCO₂e</span></p>
+                <!-- 總碳足跡、水資源、電子廢棄物三項主要指標，以網格呈現 -->
+                <div class="grid grid-cols-1 md:grid-cols-3 gap-6 mb-6">
+                    <div class="card p-4 rounded-xl flex flex-col items-center justify-center text-center transition hover:scale-105 bg-emerald-100 border border-emerald-200">
+                        <!-- 總碳足跡圖示 - 雲朵 -->
+                        <span role="img" aria-label="cloud-with-emissions" class="text-4xl mb-2">💨</span>
+                        <h4 class="font-medium text-emerald-800 mb-2">
+                            總碳足跡
+                            <span class="tooltip">
+                                <svg class="info-icon inline w-4 h-4" fill="currentColor" viewBox="0 0 20 20"><path fill-rule="evenodd" d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-7-4a1 1 0 11-2 0 1 1 0 012 0zM9 9a1 1 0 000 2v3a1 1 0 001 1h1a1 1 0 100-2v-3a1 1 0 00-1-1H9z" clip-rule="evenodd"></path></svg>
+                                <span class="tooltiptext">晶片在整個生命週期中產生的溫室氣體總排放量，包含製造與運作階段。</span>
+                            </span>
+                        </h4>
+                        <p id="totalCo2" class="text-3xl font-bold text-emerald-900">0.00 <span class="text-base font-normal">tCO₂eq</span></p>
+                    </div>
+                    <div class="card p-4 rounded-xl flex flex-col items-center justify-center text-center transition hover:scale-105 bg-sky-100 border border-sky-200">
+                        <!-- 水資源消耗量圖示 - 水滴 -->
+                        <span role="img" aria-label="water-droplet" class="text-4xl mb-2">💧</span>
+                        <h4 class="font-medium text-sky-800 mb-2">
+                            水資源消耗量
+                            <span class="tooltip">
+                                <svg class="info-icon inline w-4 h-4" fill="currentColor" viewBox="0 0 20 20"><path fill-rule="evenodd" d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-7-4a1 1 0 11-2 0 1 1 0 012 0zM9 9a1 1 0 000 2v3a1 1 0 001 1h1a1 1 0 100-2v-3a1 1 0 00-1-1H9z" clip-rule="evenodd"></path></svg>
+                                <span class="tooltiptext">晶片在其使用壽命內，於製造及運作過程中消耗的總水量。</span>
+                            </span>
+                        </h4>
+                        <p id="waterConsumption" class="text-3xl font-bold text-sky-900">0 <span class="text-base font-normal">L</span></p>
+                    </div>
+                    <div class="card p-4 rounded-xl flex flex-col items-center justify-center text-center transition hover:scale-105 bg-lime-100 border border-lime-200">
+                        <!-- 電子廢棄物量圖示 -->
+                        <span role="img" aria-label="waste-bin" class="text-4xl mb-2">🗑️</span>
+                        <h4 class="font-medium text-lime-800 mb-2">
+                            電子廢棄物量
+                            <span class="tooltip">
+                                <svg class="info-icon inline w-4 h-4" fill="currentColor" viewBox="0 0 20 20"><path fill-rule="evenodd" d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-7-4a1 1 0 11-2 0 1 1 0 012 0zM9 9a1 1 0 000 2v3a1 1 0 001 1h1a1 1 0 100-2v-3a1 1 0 00-1-1H9z" clip-rule="evenodd"></path></svg>
+                                <span class="tooltiptext">晶片在生命週期結束後產生的廢棄物重量，通常指產品本身的重量。</span>
+                            </span>
+                        </h4>
+                        <p id="eWaste" class="text-3xl font-bold text-lime-900">0.00 <span class="text-base font-normal">kg</span></p>
+                    </div>
+                </div>
+
+                <div class="border-t pt-6 mt-6 space-y-6">
+                    <!-- 碳排細項與日常換算 -->
+                    <h3 class="text-lg font-semibold text-gray-600 mb-3">碳排細項分析</h3>
+                    <div class="grid grid-cols-2 gap-4 text-center">
+                        <div class="bg-blue-100 p-4 rounded-xl border border-blue-200 flex flex-col justify-center transition hover:scale-105">
+                            <h4 class="font-medium text-blue-800">營運碳排</h4>
+                            <p id="operationalCo2" class="text-2xl font-semibold text-blue-900">0.00 <span class="text-base font-normal">tCO₂eq</span></p>
+                        </div>
+                        <div class="bg-teal-100 p-4 rounded-xl border border-teal-200 flex flex-col justify-center transition hover:scale-105">
+                            <h4 class="font-medium text-teal-800">隱含碳排</h4>
+                            <p id="embodiedCo2" class="text-2xl font-semibold text-teal-900">0.00 <span class="text-base font-normal">tCO₂eq</span></p>
+                        </div>
                     </div>
                     
                     <div class="max-w-xs mx-auto mb-6">
                         <canvas id="carbonChart"></canvas>
                     </div>
 
-                    <div class="grid grid-cols-2 gap-4 text-center">
-                        <div class="bg-blue-100 p-4 rounded-lg border border-blue-200">
-                            <h4 class="font-medium text-blue-800">營運碳排</h4>
-                            <p id="operationalCo2" class="text-2xl font-semibold text-blue-900">0.00 <span class="text-sm">t</span></p>
-                        </div>
-                        <div class="bg-teal-100 p-4 rounded-lg border border-teal-200">
-                            <h4 class="font-medium text-teal-800">製造碳排</h4>
-                            <p id="embodiedCo2" class="text-2xl font-semibold text-teal-900">0.00 <span class="text-sm">t</span></p>
-                        </div>
-                    </div>
-                </div>
-
-                <div class="border-t pt-6 mt-6 space-y-6">
-                    <!-- ===== 詳細資訊 ===== -->
-                    <div>
-                        <h3 class="text-lg font-semibold text-gray-600 mb-3">詳細資訊</h3>
-                        <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
-                            <div class="grid-item bg-gray-100 p-4 rounded-lg">
-                                <h4 class="font-medium text-gray-800 mb-2">水資源消耗量 (L)</h4>
-                                <svg xmlns="http://www.w3.org/2000/svg" class="h-8 w-8 text-blue-500 mb-2" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.5">
-                                    <path stroke-linecap="round" stroke-linejoin="round" d="M12 21l-7.7-7.7c-2.4-2.4-2.4-6.2 0-8.6C4.8 2.3 8.6 2.3 11 4.7l1 1 1-1c2.4-2.4 6.2-2.4 8.6 0 2.4 2.4 2.4 6.2 0 8.6L12 21z" />
-                                </svg>
-                                <p id="waterConsumption" class="text-xl font-bold text-gray-800">0</p>
-                            </div>
-                            <div class="grid-item bg-gray-100 p-4 rounded-lg">
-                                <h4 class="font-medium text-gray-800 mb-2">電子廢棄物量 (kg)</h4>
-                                <svg xmlns="http://www.w3.org/2000/svg" class="h-8 w-8 text-red-500 mb-2" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.5">
-                                    <path stroke-linecap="round" stroke-linejoin="round" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" />
-                                </svg>
-                                <p id="eWaste" class="text-xl font-bold text-gray-800">0.00</p>
-                            </div>
-                        </div>
-                    </div>
-                    <!-- ===== 日常物品換算區 ===== -->
+                    <!-- 日常物品換算區 -->
                     <div>
                         <h3 class="text-lg font-semibold text-gray-600 mb-3">日常換算</h3>
                         <div id="equivalents" class="grid grid-cols-2 lg:grid-cols-4 gap-4">
-                            <!-- JS will populate this section -->
+                            <!-- JS 會在此處填充內容 -->
                         </div>
                     </div>
                 </div>
@@ -205,10 +235,13 @@
     </div>
 
     <script>
+        // 晶片數據：包含 TDP（熱設計功耗）、製造碳足跡、水資源消耗和電子廢棄物量
+        // cradle_to_gate_kg: 從搖籃到大門的碳排放量，即生產階段的總碳排。
+        // water_L_per_year: 估計每年消耗的水資源，取一個範圍的平均值。
         const gpuData = {
             "A100": {
                 tdp_watt: 400,
-                cradle_to_gate_kg: 120, // 估算值
+                cradle_to_gate_kg: 120, 
                 water_L_per_year: [1000, 6000],
                 e_waste_kg: 2.5
             },
@@ -219,45 +252,51 @@
                 e_waste_kg: 3
             },
             "B200": {
-                tdp_watt: 1100, // 取平均
+                tdp_watt: 1100,
                 cradle_to_gate_kg: 284,
                 water_L_per_year: [3500, 10000],
                 e_waste_kg: 2.5
             },
             "B300": {
-                tdp_watt: 1300, // 取平均
-                cradle_to_gate_kg: 300, // 估算值
+                tdp_watt: 1300,
+                cradle_to_gate_kg: 300, 
                 water_L_per_year: [3500, 15000],
                 e_waste_kg: 3.5
             }
         };
 
+        // 日常物品碳排對照表 (單位: tCO₂eq)
         const dailyEquivalents = {
             flight: {
                 name: '趟台北-東京航班',
                 value: 0.4,
-                icon: `<svg xmlns="http://www.w3.org/2000/svg" class="h-8 w-8 mx-auto mb-2 text-blue-500" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.5"><path stroke-linecap="round" stroke-linejoin="round" d="M6 12L3.269 3.126A59.768 59.768 0 0121.485 12 59.77 59.77 0 013.27 20.876L5.999 12zm0 0h7.5" /></svg>`
+                icon: `<span role="img" aria-label="airplane" class="text-3xl text-blue-500 mx-auto mb-2">✈️</span>`
             },
             car: {
                 name: '輛汽車年排碳',
                 value: 1.9,
-                icon: `<svg xmlns="http://www.w3.org/2000/svg" class="h-8 w-8 mx-auto mb-2 text-indigo-500" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.5"><path stroke-linecap="round" stroke-linejoin="round" d="M8.25 18.75a1.5 1.5 0 01-3 0m3 0a1.5 1.5 0 00-3 0m3 0h6m-9 0H3.375a1.125 1.125 0 01-1.125-1.125V14.25m17.25 4.5a1.5 1.5 0 01-3 0m3 0a1.5 1.5 0 00-3 0m3 0h1.125c.621 0 1.125-.504 1.125-1.125V14.25m-17.25 4.5v-1.875a3.375 3.375 0 013.375-3.375h9.75a3.375 3.375 0 013.375 3.375v1.875m-17.25 4.5h16.5M5.625 13.5v-1.875a3.375 3.375 0 013.375-3.375h9.75a3.375 3.375 0 013.375 3.375V13.5" /></svg>`
+                icon: `<span role="img" aria-label="car" class="text-3xl text-indigo-500 mx-auto mb-2">🚗</span>`
             },
             tree: {
                 name: '棵樹年吸碳量',
                 value: 0.012,
-                icon: `<svg xmlns="http://www.w3.org/2000/svg" class="h-8 w-8 mx-auto mb-2 text-green-500" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.5"><path stroke-linecap="round" stroke-linejoin="round" d="M15.362 5.214A8.252 8.252 0 0112 21 8.25 8.25 0 016.038 7.048 8.287 8.287 0 009 9.6a8.983 8.983 0 013.362-1.44m3.362-2.946V5.25a2.25 2.25 0 00-2.25-2.25H12a2.25 2.25 0 00-2.25 2.25v2.25" /></svg>`
+                icon: `<span role="img" aria-label="tree" class="text-3xl text-green-500 mx-auto mb-2">🌳</span>`
             },
             bento: {
                 name: '個排骨便當',
                 value: 0.0015,
-                icon: `<svg xmlns="http://www.w3.org/2000/svg" class="h-8 w-8 mx-auto mb-2 text-yellow-500" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.5"><path stroke-linecap="round" stroke-linejoin="round" d="M20.25 7.5l-.625 10.632a2.25 2.25 0 01-2.247 2.118H6.622a2.25 2.25 0 01-2.247-2.118L3.75 7.5M10 11.25h4M3.375 7.5h17.25c.621 0 1.125-.504 1.125-1.125v-1.5c0-.621-.504-1.125-1.125-1.125H3.375c-.621 0-1.125.504-1.125 1.125v1.5c0 .621.504 1.125 1.125 1.125z" /></svg>`
+                icon: `<span role="img" aria-label="bento-box" class="text-3xl text-yellow-500 mx-auto mb-2">🍱</span>`
             },
         };
 
         let carbonChartInstance = null;
 
+        /**
+         * 顯示自定義的錯誤訊息彈窗
+         * @param {string} message - 要顯示的訊息
+         */
         function showModal(message) {
+            // 防止重複創建彈窗
             const oldModal = document.getElementById('alert-modal');
             if (oldModal) {
                 oldModal.remove();
@@ -265,27 +304,41 @@
 
             const modal = document.createElement('div');
             modal.id = 'alert-modal';
-            modal.className = 'fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50';
+            modal.className = 'fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 transition-opacity duration-300 opacity-0';
             modal.innerHTML = `
-                <div class="bg-white rounded-lg shadow-xl p-6 w-11/12 md:w-1/3">
-                    <h3 class="text-lg font-bold text-red-600 mb-4">輸入錯誤</h3>
+                <div class="bg-white rounded-xl shadow-2xl p-6 w-11/12 md:w-1/3 transform scale-95 transition-transform duration-300">
+                    <h3 class="text-xl font-bold text-red-600 mb-4">輸入錯誤</h3>
                     <p class="text-gray-700">${message}</p>
                     <div class="mt-6 text-right">
-                        <button id="modal-close-btn" class="bg-blue-600 text-white px-4 py-2 rounded-lg hover:bg-blue-700">確認</button>
+                        <button id="modal-close-btn" class="bg-blue-600 text-white font-semibold px-4 py-2 rounded-lg hover:bg-blue-700 transition">確認</button>
                     </div>
                 </div>
             `;
             document.body.appendChild(modal);
 
+            // 觸發淡入和縮放效果
+            setTimeout(() => {
+                modal.classList.remove('opacity-0');
+                modal.querySelector('div').classList.remove('scale-95');
+            }, 10);
+
+            // 監聽關閉按鈕
             document.getElementById('modal-close-btn').addEventListener('click', () => {
-                modal.remove();
+                modal.classList.add('opacity-0');
+                modal.querySelector('div').classList.add('scale-95');
+                setTimeout(() => modal.remove(), 300);
             });
         }
 
+        /**
+         * 更新 Chart.js 圖表
+         * @param {number} operational - 營運碳排量 (tCO₂eq)
+         * @param {number} embodied - 隱含碳排量 (tCO₂eq)
+         */
         function updateChart(operational, embodied) {
             const ctx = document.getElementById('carbonChart').getContext('2d');
             const data = {
-                labels: ['營運碳排 (Operational)', '製造碳排 (Embodied)'],
+                labels: ['營運碳排 (Operational)', '隱含碳排 (Embodied)'],
                 datasets: [{
                     data: [operational, embodied],
                     backgroundColor: ['#2563EB', '#14B8A6'],
@@ -311,10 +364,10 @@
                                 labels: {
                                     font: { size: 14 }
                                 }
-                             },
+                            },
                             title: {
                                 display: true,
-                                text: '碳足跡組成分析 (tCO₂e)',
+                                text: '碳足跡組成分析 (tCO₂eq)',
                                 font: { size: 16, weight: '600' },
                                 padding: { top: 10, bottom: 20 }
                             }
@@ -324,12 +377,14 @@
             }
         }
 
+        // 當「開始計算」按鈕被點擊時
         document.getElementById('calculateBtn').addEventListener('click', () => {
             const gpuChip = document.getElementById('gpuChip').value;
             const lifespan = parseFloat(document.getElementById('lifespan').value);
             const utilization = parseFloat(document.getElementById('utilization').value);
             const carbonIntensity = parseFloat(document.getElementById('carbonIntensity').value);
 
+            // 驗證輸入值
             if (isNaN(lifespan) || isNaN(utilization) || isNaN(carbonIntensity) || lifespan <= 0 || utilization < 0 || utilization > 24 || carbonIntensity <= 0) {
                 showModal("請輸入有效的數值。使用年限和碳強度必須大於 0，每日運作時數需介於 0 到 24 之間。");
                 return;
@@ -337,13 +392,16 @@
 
             const data = gpuData[gpuChip];
             
-            // 計算營運碳排 ( Operational Carbon )
+            // 計算營運碳排 (Operational Carbon)
+            // 公式: (晶片 TDP * 總運作時數) / 1000 * 電網碳強度 / 1000
+            // (瓦特-小時) -> (度) -> (公斤 CO₂e) -> (公噸 CO₂e)
             const totalHours = lifespan * 365 * utilization;
             const totalKWH = (data.tdp_watt * totalHours) / 1000;
-            const operationalCo2 = (totalKWH * carbonIntensity) / 1000; // kg to ton
+            const operationalCo2 = (totalKWH * carbonIntensity) / 1000; 
 
-            // 計算製造碳排 ( Embodied Carbon )
-            const embodiedCo2 = data.cradle_to_gate_kg / 1000; // kg to ton
+            // 計算隱含碳排 (Embodied Carbon)
+            // 公式: 製造碳排量 (kg) / 1000
+            const embodiedCo2 = data.cradle_to_gate_kg / 1000;
 
             // 計算總碳排
             const totalCo2 = operationalCo2 + embodiedCo2;
@@ -352,29 +410,30 @@
             const avgWater = (data.water_L_per_year[0] + data.water_L_per_year[1]) / 2;
             const totalWater = avgWater * lifespan;
 
-            // 電子廢棄物
+            // 電子廢棄物量
             const eWaste = data.e_waste_kg;
 
-            // 顯示結果
-            document.getElementById('totalCo2').textContent = totalCo2.toFixed(2);
-            document.getElementById('operationalCo2').textContent = operationalCo2.toFixed(2);
-            document.getElementById('embodiedCo2').textContent = embodiedCo2.toFixed(2);
-            document.getElementById('waterConsumption').textContent = totalWater.toFixed(0).toLocaleString('zh-TW');
-            document.getElementById('eWaste').textContent = eWaste.toFixed(2);
+            // 顯示結果到介面
+            document.getElementById('totalCo2').innerHTML = `${totalCo2.toFixed(2)} <span class="text-base font-normal text-emerald-900">tCO₂eq</span>`;
+            document.getElementById('operationalCo2').innerHTML = `${operationalCo2.toFixed(2)} <span class="text-base font-normal">tCO₂eq</span>`;
+            document.getElementById('embodiedCo2').innerHTML = `${embodiedCo2.toFixed(2)} <span class="text-base font-normal">tCO₂eq</span>`;
+            document.getElementById('waterConsumption').innerHTML = `${totalWater.toFixed(0).toLocaleString('zh-TW')} <span class="text-base font-normal">L</span>`;
+            document.getElementById('eWaste').innerHTML = `${eWaste.toFixed(2)} <span class="text-base font-normal">kg</span>`;
             
             // 更新圖表
             updateChart(operationalCo2, embodiedCo2);
 
             // 更新日常物品換算
             const equivalentsContainer = document.getElementById('equivalents');
-            equivalentsContainer.innerHTML = '';
+            equivalentsContainer.innerHTML = ''; // 清空舊內容
             for (const key in dailyEquivalents) {
                 const item = dailyEquivalents[key];
+                // 計算轉換量
                 const equivalentAmount = totalCo2 / item.value;
                 const formattedAmount = Math.round(equivalentAmount).toLocaleString('zh-TW');
 
                 const listItemHTML = `
-                    <div class="card p-3 rounded-lg text-center transition duration-300 ease-in-out hover:shadow-md transform hover:-translate-y-1 border border-gray-200">
+                    <div class="card p-3 rounded-xl text-center transition duration-300 ease-in-out hover:shadow-md transform hover:-translate-y-1 border border-gray-200">
                         ${item.icon}
                         <p class="text-xl font-bold text-gray-800">${formattedAmount}</p>
                         <p class="text-xs text-gray-600 mt-1">${item.name}</p>
@@ -383,7 +442,14 @@
                 equivalentsContainer.innerHTML += listItemHTML;
             }
 
+            // 顯示結果區塊
             document.getElementById('results-container').classList.remove('hidden');
+            document.getElementById('results-container').scrollIntoView({ behavior: 'smooth' });
+        });
+
+        // 頁面加載完成後，觸發一次計算以顯示初始結果
+        document.addEventListener('DOMContentLoaded', () => {
+            document.getElementById('calculateBtn').click();
         });
     </script>
 </body>
