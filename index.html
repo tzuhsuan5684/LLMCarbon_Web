@@ -8,6 +8,9 @@
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
     <style>
+        html {
+            scroll-behavior: smooth;
+        }
         body {
             font-family: 'Inter', 'Noto Sans TC', sans-serif;
         }
@@ -57,7 +60,6 @@
         .input-field:read-only, .input-field:disabled {
             background-color: #F1F5F9;
             color: #64748B;
-            cursor: not-allowed;
         }
         .dark .input-field:read-only, .dark .input-field:disabled {
             background-color: #4B5563;
@@ -521,6 +523,7 @@
                     const equivalentAmount = totalCo2 / item.value;
                     equivalentsContainer.innerHTML += `<div class="bg-white dark:bg-gray-700 p-3 rounded-lg text-center transition duration-300 ease-in-out shadow-sm hover:shadow-lg transform hover:-translate-y-1 border dark:border-gray-600"><div class="tooltip"><span class="text-3xl">${item.icon}</span><span class="tooltiptext">${item.tooltip} 碳排：${item.value.toFixed(4).replace(/0+$/, '').replace(/\.$/, '')} tCO₂eq</span></div><p class="text-xl font-bold text-gray-800 dark:text-gray-200 mt-2">${Math.round(equivalentAmount).toLocaleString('zh-TW')}</p><p class="text-xs text-gray-600 dark:text-gray-400 mt-1">${item.name}</p></div>`;
                 }
+                 document.getElementById('lca-results-container').scrollIntoView({ behavior: 'smooth' });
             });
 
             // --- 工具 2: LLM 訓練碳排計算器邏輯 ---
@@ -592,6 +595,7 @@
                 if (!validateTrainingInputs(inputs)) return;
                 displayTrainingResults(calculateTrainingCarbon(inputs));
                 trainingResultsContainer.classList.remove('hidden');
+                trainingResultsContainer.scrollIntoView({ behavior: 'smooth' });
             });
             function getTrainingInputs() {
                 return {
@@ -721,6 +725,7 @@
                 if (!validateInfInputs(inputs)) return;
                 displayInfResults(calculateInferenceCarbon(inputs));
                 infResultsContainer.classList.remove('hidden');
+                infResultsContainer.scrollIntoView({ behavior: 'smooth' });
             });
 
             function getInfInputs() {
