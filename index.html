@@ -1,3 +1,5 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -63,11 +65,14 @@
             background-color: #4B5563;
             color: #9CA3AF;
         }
+        .results-container {
+            transition: opacity 0.3s ease-in-out;
+        }
     </style>
 </head>
-<body class="bg-gray-100 dark:bg-gray-900 text-gray-800 dark:text-gray-200 flex items-center justify-center min-h-screen p-4">
+<body class="bg-gray-100 dark:bg-gray-900 text-gray-800 dark:text-gray-200 flex justify-center min-h-screen p-4">
 
-    <div class="w-full max-w-6xl bg-white dark:bg-gray-800 rounded-2xl shadow-lg overflow-hidden">
+    <div class="w-full max-w-6xl bg-white dark:bg-gray-800 rounded-2xl shadow-lg overflow-hidden my-8">
         <header class="p-6 bg-gray-50 dark:bg-gray-700/50">
             <h1 class="text-2xl font-bold text-center text-gray-900 dark:text-white">LLM 碳足跡評估工具</h1>
             <p class="text-sm text-center text-gray-500 dark:text-gray-400 mt-1">整合 LLM 訓練、推論及硬體生命週期的碳排計算</p>
@@ -75,7 +80,7 @@
         </header>
 
         <!-- 書籤式頁籤導覽列 -->
-        <div class="border-b border-gray-200 dark:border-gray-700">
+        <div class="border-b border-gray-200 dark:border-gray-700 sticky top-0 bg-white dark:bg-gray-800 z-10">
             <nav class="-mb-px flex" aria-label="Tabs" id="tab-buttons">
                 <button class="tab-button active-tab group w-1/3 inline-flex items-center justify-center py-4 px-1 border-b-2 font-medium text-sm text-indigo-600 dark:text-indigo-400 border-indigo-500" data-tab="tool1">
                     <svg xmlns="http://www.w3.org/2000/svg" class="w-5 h-5 mr-2" viewBox="0 0 24 24" fill="currentColor">
@@ -90,16 +95,16 @@
                     LLM 訓練碳排
                 </button>
                 <button class="tab-button inactive-tab group w-1/3 inline-flex items-center justify-center py-4 px-1 border-b-2 font-medium text-sm text-gray-500 hover:text-gray-700 hover:border-gray-300 dark:text-gray-400 dark:hover:text-gray-300 dark:hover:border-gray-500" data-tab="tool3">
-                     <svg xmlns="http://www.w3.org/2000/svg" class="w-5 h-5 mr-2" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
-                        <path stroke-linecap="round" stroke-linejoin="round" d="M13 10V3L4 14h7v7l9-11h-7z" />
-                    </svg>
+                        <svg xmlns="http://www.w3.org/2000/svg" class="w-5 h-5 mr-2" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+                            <path stroke-linecap="round" stroke-linejoin="round" d="M13 10V3L4 14h7v7l9-11h-7z" />
+                        </svg>
                     LLM 推論碳排
                 </button>
             </nav>
         </div>
 
         <!-- 工具內容區域 -->
-        <div class="p-6 md:p-8 min-h-[500px]">
+        <div class="p-6 md:p-8">
             <!-- 工具 1: AI 晶片 LCA 評估 -->
             <div id="tool1" class="tab-content">
                  <div class="grid grid-cols-1 xl:grid-cols-2 gap-8">
@@ -108,7 +113,7 @@
                         <div class="mb-6">
                             <label for="gpuChip" class="block text-gray-700 dark:text-gray-300 font-bold mb-2">選擇 AI 晶片模型</label>
                             <div class="relative">
-                                <select id="gpuChip" class="input-field w-full p-3 border border-gray-300 rounded-lg dark:bg-gray-700 dark:border-gray-600 appearance-none bg-white dark:bg-gray-700">
+                                <select id="gpuChip" class="lca-input input-field w-full p-3 border border-gray-300 rounded-lg dark:bg-gray-700 dark:border-gray-600 appearance-none bg-white dark:bg-gray-700">
                                     <option value="A100">NVIDIA A100</option>
                                     <option value="H100">NVIDIA H100</option>
                                     <option value="B200">NVIDIA B200</option>
@@ -122,38 +127,38 @@
                         <div class="grid grid-cols-1 sm:grid-cols-2 gap-6 mb-6">
                             <div>
                                 <label for="lifespan" class="block text-gray-700 dark:text-gray-300 font-bold mb-2">預估使用年限 (年)<span class="tooltip"><svg class="info-icon inline w-4 h-4" fill="currentColor" viewBox="0 0 20 20"><path fill-rule="evenodd" d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-7-4a1 1 0 11-2 0 1 1 0 012 0zM9 9a1 1 0 000 2v3a1 1 0 001 1h1a1 1 0 100-2v-3a1 1 0 00-1-1H9z" clip-rule="evenodd"></path></svg><span class="tooltiptext">AI 晶片在資料中心或伺服器環境中的典型運作壽命，通常為 5 年。</span></span></label>
-                                <input type="number" id="lifespan" class="input-field w-full p-3 border border-gray-300 rounded-lg dark:bg-gray-700 dark:border-gray-600" value="5" min="1">
+                                <input type="number" id="lifespan" class="lca-input input-field w-full p-3 border border-gray-300 rounded-lg dark:bg-gray-700 dark:border-gray-600" value="5" min="1">
                             </div>
                             <div>
                                 <label for="utilization" class="block text-gray-700 dark:text-gray-300 font-bold mb-2">每日運作時數 (小時)<span class="tooltip"><svg class="info-icon inline w-4 h-4" fill="currentColor" viewBox="0 0 20 20"><path fill-rule="evenodd" d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-7-4a1 1 0 11-2 0 1 1 0 012 0zM9 9a1 1 0 000 2v3a1 1 0 001 1h1a1 1 0 100-2v-3a1 1 0 00-1-1H9z" clip-rule="evenodd"></path></svg><span class="tooltiptext">AI 晶片在一天中進行訓練或推論任務的平均時間，建議值為 24 小時。</span></span></label>
-                                <input type="number" id="utilization" class="input-field w-full p-3 border border-gray-300 rounded-lg dark:bg-gray-700 dark:border-gray-600" value="24" min="0" max="24">
+                                <input type="number" id="utilization" class="lca-input input-field w-full p-3 border border-gray-300 rounded-lg dark:bg-gray-700 dark:border-gray-600" value="24" min="0" max="24">
                             </div>
                         </div>
                         <div class="mb-6">
                             <label for="carbonIntensity" class="block text-gray-700 dark:text-gray-300 font-bold mb-2">電網碳強度 (kgCO₂e/kWh)<span class="tooltip"><svg class="info-icon inline w-4 h-4" fill="currentColor" viewBox="0 0 20 20"><path fill-rule="evenodd" d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-7-4a1 1 0 11-2 0 1 1 0 012 0zM9 9a1 1 0 000 2v3a1 1 0 001 1h1a1 1 0 100-2v-3a1 1 0 00-1-1H9z" clip-rule="evenodd"></path></svg><span class="tooltiptext">每產生一度電所產生的碳排放量。台灣 2022 年平均值約為 0.416 kgCO₂e/kWh。</span></span></label>
-                            <input type="number" id="carbonIntensity" class="input-field w-full p-3 border border-gray-300 rounded-lg dark:bg-gray-700 dark:border-gray-600" value="0.416" step="0.001">
+                            <input type="number" id="carbonIntensity" class="lca-input input-field w-full p-3 border border-gray-300 rounded-lg dark:bg-gray-700 dark:border-gray-600" value="0.416" step="0.001">
                         </div>
                         <div class="text-center mt-8">
                             <button id="calculateLcaBtn" class="w-full bg-gradient-to-r from-blue-600 to-teal-500 text-white font-bold py-4 px-8 rounded-xl hover:from-blue-700 hover:to-teal-600 transition-all duration-300 text-lg shadow-lg hover:shadow-xl transform hover:-translate-y-1">開始計算</button>
                         </div>
                     </div>
-                    <div id="lca-results-container" class="p-2">
+                    <div id="lca-results-container" class="p-2 results-container">
                         <h2 class="text-2xl font-semibold mb-6 border-b-2 border-gray-200 dark:border-gray-600 pb-4">計算結果</h2>
                         <div class="grid grid-cols-1 md:grid-cols-3 gap-6 mb-6">
                             <div class="bg-emerald-50 dark:bg-emerald-900/50 p-4 rounded-xl flex flex-col items-center justify-center text-center transition hover:scale-105 border border-emerald-200 dark:border-emerald-800">
                                 <span role="img" aria-label="cloud-with-emissions" class="text-4xl mb-2">💨</span>
                                 <h4 class="font-medium text-emerald-800 dark:text-emerald-200 mb-2">總碳足跡<span class="tooltip"><svg class="info-icon inline w-4 h-4" fill="currentColor" viewBox="0 0 20 20"><path fill-rule="evenodd" d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-7-4a1 1 0 11-2 0 1 1 0 012 0zM9 9a1 1 0 000 2v3a1 1 0 001 1h1a1 1 0 100-2v-3a1 1 0 00-1-1H9z" clip-rule="evenodd"></path></svg><span class="tooltiptext">晶片在整個生命週期中產生的溫室氣體總排放量，包含製造與運作階段。</span></span></h4>
-                                <p id="totalCo2" class="text-3xl font-bold text-emerald-900 dark:text-emerald-100">0.00 <span class="text-base font-normal">tCO₂eq</span></p>
+                                <p id="totalCo2" class="text-3xl font-bold text-emerald-900 dark:text-emerald-100">-- <span class="text-base font-normal">tCO₂eq</span></p>
                             </div>
                             <div class="bg-sky-50 dark:bg-sky-900/50 p-4 rounded-xl flex flex-col items-center justify-center text-center transition hover:scale-105 border border-sky-200 dark:border-sky-800">
                                 <span role="img" aria-label="water-droplet" class="text-4xl mb-2">💧</span>
                                 <h4 class="font-medium text-sky-800 dark:text-sky-200 mb-2">水資源消耗<span class="tooltip"><svg class="info-icon inline w-4 h-4" fill="currentColor" viewBox="0 0 20 20"><path fill-rule="evenodd" d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-7-4a1 1 0 11-2 0 1 1 0 012 0zM9 9a1 1 0 000 2v3a1 1 0 001 1h1a1 1 0 100-2v-3a1 1 0 00-1-1H9z" clip-rule="evenodd"></path></svg><span class="tooltiptext">晶片在其使用壽命內，於製造及運作過程中消耗的總水量。</span></span></h4>
-                                <p id="waterConsumption" class="text-3xl font-bold text-sky-900 dark:text-sky-100">0 <span class="text-base font-normal">L</span></p>
+                                <p id="waterConsumption" class="text-3xl font-bold text-sky-900 dark:text-sky-100">-- <span class="text-base font-normal">L</span></p>
                             </div>
                             <div class="bg-lime-50 dark:bg-lime-900/50 p-4 rounded-xl flex flex-col items-center justify-center text-center transition hover:scale-105 border border-lime-200 dark:border-lime-800">
                                 <span role="img" aria-label="waste-bin" class="text-4xl mb-2">🗑️</span>
                                 <h4 class="font-medium text-lime-800 dark:text-lime-200 mb-2">電子廢棄物<span class="tooltip"><svg class="info-icon inline w-4 h-4" fill="currentColor" viewBox="0 0 20 20"><path fill-rule="evenodd" d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-7-4a1 1 0 11-2 0 1 1 0 012 0zM9 9a1 1 0 000 2v3a1 1 0 001 1h1a1 1 0 100-2v-3a1 1 0 00-1-1H9z" clip-rule="evenodd"></path></svg><span class="tooltiptext">晶片在生命週期結束後產生的廢棄物重量，通常指產品本身的重量。</span></span></h4>
-                                <p id="eWaste" class="text-3xl font-bold text-lime-900 dark:text-lime-100">0.00 <span class="text-base font-normal">kg</span></p>
+                                <p id="eWaste" class="text-3xl font-bold text-lime-900 dark:text-lime-100">-- <span class="text-base font-normal">kg</span></p>
                             </div>
                         </div>
                         <div class="border-t pt-6 mt-6 space-y-6">
@@ -161,11 +166,11 @@
                             <div class="grid grid-cols-2 gap-4 text-center">
                                 <div class="bg-blue-100 dark:bg-blue-900/50 p-4 rounded-xl border border-blue-200 dark:border-blue-800 flex flex-col justify-center transition hover:scale-105">
                                     <h4 class="font-medium text-blue-800 dark:text-blue-200">營運碳排<span class="tooltip"><svg class="info-icon inline w-4 h-4" fill="currentColor" viewBox="0 0 20 20"><path fill-rule="evenodd" d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-7-4a1 1 0 11-2 0 1 1 0 012 0zM9 9a1 1 0 000 2v3a1 1 0 001 1h1a1 1 0 100-2v-3a1 1 0 00-1-1H9z" clip-rule="evenodd"></path></svg><span class="tooltiptext">晶片在運作期間，因電力消耗所產生的碳排。</span></span></h4>
-                                    <p id="operationalCo2" class="text-2xl font-semibold text-blue-900 dark:text-blue-100">0.00 <span class="text-base font-normal">tCO₂eq</span></p>
+                                    <p id="operationalCo2" class="text-2xl font-semibold text-blue-900 dark:text-blue-100">-- <span class="text-base font-normal">tCO₂eq</span></p>
                                 </div>
                                 <div class="bg-teal-100 dark:bg-teal-900/50 p-4 rounded-xl border border-teal-200 dark:border-teal-800 flex flex-col justify-center transition hover:scale-105">
                                     <h4 class="font-medium text-teal-800 dark:text-teal-200">隱含碳排<span class="tooltip"><svg class="info-icon inline w-4 h-4" fill="currentColor" viewBox="0 0 20 20"><path fill-rule="evenodd" d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-7-4a1 1 0 11-2 0 1 1 0 012 0zM9 9a1 1 0 000 2v3a1 1 0 001 1h1a1 1 0 100-2v-3a1 1 0 00-1-1H9z" clip-rule="evenodd"></path></svg><span class="tooltiptext">晶片在製造、運輸及棄置階段所產生的碳排。</span></span></h4>
-                                    <p id="embodiedCo2" class="text-2xl font-semibold text-teal-900 dark:text-teal-100">0.00 <span class="text-base font-normal">tCO₂eq</span></p>
+                                    <p id="embodiedCo2" class="text-2xl font-semibold text-teal-900 dark:text-teal-100">-- <span class="text-base font-normal">tCO₂eq</span></p>
                                 </div>
                             </div>
                             <div class="max-w-xs mx-auto mb-6"><canvas id="carbonChart"></canvas></div>
@@ -188,28 +193,28 @@
                             <div class="space-y-4">
                                 <div>
                                     <label for="modelPreset" class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">模型預設</label>
-                                    <select id="modelPreset" class="input-field w-full p-3 border border-gray-300 rounded-lg dark:bg-gray-700 dark:border-gray-600 bg-white">
+                                    <select id="modelPreset" class="training-input input-field w-full p-3 border border-gray-300 rounded-lg dark:bg-gray-700 dark:border-gray-600 bg-white">
                                     </select>
                                 </div>
                                 <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
                                     <div>
                                         <label for="modelType" class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">模型類型</label>
-                                        <select id="modelType" class="input-field w-full p-3 border border-gray-300 rounded-lg dark:bg-gray-700 dark:border-gray-600 bg-white">
+                                        <select id="modelType" class="training-input input-field w-full p-3 border border-gray-300 rounded-lg dark:bg-gray-700 dark:border-gray-600 bg-white">
                                             <option value="dense">Dense (密集模型)</option>
                                             <option value="MoE">MoE (專家混合模型)</option>
                                         </select>
                                     </div>
                                     <div>
                                         <label for="parametersB" class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">總參數數量 (B)<span class="tooltip"><svg class="info-icon inline w-4 h-4" fill="currentColor" viewBox="0 0 20 20"><path fill-rule="evenodd" d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-7-4a1 1 0 11-2 0 1 1 0 012 0zM9 9a1 1 0 000 2v3a1 1 0 001 1h1a1 1 0 100-2v-3a1 1 0 00-1-1H9z" clip-rule="evenodd"></path></svg><span class="tooltiptext">模型的總參數數量，單位為十億 (Billion)。</span></span></label>
-                                        <input type="number" id="parametersB" class="input-field w-full p-3 border border-gray-300 rounded-lg dark:bg-gray-700 dark:border-gray-600">
+                                        <input type="number" id="parametersB" class="training-input input-field w-full p-3 border border-gray-300 rounded-lg dark:bg-gray-700 dark:border-gray-600">
                                     </div>
                                     <div id="baseModelParamsContainer" class="hidden">
                                         <label for="baseModelParamsB" class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">基礎模型參數 (B)<span class="tooltip"><svg class="info-icon inline w-4 h-4" fill="currentColor" viewBox="0 0 20 20"><path fill-rule="evenodd" d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-7-4a1 1 0 11-2 0 1 1 0 012 0zM9 9a1 1 0 000 2v3a1 1 0 001 1h1a1 1 0 100-2v-3a1 1 0 00-1-1H9z" clip-rule="evenodd"></path></svg><span class="tooltiptext">對於 MoE 模型，其對應的密集基礎模型參數數量。</span></span></label>
-                                        <input type="number" id="baseModelParamsB" class="input-field w-full p-3 border border-gray-300 rounded-lg dark:bg-gray-700 dark:border-gray-600">
+                                        <input type="number" id="baseModelParamsB" class="training-input input-field w-full p-3 border border-gray-300 rounded-lg dark:bg-gray-700 dark:border-gray-600">
                                     </div>
                                     <div>
                                         <label for="tokensB" class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">處理 Token 數量 (B)<span class="tooltip"><svg class="info-icon inline w-4 h-4" fill="currentColor" viewBox="0 0 20 20"><path fill-rule="evenodd" d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-7-4a1 1 0 11-2 0 1 1 0 012 0zM9 9a1 1 0 000 2v3a1 1 0 001 1h1a1 1 0 100-2v-3a1 1 0 00-1-1H9z" clip-rule="evenodd"></path></svg><span class="tooltiptext">模型在訓練或推論過程中處理的 Token 總數，單位為十億 (Billion)。</span></span></label>
-                                        <input type="number" id="tokensB" class="input-field w-full p-3 border border-gray-300 rounded-lg dark:bg-gray-700 dark:border-gray-600">
+                                        <input type="number" id="tokensB" class="training-input input-field w-full p-3 border border-gray-300 rounded-lg dark:bg-gray-700 dark:border-gray-600">
                                     </div>
                                 </div>
                             </div>
@@ -219,7 +224,7 @@
                             <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
                                 <div>
                                     <label for="deviceType" class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">運算裝置</label>
-                                    <select id="deviceType" class="input-field w-full p-3 border border-gray-300 rounded-lg dark:bg-gray-700 dark:border-gray-600 bg-white">
+                                    <select id="deviceType" class="training-input input-field w-full p-3 border border-gray-300 rounded-lg dark:bg-gray-700 dark:border-gray-600 bg-white">
                                         <option value="V100">NVIDIA V100</option>
                                         <option value="A100">NVIDIA A100</option>
                                         <option value="H100">NVIDIA H100</option>
@@ -230,27 +235,27 @@
                                 </div>
                                 <div>
                                     <label for="deviceNum" class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">裝置數量</label>
-                                    <input type="number" id="deviceNum" class="input-field w-full p-3 border border-gray-300 rounded-lg dark:bg-gray-700 dark:border-gray-600" value="10000">
+                                    <input type="number" id="deviceNum" class="training-input input-field w-full p-3 border border-gray-300 rounded-lg dark:bg-gray-700 dark:border-gray-600" value="10000">
                                 </div>
                                 <div>
                                     <label for="systemPower" class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">平均系統功耗 (W/裝置)<span class="tooltip"><svg class="info-icon inline w-4 h-4" fill="currentColor" viewBox="0 0 20 20"><path fill-rule="evenodd" d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-7-4a1 1 0 11-2 0 1 1 0 012 0zM9 9a1 1 0 000 2v3a1 1 0 001 1h1a1 1 0 100-2v-3a1 1 0 00-1-1H9z" clip-rule="evenodd"></path></svg><span class="tooltiptext">每台運算裝置（包含主機、記憶體等）的平均總功耗。</span></span></label>
-                                    <input type="number" id="systemPower" class="input-field w-full p-3 border border-gray-300 rounded-lg dark:bg-gray-700 dark:border-gray-600" value="330">
+                                    <input type="number" id="systemPower" class="training-input input-field w-full p-3 border border-gray-300 rounded-lg dark:bg-gray-700 dark:border-gray-600" value="330">
                                 </div>
                                 <div>
                                     <label for="hardwareEfficiency" class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">硬體效率 (%)<span class="tooltip"><svg class="info-icon inline w-4 h-4" fill="currentColor" viewBox="0 0 20 20"><path fill-rule="evenodd" d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-7-4a1 1 0 11-2 0 1 1 0 012 0zM9 9a1 1 0 000 2v3a1 1 0 001 1h1a1 1 0 100-2v-3a1 1 0 00-1-1H9z" clip-rule="evenodd"></path></svg><span class="tooltiptext">實際運算吞吐量相對於理論峰值吞吐量的百分比。</span></span></label>
-                                    <input type="number" id="hardwareEfficiency" class="input-field w-full p-3 border border-gray-300 rounded-lg dark:bg-gray-700 dark:border-gray-600" value="19.7" step="0.1">
+                                    <input type="number" id="hardwareEfficiency" class="training-input input-field w-full p-3 border border-gray-300 rounded-lg dark:bg-gray-700 dark:border-gray-600" value="19.7" step="0.1">
                                 </div>
                                 <div>
                                     <label for="pue" class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">PUE<span class="tooltip"><svg class="info-icon inline w-4 h-4" fill="currentColor" viewBox="0 0 20 20"><path fill-rule="evenodd" d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-7-4a1 1 0 11-2 0 1 1 0 012 0zM9 9a1 1 0 000 2v3a1 1 0 001 1h1a1 1 0 100-2v-3a1 1 0 00-1-1H9z" clip-rule="evenodd"></path></svg><span class="tooltiptext">電力使用效率 (Power Usage Effectiveness)，資料中心總耗能與 IT 設備耗能的比值，越接近 1 效率越高。</span></span></label>
-                                    <input type="number" id="pue" class="input-field w-full p-3 border border-gray-300 rounded-lg dark:bg-gray-700 dark:border-gray-600" value="1.1" step="0.01">
+                                    <input type="number" id="pue" class="training-input input-field w-full p-3 border border-gray-300 rounded-lg dark:bg-gray-700 dark:border-gray-600" value="1.1" step="0.01">
                                 </div>
                                 <div>
                                     <label for="trainingCo2eqkwh" class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">碳強度 (kgCO₂eq/kWh)<span class="tooltip"><svg class="info-icon inline w-4 h-4" fill="currentColor" viewBox="0 0 20 20"><path fill-rule="evenodd" d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-7-4a1 1 0 11-2 0 1 1 0 012 0zM9 9a1 1 0 000 2v3a1 1 0 001 1h1a1 1 0 100-2v-3a1 1 0 00-1-1H9z" clip-rule="evenodd"></path></svg><span class="tooltiptext">資料中心每消耗一度電（kWh）所產生的二氧化碳當量(公斤)。預設值為美國平均。</span></span></label>
-                                    <input type="number" id="trainingCo2eqkwh" class="input-field w-full p-3 border border-gray-300 rounded-lg dark:bg-gray-700 dark:border-gray-600" value="0.429" step="0.001">
+                                    <input type="number" id="trainingCo2eqkwh" class="training-input input-field w-full p-3 border border-gray-300 rounded-lg dark:bg-gray-700 dark:border-gray-600" value="0.429" step="0.001">
                                 </div>
                                 <div class="md:col-span-2">
                                      <label for="gpuCostPerHour" class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">GPU 單位成本 ($/小時)<span class="tooltip"><svg class="info-icon inline w-4 h-4" fill="currentColor" viewBox="0 0 20 20"><path fill-rule="evenodd" d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-7-4a1 1 0 11-2 0 1 1 0 012 0zM9 9a1 1 0 000 2v3a1 1 0 001 1h1a1 1 0 100-2v-3a1 1 0 00-1-1H9z" clip-rule="evenodd"></path></svg><span class="tooltiptext">單一 GPU 每小時的運算成本。預設值參考 Microsoft Azure V100 隨用隨付價格。</span></span></label>
-                                    <input type="number" id="gpuCostPerHour" class="input-field w-full p-3 border border-gray-300 rounded-lg dark:bg-gray-700 dark:border-gray-600" value="3.09" step="0.01">
+                                    <input type="number" id="gpuCostPerHour" class="training-input input-field w-full p-3 border border-gray-300 rounded-lg dark:bg-gray-700 dark:border-gray-600" value="3.09" step="0.01">
                                </div>
                             </div>
                         </section>
@@ -258,25 +263,25 @@
                             <button id="calculateTrainingBtn" class="w-full bg-gradient-to-r from-blue-600 to-teal-500 text-white font-bold py-4 px-8 rounded-xl hover:from-blue-700 hover:to-teal-600 transition-all duration-300 text-lg shadow-lg hover:shadow-xl transform hover:-translate-y-1">開始計算</button>
                         </div>
                     </div>
-                    <div id="training-results-container" class="p-2 hidden">
+                    <div id="training-results-container" class="p-2 results-container">
                         <h2 class="text-2xl font-semibold mb-6 border-b-2 border-gray-200 dark:border-gray-600 pb-4">計算結果</h2>
                         <div class="space-y-6">
                             <div id="key-metrics" class="grid grid-cols-2 gap-4 text-center">
                                 <div class="bg-gray-50 dark:bg-gray-700/50 p-4 rounded-lg border dark:border-gray-600">
                                     <h4 class="text-md font-medium text-gray-800 dark:text-gray-300">訓練碳排<span class="tooltip"><svg class="info-icon inline w-4 h-4" fill="currentColor" viewBox="0 0 20 20"><path fill-rule="evenodd" d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-7-4a1 1 0 11-2 0 1 1 0 012 0zM9 9a1 1 0 000 2v3a1 1 0 001 1h1a1 1 0 100-2v-3a1 1 0 00-1-1H9z" clip-rule="evenodd"></path></svg><span class="tooltiptext">模型訓練期間，因電力消耗所產生的碳排。</span></span></h4>
-                                    <p id="operationalCo2Display" class="text-2xl font-bold text-blue-700 dark:text-blue-400 mt-2">0.00 <span class="text-base font-normal">tCO₂eq</span></p>
+                                    <p id="operationalCo2Display" class="text-2xl font-bold text-blue-700 dark:text-blue-400 mt-2">-- <span class="text-base font-normal">tCO₂eq</span></p>
                                 </div>
                                 <div class="bg-gray-50 dark:bg-gray-700/50 p-4 rounded-lg border dark:border-gray-600">
                                     <h4 class="text-md font-medium text-gray-800 dark:text-gray-300">總消耗電量<span class="tooltip"><svg class="info-icon inline w-4 h-4" fill="currentColor" viewBox="0 0 20 20"><path fill-rule="evenodd" d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-7-4a1 1 0 11-2 0 1 1 0 012 0zM9 9a1 1 0 000 2v3a1 1 0 001 1h1a1 1 0 100-2v-3a1 1 0 00-1-1H9z" clip-rule="evenodd"></path></svg><span class="tooltiptext">模型訓練期間，資料中心總共消耗的電量。</span></span></h4>
-                                    <p id="totalEnergyMWhDisplay" class="text-2xl font-bold text-sky-700 dark:text-sky-400 mt-2">0.00 <span class="text-base font-normal">MWh</span></p>
+                                    <p id="totalEnergyMWhDisplay" class="text-2xl font-bold text-sky-700 dark:text-sky-400 mt-2">-- <span class="text-base font-normal">MWh</span></p>
                                 </div>
                                 <div class="bg-gray-50 dark:bg-gray-700/50 p-4 rounded-lg border dark:border-gray-600">
                                     <h4 class="text-md font-medium text-gray-800 dark:text-gray-300">預估訓練時間<span class="tooltip"><svg class="info-icon inline w-4 h-4" fill="currentColor" viewBox="0 0 20 20"><path fill-rule="evenodd" d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-7-4a1 1 0 11-2 0 1 1 0 012 0zM9 9a1 1 0 000 2v3a1 1 0 001 1h1a1 1 0 100-2v-3a1 1 0 00-1-1H9z" clip-rule="evenodd"></path></svg><span class="tooltiptext">模型完成訓練所需的總時間。</span></span></h4>
-                                    <p id="trainingDurationDisplay" class="text-2xl font-bold text-indigo-700 dark:text-indigo-400 mt-2">0.00 天</p>
+                                    <p id="trainingDurationDisplay" class="text-2xl font-bold text-indigo-700 dark:text-indigo-400 mt-2">-- 天</p>
                                 </div>
                                 <div class="bg-gray-50 dark:bg-gray-700/50 p-4 rounded-lg border dark:border-gray-600">
                                     <h4 class="text-md font-medium text-gray-800 dark:text-gray-300">預估訓練成本<span class="tooltip"><svg class="info-icon inline w-4 h-4" fill="currentColor" viewBox="0 0 20 20"><path fill-rule="evenodd" d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-7-4a1 1 0 11-2 0 1 1 0 012 0zM9 9a1 1 0 000 2v3a1 1 0 001 1h1a1 1 0 100-2v-3a1 1 0 00-1-1H9z" clip-rule="evenodd"></path></svg><span class="tooltiptext">模型訓練期間所需的硬體租用成本 (USD)。</span></span></h4>
-                                    <p id="trainingCostDisplay" class="text-2xl font-bold text-purple-700 dark:text-purple-400 mt-2">$0</p>
+                                    <p id="trainingCostDisplay" class="text-2xl font-bold text-purple-700 dark:text-purple-400 mt-2">--</p>
                                 </div>
                             </div>
                             <div class="border-t dark:border-gray-600 pt-6 mt-6">
@@ -301,15 +306,15 @@
                             <div class="space-y-4">
                                 <div>
                                     <label for="inf-modelPreset" class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">選擇預設模型</label>
-                                    <select id="inf-modelPreset" class="input-field w-full p-3 border border-gray-300 rounded-lg dark:bg-gray-700 dark:border-gray-600 bg-white">
-                                        <option value="GPT3" selected>GPT3</option>
-                                        <option value="GPT4">GPT4</option>
+                                    <select id="inf-modelPreset" class="inf-input input-field w-full p-3 border border-gray-300 rounded-lg dark:bg-gray-700 dark:border-gray-600 bg-white">
+                                        <option value="GPT3" selected>GPT-3 (175B)</option>
+                                        <option value="GPT4">GPT-4 (1.8T)</option>
                                         <option value="custom">自訂</option>
                                     </select>
                                 </div>
                                 <div>
                                     <label for="inf-tokensT" class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">處理 Token 數量<span class="tooltip"><svg class="info-icon inline w-4 h-4" fill="currentColor" viewBox="0 0 20 20"><path fill-rule="evenodd" d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-7-4a1 1 0 11-2 0 1 1 0 012 0zM9 9a1 1 0 000 2v3a1 1 0 001 1h1a1 1 0 100-2v-3a1 1 0 00-1-1H9z" clip-rule="evenodd"></path></svg><span class="tooltiptext">根據常見任務類型預設的 Token 數量。</span></span></label>
-                                    <select id="inf-tokensT" class="input-field w-full p-3 border border-gray-300 rounded-lg dark:bg-gray-700 dark:border-gray-600 bg-white">
+                                    <select id="inf-tokensT" class="inf-input input-field w-full p-3 border border-gray-300 rounded-lg dark:bg-gray-700 dark:border-gray-600 bg-white">
                                         <option value="5e-9">問答 (RAG) (約 5k tokens)</option>
                                         <option value="5e-8">翻譯 (約 50k tokens)</option>
                                         <option value="2e-8">程式碼生成/Debug (約 20k tokens)</option>
@@ -320,18 +325,18 @@
                                     <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
                                         <div>
                                             <label for="inf-modelType" class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">模型類型</label>
-                                            <select id="inf-modelType" class="input-field w-full p-3 border border-gray-300 rounded-lg dark:bg-gray-700 dark:border-gray-600 bg-white">
+                                            <select id="inf-modelType" class="inf-input input-field w-full p-3 border border-gray-300 rounded-lg dark:bg-gray-700 dark:border-gray-600 bg-white">
                                                 <option value="dense">Dense (密集模型)</option>
                                                 <option value="MoE">MoE (專家混合模型)</option>
                                             </select>
                                         </div>
                                         <div>
                                             <label for="inf-parametersB" class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">總參數數量 (B)<span class="tooltip"><svg class="info-icon inline w-4 h-4" fill="currentColor" viewBox="0 0 20 20"><path fill-rule="evenodd" d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-7-4a1 1 0 11-2 0 1 1 0 012 0zM9 9a1 1 0 000 2v3a1 1 0 001 1h1a1 1 0 100-2v-3a1 1 0 00-1-1H9z" clip-rule="evenodd"></path></svg><span class="tooltiptext">模型的總參數數量，單位為十億 (Billion)。</span></span></label>
-                                            <input type="number" id="inf-parametersB" class="input-field w-full p-3 border border-gray-300 rounded-lg dark:bg-gray-700 dark:border-gray-600" value="175" min="0">
+                                            <input type="number" id="inf-parametersB" class="inf-input input-field w-full p-3 border border-gray-300 rounded-lg dark:bg-gray-700 dark:border-gray-600" value="175" min="0">
                                         </div>
                                         <div id="inf-baseModelParamsContainer" class="hidden">
                                             <label for="inf-baseModelParamsB" class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">基礎模型參數 (B)<span class="tooltip"><svg class="info-icon inline w-4 h-4" fill="currentColor" viewBox="0 0 20 20"><path fill-rule="evenodd" d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-7-4a1 1 0 11-2 0 1 1 0 012 0zM9 9a1 1 0 000 2v3a1 1 0 001 1h1a1 1 0 100-2v-3a1 1 0 00-1-1H9z" clip-rule="evenodd"></path></svg><span class="tooltiptext">對於 MoE 模型，其對應的密集基礎模型參數數量。</span></span></label>
-                                            <input type="number" id="inf-baseModelParamsB" class="input-field w-full p-3 border border-gray-300 rounded-lg dark:bg-gray-700 dark:border-gray-600" value="2.3" min="0">
+                                            <input type="number" id="inf-baseModelParamsB" class="inf-input input-field w-full p-3 border border-gray-300 rounded-lg dark:bg-gray-700 dark:border-gray-600" value="2.3" min="0">
                                         </div>
                                     </div>
                                 </div>
@@ -342,7 +347,7 @@
                             <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
                                 <div>
                                     <label for="inf-deviceType" class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">運算裝置</label>
-                                    <select id="inf-deviceType" class="input-field w-full p-3 border border-gray-300 rounded-lg dark:bg-gray-700 dark:border-gray-600 bg-white">
+                                    <select id="inf-deviceType" class="inf-input input-field w-full p-3 border border-gray-300 rounded-lg dark:bg-gray-700 dark:border-gray-600 bg-white">
                                         <option value="V100">NVIDIA V100</option>
                                         <option value="H100">NVIDIA H100</option>
                                         <option value="A100">NVIDIA A100</option>
@@ -353,36 +358,36 @@
                                 </div>
                                 <div>
                                     <label for="inf-deviceNum" class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">裝置數量</label>
-                                    <input type="number" id="inf-deviceNum" class="input-field w-full p-3 border border-gray-300 rounded-lg dark:bg-gray-700 dark:border-gray-600" value="10000" min="0">
+                                    <input type="number" id="inf-deviceNum" class="inf-input input-field w-full p-3 border border-gray-300 rounded-lg dark:bg-gray-700 dark:border-gray-600" value="8" min="1">
                                 </div>
                                 <div>
                                     <label for="inf-systemPower" class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">平均系統功耗 (W/裝置)<span class="tooltip"><svg class="info-icon inline w-4 h-4" fill="currentColor" viewBox="0 0 20 20"><path fill-rule="evenodd" d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-7-4a1 1 0 11-2 0 1 1 0 012 0zM9 9a1 1 0 000 2v3a1 1 0 001 1h1a1 1 0 100-2v-3a1 1 0 00-1-1H9z" clip-rule="evenodd"></path></svg><span class="tooltiptext">每台運算裝置（包含主機、記憶體等）的平均總功耗。</span></span></label>
-                                    <input type="number" id="inf-systemPower" class="input-field w-full p-3 border border-gray-300 rounded-lg dark:bg-gray-700 dark:border-gray-600" value="330" min="0">
+                                    <input type="number" id="inf-systemPower" class="inf-input input-field w-full p-3 border border-gray-300 rounded-lg dark:bg-gray-700 dark:border-gray-600" value="550" min="0">
                                 </div>
                                 <div>
                                     <label for="inf-hardwareEfficiency" class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">硬體效率 (%)<span class="tooltip"><svg class="info-icon inline w-4 h-4" fill="currentColor" viewBox="0 0 20 20"><path fill-rule="evenodd" d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-7-4a1 1 0 11-2 0 1 1 0 012 0zM9 9a1 1 0 000 2v3a1 1 0 001 1h1a1 1 0 100-2v-3a1 1 0 00-1-1H9z" clip-rule="evenodd"></path></svg><span class="tooltiptext">實際運算吞吐量相對於理論峰值吞吐量的百分比。</span></span></label>
-                                    <input type="number" id="inf-hardwareEfficiency" class="input-field w-full p-3 border border-gray-300 rounded-lg dark:bg-gray-700 dark:border-gray-600" value="19.7" step="0.1" min="0" max="100">
+                                    <input type="number" id="inf-hardwareEfficiency" class="inf-input input-field w-full p-3 border border-gray-300 rounded-lg dark:bg-gray-700 dark:border-gray-600" value="19.7" step="0.1" min="0" max="100">
                                 </div>
                                 <div>
                                     <label for="inf-pue" class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">PUE<span class="tooltip"><svg class="info-icon inline w-4 h-4" fill="currentColor" viewBox="0 0 20 20"><path fill-rule="evenodd" d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-7-4a1 1 0 11-2 0 1 1 0 012 0zM9 9a1 1 0 000 2v3a1 1 0 001 1h1a1 1 0 100-2v-3a1 1 0 00-1-1H9z" clip-rule="evenodd"></path></svg><span class="tooltiptext">電力使用效率 (Power Usage Effectiveness)，資料中心總耗能與 IT 設備耗能的比值，越接近 1 效率越高。</span></span></label>
-                                    <input type="number" id="inf-pue" class="input-field w-full p-3 border border-gray-300 rounded-lg dark:bg-gray-700 dark:border-gray-600" value="1.1" step="0.01" min="1">
+                                    <input type="number" id="inf-pue" class="inf-input input-field w-full p-3 border border-gray-300 rounded-lg dark:bg-gray-700 dark:border-gray-600" value="1.1" step="0.01" min="1">
                                 </div>
                                 <div>
                                     <label for="inf-co2eqkwh" class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">碳強度 (gCO₂eq/kWh)<span class="tooltip"><svg class="info-icon inline w-4 h-4" fill="currentColor" viewBox="0 0 20 20"><path fill-rule="evenodd" d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-7-4a1 1 0 11-2 0 1 1 0 012 0zM9 9a1 1 0 000 2v3a1 1 0 001 1h1a1 1 0 100-2v-3a1 1 0 00-1-1H9z" clip-rule="evenodd"></path></svg><span class="tooltiptext">資料中心每消耗一度電（kWh）所產生的二氧化碳當量。預設值為美國平均。</span></span></label>
-                                    <input type="number" id="inf-co2eqkwh" class="input-field w-full p-3 border border-gray-300 rounded-lg dark:bg-gray-700 dark:border-gray-600" value="429" min="0">
+                                    <input type="number" id="inf-co2eqkwh" class="inf-input input-field w-full p-3 border border-gray-300 rounded-lg dark:bg-gray-700 dark:border-gray-600" value="429" min="0">
                                 </div>
                             </div>
                         </section>
-                        <div class="text-center mt-8">
-                           <button id="calculateInferenceBtn" class="w-full bg-gradient-to-r from-blue-600 to-teal-500 text-white font-bold py-4 px-8 rounded-xl hover:from-blue-700 hover:to-teal-600 transition-all duration-300 text-lg shadow-lg hover:shadow-xl transform hover:-translate-y-1">開始計算</button>
+                         <div class="text-center mt-8">
+                            <button id="calculateInferenceBtn" class="w-full bg-gradient-to-r from-blue-600 to-teal-500 text-white font-bold py-4 px-8 rounded-xl hover:from-blue-700 hover:to-teal-600 transition-all duration-300 text-lg shadow-lg hover:shadow-xl transform hover:-translate-y-1">開始計算</button>
                         </div>
                     </div>
-                    <div id="inf-results-container" class="p-2 hidden">
+                    <div id="inf-results-container" class="p-2 results-container">
                         <h2 class="text-2xl font-semibold mb-6 border-b-2 border-gray-200 dark:border-gray-600 pb-4">計算結果</h2>
                         <div class="space-y-6">
                             <div class="text-center">
                                 <h3 class="text-lg font-semibold text-gray-600 dark:text-gray-300">總碳足跡 (gCO₂eq)<span class="tooltip"><svg class="info-icon inline w-4 h-4" fill="currentColor" viewBox="0 0 20 20"><path fill-rule="evenodd" d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-7-4a1 1 0 11-2 0 1 1 0 012 0zM9 9a1 1 0 000 2v3a1 1 0 001 1h1a1 1 0 100-2v-3a1 1 0 00-1-1H9z" clip-rule="evenodd"></path></svg><span class="tooltiptext">模型在推論任務中，因電力消耗所產生的總碳排。</span></span></h3>
-                                <p id="inf-totalCo2" class="text-5xl font-bold text-transparent bg-clip-text bg-gradient-to-r from-blue-600 to-teal-500 my-2">0.00</p>
+                                <p id="inf-totalCo2" class="text-5xl font-bold text-transparent bg-clip-text bg-gradient-to-r from-blue-600 to-teal-500 my-2">--</p>
                             </div>
                             <div class="border-t pt-6 mt-6 space-y-6">
                                 <div>
@@ -390,11 +395,11 @@
                                     <div id="inf-details" class="grid grid-cols-2 gap-4">
                                         <div class="bg-gray-50 dark:bg-gray-700/50 p-4 rounded-lg border flex flex-col justify-center text-center">
                                             <h4 class="text-md font-medium text-gray-700 dark:text-gray-300 mb-2">預估推論時間<span class="tooltip"><svg class="info-icon inline w-4 h-4" fill="currentColor" viewBox="0 0 20 20"><path fill-rule="evenodd" d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-7-4a1 1 0 11-2 0 1 1 0 012 0zM9 9a1 1 0 000 2v3a1 1 0 001 1h1a1 1 0 100-2v-3a1 1 0 00-1-1H9z" clip-rule="evenodd"></path></svg><span class="tooltiptext">模型完成推論所需的總時間。</span></span></h4>
-                                            <p class="text-2xl font-bold text-gray-800 dark:text-gray-200" id="inf-timeDisplay"></p>
+                                            <p class="text-2xl font-bold text-gray-800 dark:text-gray-200" id="inf-timeDisplay">--</p>
                                         </div>
                                         <div class="bg-gray-50 dark:bg-gray-700/50 p-4 rounded-lg border flex flex-col justify-center text-center">
                                             <h4 class="text-md font-medium text-gray-700 dark:text-gray-300 mb-2">總消耗電量<span class="tooltip"><svg class="info-icon inline w-4 h-4" fill="currentColor" viewBox="0 0 20 20"><path fill-rule="evenodd" d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-7-4a1 1 0 11-2 0 1 1 0 012 0zM9 9a1 1 0 000 2v3a1 1 0 001 1h1a1 1 0 100-2v-3a1 1 0 00-1-1H9z" clip-rule="evenodd"></path></svg><span class="tooltiptext">模型推論期間，資料中心總共消耗的電量。</span></span></h4>
-                                            <p class="text-2xl font-bold text-gray-800 dark:text-gray-200" id="inf-energyDisplay"></p>
+                                            <p class="text-2xl font-bold text-gray-800 dark:text-gray-200" id="inf-energyDisplay">--</p>
                                         </div>
                                     </div>
                                 </div>
@@ -413,33 +418,6 @@
 
     <script>
         document.addEventListener('DOMContentLoaded', function() {
-            // --- 通用函式 ---
-            function showAppModal(message) {
-                const oldModal = document.getElementById('alert-modal');
-                if (oldModal) oldModal.remove();
-                const modal = document.createElement('div');
-                modal.id = 'alert-modal';
-                modal.className = 'fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 transition-opacity duration-300 opacity-0';
-                modal.innerHTML = `
-                    <div class="bg-white dark:bg-gray-800 rounded-xl shadow-2xl p-6 w-11/12 md:w-1/3 transform scale-95 transition-transform duration-300">
-                        <h3 class="text-xl font-bold text-red-600 mb-4">輸入錯誤</h3>
-                        <p class="text-gray-700 dark:text-gray-300">${message}</p>
-                        <div class="mt-6 text-right">
-                            <button id="modal-close-btn" class="bg-blue-600 text-white font-semibold px-4 py-2 rounded-lg hover:bg-blue-700 transition">確認</button>
-                        </div>
-                    </div>
-                `;
-                document.body.appendChild(modal);
-                setTimeout(() => {
-                    modal.classList.remove('opacity-0');
-                    modal.querySelector('div').classList.remove('scale-95');
-                }, 10);
-                document.getElementById('modal-close-btn').addEventListener('click', () => {
-                    modal.classList.add('opacity-0');
-                    modal.querySelector('div').classList.add('scale-95');
-                    setTimeout(() => modal.remove(), 300);
-                });
-            }
 
             // --- 頁籤切換邏輯 ---
             const tabButtons = document.querySelectorAll('.tab-button');
@@ -449,17 +427,40 @@
                     const targetTab = button.dataset.tab;
                     tabButtons.forEach(btn => {
                         btn.classList.remove('active-tab', 'text-indigo-600', 'dark:text-indigo-400', 'border-indigo-500');
-                        btn.classList.add('inactive-tab');
+                        btn.classList.add('inactive-tab', 'text-gray-500', 'hover:text-gray-700', 'hover:border-gray-300', 'dark:text-gray-400', 'dark:hover:text-gray-300', 'dark:hover:border-gray-500');
                     });
                     button.classList.add('active-tab', 'text-indigo-600', 'dark:text-indigo-400', 'border-indigo-500');
-                    button.classList.remove('inactive-tab');
+                    button.classList.remove('inactive-tab', 'text-gray-500', 'hover:text-gray-700', 'hover:border-gray-300', 'dark:text-gray-400', 'dark:hover:text-gray-300', 'dark:hover:border-gray-500');
                     tabContents.forEach(content => {
                         content.id === targetTab ? content.classList.remove('hidden') : content.classList.add('hidden');
                     });
                 });
             });
+            
+            // --- 通用函式 ---
+            function animateValue(element, start, end, duration, unit = '', isCurrency = false, isDuration = false) {
+                 if (!element) return;
+                let startTimestamp = null;
+                const step = timestamp => {
+                    if (!startTimestamp) startTimestamp = timestamp;
+                    const progress = Math.min((timestamp - startTimestamp) / duration, 1);
+                    const currentValue = progress * (end - start) + start;
+                    if (isCurrency) {
+                        element.textContent = `$${Math.floor(currentValue).toLocaleString('en-US')}`;
+                    } else if (isDuration) {
+                        element.textContent = currentValue < 365 ? `${currentValue.toFixed(2)} 天` : `${(currentValue / 365).toFixed(2)} 年`;
+                    } else {
+                        element.innerHTML = `${currentValue.toFixed(2)} <span class="text-base font-normal">${unit}</span>`;
+                    }
+                    if (progress < 1) {
+                        window.requestAnimationFrame(step);
+                    }
+                };
+                window.requestAnimationFrame(step);
+            }
 
             // --- 工具 1: AI 晶片 LCA 評估邏輯 ---
+            const lcaResultsContainerEl = document.getElementById('lca-results-container');
             const gpuData = {
                 "A100": { tdp_watt: 400, cradle_to_gate_kg: 120, water_L_per_year: [1000, 6000], e_waste_kg: 2.5 },
                 "H100": { tdp_watt: 700, cradle_to_gate_kg: 164, water_L_per_year: [2000, 8000], e_waste_kg: 3 },
@@ -473,6 +474,7 @@
                 bento: { name: '個排骨便當', value: 0.0015, icon: `🍱`, tooltip: '一個排骨便當從生產到消費所產生的碳排。' },
             };
             let carbonChartInstance = null;
+            
             function updateChart(operational, embodied) {
                 const ctx = document.getElementById('carbonChart').getContext('2d');
                 if (carbonChartInstance) carbonChartInstance.destroy();
@@ -491,15 +493,18 @@
                     },
                 });
             }
-            document.getElementById('calculateLcaBtn').addEventListener('click', () => {
+
+            function runLcaCalculation() {
                 const gpuChip = document.getElementById('gpuChip').value;
                 const lifespan = parseFloat(document.getElementById('lifespan').value);
                 const utilization = parseFloat(document.getElementById('utilization').value);
                 const carbonIntensity = parseFloat(document.getElementById('carbonIntensity').value);
+
                 if (isNaN(lifespan) || isNaN(utilization) || isNaN(carbonIntensity) || lifespan <= 0 || utilization < 0 || utilization > 24 || carbonIntensity <= 0) {
-                    showAppModal("請輸入有效的數值。使用年限和碳強度必須大於 0，每日運作時數需介於 0 到 24 之間。");
+                    alert("請輸入有效的數值。");
                     return;
                 }
+
                 const data = gpuData[gpuChip];
                 const totalHours = lifespan * 365 * utilization;
                 const totalKWH = (data.tdp_watt * totalHours) / 1000;
@@ -509,12 +514,15 @@
                 const avgWater = (data.water_L_per_year[0] + data.water_L_per_year[1]) / 2;
                 const totalWater = avgWater * lifespan;
                 const eWaste = data.e_waste_kg;
+
                 document.getElementById('totalCo2').innerHTML = `${totalCo2.toFixed(2)} <span class="text-base font-normal">tCO₂eq</span>`;
                 document.getElementById('operationalCo2').innerHTML = `${operationalCo2.toFixed(2)} <span class="text-base font-normal">tCO₂eq</span>`;
                 document.getElementById('embodiedCo2').innerHTML = `${embodiedCo2.toFixed(2)} <span class="text-base font-normal">tCO₂eq</span>`;
                 document.getElementById('waterConsumption').innerHTML = `${totalWater.toFixed(0).toLocaleString('zh-TW')} <span class="text-base font-normal">L</span>`;
                 document.getElementById('eWaste').innerHTML = `${eWaste.toFixed(2)} <span class="text-base font-normal">kg</span>`;
+                
                 updateChart(operationalCo2, embodiedCo2);
+
                 const equivalentsContainer = document.getElementById('lca-equivalents');
                 equivalentsContainer.innerHTML = '';
                 for (const key in lcaDailyEquivalents) {
@@ -522,16 +530,16 @@
                     const equivalentAmount = totalCo2 / item.value;
                     equivalentsContainer.innerHTML += `<div class="bg-white dark:bg-gray-700 p-3 rounded-lg text-center transition duration-300 ease-in-out shadow-sm hover:shadow-lg transform hover:-translate-y-1 border dark:border-gray-600"><div class="tooltip"><span class="text-3xl">${item.icon}</span><span class="tooltiptext">${item.tooltip} 碳排：${item.value.toFixed(4).replace(/0+$/, '').replace(/\.$/, '')} tCO₂eq</span></div><p class="text-xl font-bold text-gray-800 dark:text-gray-200 mt-2">${Math.round(equivalentAmount).toLocaleString('zh-TW')}</p><p class="text-xs text-gray-600 dark:text-gray-400 mt-1">${item.name}</p></div>`;
                 }
-                 document.getElementById('lca-results-container').scrollIntoView({ behavior: 'smooth' });
-            });
+            }
+            
+            document.getElementById('calculateLcaBtn').addEventListener('click', runLcaCalculation);
 
             // --- 工具 2: LLM 訓練碳排計算器邏輯 ---
             const modelPresetSelect = document.getElementById('modelPreset');
             const modelTypeSelect = document.getElementById('modelType');
             const baseModelParamsContainer = document.getElementById('baseModelParamsContainer');
-            const calculateTrainingBtn = document.getElementById('calculateTrainingBtn');
-            const trainingResultsContainer = document.getElementById('training-results-container');
             const deviceTypeSelect = document.getElementById('deviceType');
+            
             const modelPresets = {
                 'GPT3': { name: 'GPT-3 (175B)', type: 'dense', params: 175, baseParams: '', tokens: 300, deviceType: 'V100', deviceNum: 10000 },
                 'GPT4': { name: 'GPT-4 (1.8T)', type: 'MoE', params: 1800, baseParams: 111, tokens: 13000, deviceType: 'A100', deviceNum: 25000 },
@@ -548,25 +556,26 @@
                 tree: { name: '棵樹年吸碳量', value: 0.012, icon: `🌳`, tooltip: '一棵樹一年所能吸收的二氧化碳總量。' },
                 bento: { name: '個排骨便當', value: 0.0015, icon: `🍱`, tooltip: '一個排骨便當從生產到消費所產生的碳排。' },
             };
+
             for (const key in modelPresets) {
                 const option = document.createElement('option');
                 option.value = key;
                 option.textContent = modelPresets[key].name;
                 modelPresetSelect.appendChild(option);
             }
-            modelPresetSelect.addEventListener('change', (e) => {
-                const selectedModelKey = e.target.value;
+
+            function updateTrainingForm() {
+                const selectedModelKey = modelPresetSelect.value;
                 const preset = modelPresets[selectedModelKey];
                 const isCustom = selectedModelKey === 'custom';
 
                 if (!isCustom) {
-                    document.getElementById('modelType').value = preset.type;
+                    modelTypeSelect.value = preset.type;
                     document.getElementById('parametersB').value = preset.params;
                     document.getElementById('tokensB').value = preset.tokens;
-                    document.getElementById('deviceType').value = preset.deviceType;
+                    deviceTypeSelect.value = preset.deviceType;
                     document.getElementById('deviceNum').value = preset.deviceNum;
-                    deviceTypeSelect.dispatchEvent(new Event('change'));
-                    
+                    document.getElementById('systemPower').value = (hardwarePresets[preset.deviceType] || hardwarePresets['custom']).systemPower;
                     if (preset.type === 'MoE') {
                         document.getElementById('baseModelParamsB').value = preset.baseParams;
                     } else {
@@ -579,44 +588,46 @@
                 document.getElementById('baseModelParamsB').disabled = !isCustom;
                 document.getElementById('tokensB').disabled = !isCustom;
                 
-                const currentModelType = document.getElementById('modelType').value;
-                baseModelParamsContainer.classList.toggle('hidden', currentModelType !== 'MoE');
-            });
-            modelPresetSelect.value = 'GPT3';
-            modelPresetSelect.dispatchEvent(new Event('change'));
+                baseModelParamsContainer.classList.toggle('hidden', modelTypeSelect.value !== 'MoE');
+            }
 
-            modelTypeSelect.addEventListener('change', () => baseModelParamsContainer.classList.toggle('hidden', modelTypeSelect.value !== 'MoE'));
-            deviceTypeSelect.addEventListener('change', (e) => {
-                document.getElementById('systemPower').value = (hardwarePresets[e.target.value] || hardwarePresets['custom']).systemPower;
+            modelPresetSelect.addEventListener('change', updateTrainingForm);
+            
+            deviceTypeSelect.addEventListener('change', () => {
+                 document.getElementById('systemPower').value = (hardwarePresets[deviceTypeSelect.value] || hardwarePresets['custom']).systemPower;
             });
-            calculateTrainingBtn.addEventListener('click', () => {
-                const inputs = getTrainingInputs();
-                if (!validateTrainingInputs(inputs)) return;
-                displayTrainingResults(calculateTrainingCarbon(inputs));
-                trainingResultsContainer.classList.remove('hidden');
-                trainingResultsContainer.scrollIntoView({ behavior: 'smooth' });
-            });
-            function getTrainingInputs() {
-                return {
-                    modelType: modelTypeSelect.value, parametersB: parseFloat(document.getElementById('parametersB').value),
-                    baseModelParamsB: parseFloat(document.getElementById('baseModelParamsB').value), tokensB: parseFloat(document.getElementById('tokensB').value),
-                    deviceType: deviceTypeSelect.value, deviceNum: parseInt(document.getElementById('deviceNum').value),
-                    systemPower: parseFloat(document.getElementById('systemPower').value), hardwareEfficiency: parseFloat(document.getElementById('hardwareEfficiency').value),
-                    pue: parseFloat(document.getElementById('pue').value), co2eqkwh: parseFloat(document.getElementById('trainingCo2eqkwh').value),
+            
+            function runTrainingCalculation() {
+                const inputs = {
+                    modelType: modelTypeSelect.value,
+                    parametersB: parseFloat(document.getElementById('parametersB').value),
+                    baseModelParamsB: parseFloat(document.getElementById('baseModelParamsB').value),
+                    tokensB: parseFloat(document.getElementById('tokensB').value),
+                    deviceType: deviceTypeSelect.value,
+                    deviceNum: parseInt(document.getElementById('deviceNum').value),
+                    systemPower: parseFloat(document.getElementById('systemPower').value),
+                    hardwareEfficiency: parseFloat(document.getElementById('hardwareEfficiency').value),
+                    pue: parseFloat(document.getElementById('pue').value),
+                    co2eqkwh: parseFloat(document.getElementById('trainingCo2eqkwh').value),
                     gpuCostPerHour: parseFloat(document.getElementById('gpuCostPerHour').value),
                 };
-            }
-            function validateTrainingInputs(inputs) {
+
+                let isValid = true;
                 for (const key in inputs) {
                     if (inputs.modelType === 'dense' && key === 'baseModelParamsB') continue;
                     if (['modelType', 'deviceType'].includes(key)) continue;
-                    if (isNaN(inputs[key])) { showAppModal(`請輸入有效的數值: ${key}`); return false; }
-                    if (inputs[key] <= 0 && key !== 'baseModelParamsB') { showAppModal(`數值 "${key}" 必須大於 0`); return false; }
+                    if (isNaN(inputs[key])) { isValid = false; break; }
+                    if (inputs[key] <= 0 && key !== 'baseModelParamsB') { isValid = false; break; }
                 }
-                if (inputs.modelType === 'MoE' && inputs.baseModelParamsB <= 0) { showAppModal(`MoE 模型的基礎模型參數必須大於 0`); return false; }
-                return true;
-            }
-            function calculateTrainingCarbon(inputs) {
+                if (inputs.modelType === 'MoE' && (isNaN(inputs.baseModelParamsB) || inputs.baseModelParamsB <= 0)) {
+                    isValid = false;
+                }
+
+                if (!isValid) {
+                    alert("請輸入有效的數值。");
+                    return;
+                }
+
                 const activeParamsB = inputs.modelType === 'MoE' ? inputs.baseModelParamsB : inputs.parametersB;
                 const totalFLOPs = 6 * activeParamsB * 1e9 * inputs.tokensB * 1e9;
                 const TFLOPsPerSecond = hardwarePresets[inputs.deviceType].peakTFLOPs * (inputs.hardwareEfficiency / 100);
@@ -624,18 +635,19 @@
                 const trainingDays = trainingSeconds / 86400;
                 const totalPowerKW = (inputs.systemPower * inputs.deviceNum) / 1000;
                 const totalEnergyKWh = totalPowerKW * (trainingDays * 24) * inputs.pue;
-                return {
+                
+                const results = {
                     operationalCo2: (totalEnergyKWh * inputs.co2eqkwh) / 1000,
                     trainingDays: trainingDays,
                     totalEnergyMWh: totalEnergyKWh / 1000,
                     trainingCost: trainingDays * 24 * inputs.deviceNum * inputs.gpuCostPerHour,
                 };
-            }
-            function displayTrainingResults(results) {
-                animateValue(document.getElementById('operationalCo2Display'), 0, results.operationalCo2, 1500, 'tCO₂eq');
-                animateValue(document.getElementById('totalEnergyMWhDisplay'), 0, results.totalEnergyMWh, 1500, 'MWh');
-                animateValue(document.getElementById('trainingCostDisplay'), 0, results.trainingCost, 1500, '', true);
-                animateValue(document.getElementById('trainingDurationDisplay'), 0, results.trainingDays, 1500, '', false, true);
+                
+                animateValue(document.getElementById('operationalCo2Display'), 0, results.operationalCo2, 500, 'tCO₂eq');
+                animateValue(document.getElementById('totalEnergyMWhDisplay'), 0, results.totalEnergyMWh, 500, 'MWh');
+                animateValue(document.getElementById('trainingCostDisplay'), 0, results.trainingCost, 500, '', true);
+                animateValue(document.getElementById('trainingDurationDisplay'), 0, results.trainingDays, 500, '', false, true);
+                
                 const equivalentsContainer = document.getElementById('training-equivalents');
                 equivalentsContainer.innerHTML = '';
                 for (const key in trainingDailyEquivalents) {
@@ -644,34 +656,21 @@
                     equivalentsContainer.innerHTML += `<div class="bg-white dark:bg-gray-700 p-3 rounded-lg text-center transition duration-300 ease-in-out shadow-sm hover:shadow-lg transform hover:-translate-y-1 border dark:border-gray-600"><div class="tooltip"><span class="text-3xl">${item.icon}</span><span class="tooltiptext">${item.tooltip} 碳排：${item.value.toFixed(4).replace(/0+$/, '').replace(/\.$/, '')} tCO₂eq</span></div><p class="text-xl font-bold text-gray-800 dark:text-gray-200 mt-2">${Math.round(equivalentAmount).toLocaleString('zh-TW')}</p><p class="text-xs text-gray-600 dark:text-gray-400 mt-1">${item.name}</p></div>`;
                 }
             }
-            function animateValue(element, start, end, duration, unit, isCurrency = false, isDuration = false) {
-                let startTimestamp = null;
-                const step = timestamp => {
-                    if (!startTimestamp) startTimestamp = timestamp;
-                    const progress = Math.min((timestamp - startTimestamp) / duration, 1);
-                    const currentValue = progress * (end - start) + start;
-                    if (isCurrency) element.textContent = `$${Math.floor(currentValue).toLocaleString('en-US')}`;
-                    else if (isDuration) element.textContent = currentValue < 365 ? `${currentValue.toFixed(2)} 天` : `${(currentValue / 365).toFixed(2)} 年`;
-                    else element.innerHTML = `${currentValue.toFixed(2)} <span class="text-base font-normal">${unit}</span>`;
-                    if (progress < 1) window.requestAnimationFrame(step);
-                };
-                window.requestAnimationFrame(step);
-            }
+            
+            document.getElementById('calculateTrainingBtn').addEventListener('click', runTrainingCalculation);
+
 
             // --- 工具 3: LLM 推論碳排計算器邏輯 ---
             const infModelPresetSelect = document.getElementById('inf-modelPreset');
             const infCustomModelSection = document.getElementById('inf-customModelSection');
             const infModelTypeSelect = document.getElementById('inf-modelType');
             const infBaseModelParamsContainer = document.getElementById('inf-baseModelParamsContainer');
-            const infCalculateBtn = document.getElementById('calculateInferenceBtn');
-            const infResultsContainer = document.getElementById('inf-results-container');
             const infDeviceTypeSelect = document.getElementById('inf-deviceType');
-            const infDeviceNumInput = document.getElementById('inf-deviceNum');
-            const infSystemPowerInput = document.getElementById('inf-systemPower');
+            
             const infModelPresets = {
                 'GPT3': { parametersB: 175, type: 'dense', baseModelParamsB: null, deviceType: 'A100', deviceNum: 8, systemPower: 550 },
                 'GPT4': { parametersB: 1800, type: 'MoE', baseModelParamsB: 200, deviceType: 'A100', deviceNum: 16, systemPower: 550 },
-                'custom': { parametersB: 175, type: 'dense', baseModelParamsB: null, deviceType: 'V100', deviceNum: 1, systemPower: 330 } // Provide defaults for custom
+                'custom': { parametersB: 175, type: 'dense', baseModelParamsB: null, deviceType: 'V100', deviceNum: 1, systemPower: 330 }
             };
             const infHardwarePresets = {
                 'V100': { peakTFLOPs: 125, systemPower: 330 }, 'H100': { peakTFLOPs: 1979, systemPower: 800 },
@@ -684,11 +683,11 @@
                 'youtube_stream': { name: '小時 YouTube 串流', value: 10, icon: `▶️`, tooltip: '觀看一小時 YouTube 影片的平均碳排。' },
                 'video_conference': { name: '小時線上會議', value: 12, icon: `💻`, tooltip: '一小時線上視訊會議的平均碳排。' },
             };
-            
-            infModelPresetSelect.addEventListener('change', (e) => {
-                const presetKey = e.target.value;
+
+            function updateInferenceForm() {
+                const presetKey = infModelPresetSelect.value;
                 const isCustom = presetKey === 'custom';
-                const model = isCustom ? infModelPresets['GPT3'] : infModelPresets[presetKey]; // Use GPT3 as base for custom
+                const model = infModelPresets[presetKey];
 
                 document.getElementById('inf-parametersB').value = model.parametersB;
                 infModelTypeSelect.value = model.type;
@@ -696,64 +695,54 @@
                     document.getElementById('inf-baseModelParamsB').value = model.baseModelParamsB;
                 }
                 infDeviceTypeSelect.value = model.deviceType;
-                infDeviceNumInput.value = model.deviceNum;
-                infSystemPowerInput.value = model.systemPower;
-                infDeviceTypeSelect.dispatchEvent(new Event('change'));
-
+                document.getElementById('inf-deviceNum').value = model.deviceNum;
+                document.getElementById('inf-systemPower').value = model.systemPower;
+                
                 infCustomModelSection.classList.toggle('hidden', !isCustom);
                 document.getElementById('inf-modelType').disabled = !isCustom;
                 document.getElementById('inf-parametersB').disabled = !isCustom;
                 document.getElementById('inf-baseModelParamsB').disabled = !isCustom;
                 
-                const currentModelType = infModelTypeSelect.value;
-                infBaseModelParamsContainer.classList.toggle('hidden', currentModelType !== 'MoE');
-            });
+                infBaseModelParamsContainer.classList.toggle('hidden', infModelTypeSelect.value !== 'MoE');
+            }
 
-            infModelTypeSelect.addEventListener('change', (e) => {
-                infBaseModelParamsContainer.classList.toggle('hidden', e.target.value !== 'MoE');
-            });
-
-            infDeviceTypeSelect.addEventListener('change', (e) => {
-                if (e.target.value !== 'custom') {
-                    infSystemPowerInput.value = infHardwarePresets[e.target.value].systemPower;
+            infModelPresetSelect.addEventListener('change', updateInferenceForm);
+            
+            infDeviceTypeSelect.addEventListener('change', () => {
+                if (infDeviceTypeSelect.value !== 'custom') {
+                    document.getElementById('inf-systemPower').value = infHardwarePresets[infDeviceTypeSelect.value].systemPower;
                 }
             });
-
-            infCalculateBtn.addEventListener('click', () => {
-                const inputs = getInfInputs();
-                if (!validateInfInputs(inputs)) return;
-                displayInfResults(calculateInferenceCarbon(inputs));
-                infResultsContainer.classList.remove('hidden');
-                infResultsContainer.scrollIntoView({ behavior: 'smooth' });
-            });
-
-            function getInfInputs() {
-                return {
+            
+            function runInferenceCalculation() {
+                const inputs = {
                     modelType: infModelTypeSelect.value,
                     parametersB: parseFloat(document.getElementById('inf-parametersB').value),
                     baseModelParamsB: parseFloat(document.getElementById('inf-baseModelParamsB').value),
                     tokensT: parseFloat(document.getElementById('inf-tokensT').value),
                     deviceType: infDeviceTypeSelect.value,
-                    deviceNum: parseInt(infDeviceNumInput.value),
-                    systemPower: parseFloat(infSystemPowerInput.value),
+                    deviceNum: parseInt(document.getElementById('inf-deviceNum').value),
+                    systemPower: parseFloat(document.getElementById('inf-systemPower').value),
                     hardwareEfficiency: parseFloat(document.getElementById('inf-hardwareEfficiency').value),
                     pue: parseFloat(document.getElementById('inf-pue').value),
                     co2eqkwh: parseFloat(document.getElementById('inf-co2eqkwh').value),
                 };
-            }
 
-            function validateInfInputs(inputs) {
+                let isValid = true;
                 for (const key in inputs) {
                     if (key === 'baseModelParamsB' && inputs.modelType !== 'MoE') continue;
                     if (['modelType', 'deviceType'].includes(key)) continue;
-                    if (isNaN(inputs[key])) { showAppModal(`請輸入有效的數值: ${key}`); return false; }
-                    if (inputs[key] < 0) { showAppModal(`數值 "${key}" 必須大於等於 0`); return false; }
+                    if (isNaN(inputs[key])) { isValid = false; break; }
+                    if (inputs[key] < 0) { isValid = false; break; }
                 }
-                if (inputs.pue < 1) { showAppModal(`PUE 必須大於等於 1`); return false; }
-                return true;
-            }
+                 if (inputs.pue < 1) { isValid = false; }
+                 if (inputs.deviceNum < 1) { isValid = false; }
+                
+                if(!isValid) {
+                    alert("請輸入有效的數值。");
+                    return;
+                }
 
-            function calculateInferenceCarbon(inputs) {
                 const activeParamsB = inputs.modelType === 'MoE' ? inputs.baseModelParamsB : inputs.parametersB;
                 const totalZettaFLOPs = 2 * activeParamsB * inputs.tokensT;
                 const totalFLOPs = totalZettaFLOPs * 1e21;
@@ -761,18 +750,20 @@
                 const inferenceSeconds = totalFLOPs / (inputs.deviceNum * TFLOPsPerSecond * 1e12);
                 const totalPowerKW = (inputs.systemPower * inputs.deviceNum) / 1000;
                 const totalEnergyKWh = totalPowerKW * (inferenceSeconds / 3600) * inputs.pue;
-                return { totalCo2_g: totalEnergyKWh * inputs.co2eqkwh, totalEnergyKWh, totalTimeSeconds: inferenceSeconds };
-            }
-
-            function displayInfResults(results) {
+                const results = { totalCo2_g: totalEnergyKWh * inputs.co2eqkwh, totalEnergyKWh, totalTimeSeconds: inferenceSeconds };
+                
                 document.getElementById('inf-totalCo2').textContent = results.totalCo2_g.toFixed(4);
+                
                 const { totalTimeSeconds } = results;
                 let timeString;
-                if (totalTimeSeconds < 60) timeString = `${totalTimeSeconds.toFixed(2)} 秒`;
+                if (totalTimeSeconds < 1) timeString = `${(totalTimeSeconds * 1000).toFixed(2)} 毫秒`;
+                else if (totalTimeSeconds < 60) timeString = `${totalTimeSeconds.toFixed(2)} 秒`;
                 else if (totalTimeSeconds < 3600) timeString = `${(totalTimeSeconds / 60).toFixed(2)} 分鐘`;
                 else timeString = `${(totalTimeSeconds / 3600).toFixed(2)} 小時`;
                 document.getElementById('inf-timeDisplay').textContent = timeString;
+                
                 document.getElementById('inf-energyDisplay').textContent = `${(results.totalEnergyKWh * 1000).toFixed(2)} Wh`;
+                
                 const equivalentsContainer = document.getElementById('inf-equivalents');
                 equivalentsContainer.innerHTML = '';
                 for (const key in infDailyEquivalents_g) {
@@ -782,12 +773,18 @@
                     equivalentsContainer.innerHTML += `<div class="bg-white dark:bg-gray-700 p-3 rounded-lg text-center transition duration-300 ease-in-out shadow-sm hover:shadow-lg transform hover:-translate-y-1 border dark:border-gray-600"><div class="tooltip"><span class="text-3xl">${item.icon}</span><span class="tooltiptext">${item.tooltip} 碳排：${item.value.toFixed(4).replace(/0+$/, '').replace(/\.$/, '')} gCO₂eq</span></div><p class="text-xl font-bold text-gray-800 dark:text-gray-200 mt-2">${formattedAmount}</p><p class="text-xs text-gray-600 dark:text-gray-400 mt-1">${item.name}</p></div>`;
                 }
             }
-            infModelPresetSelect.dispatchEvent(new Event('change'));
+
+            document.getElementById('calculateInferenceBtn').addEventListener('click', runInferenceCalculation);
+            
+            // --- Initial Form Setup ---
+            updateTrainingForm();
+            updateInferenceForm();
+            // Clear results on load to wait for button press
+            document.querySelectorAll('.results-container').forEach(container => {
+                container.style.opacity = '1';
+            });
         });
     </script>
 </body>
 </html>
-
-
-
 
