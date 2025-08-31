@@ -10,33 +10,42 @@
     <style>
         body {
             font-family: 'Inter', sans-serif;
-            background-color: #f7fafc;
+            -webkit-font-smoothing: antialiased;
+            -moz-osx-font-smoothing: grayscale;
         }
-        .input-group {
-            margin-bottom: 1.5rem;
+        /* 自定義卡片樣式 */
+        .card {
+            background-color: white;
+            border-radius: 1.5rem; /* 更大的圓角 */
+            box-shadow: 0 10px 25px -3px rgba(0, 0, 0, 0.1), 0 4px 10px -2px rgba(0, 0, 0, 0.05);
+            transition: transform 0.3s cubic-bezier(0.25, 0.46, 0.45, 0.94), box-shadow 0.3s cubic-bezier(0.25, 0.46, 0.45, 0.94);
         }
-        .input-label {
-            display: block;
-            margin-bottom: 0.5rem;
-            color: #4A5568;
-            font-weight: 500;
+        .card:hover {
+            transform: translateY(-8px);
+            box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.15);
         }
+        /* 輸入欄位樣式 */
         .input-field {
             width: 100%;
-            padding: 0.75rem;
-            border: 1px solid #E2E8F0;
-            border-radius: 0.5rem;
-            transition: border-color 0.2s;
+            padding: 0.875rem; /* 稍微增加內距 */
+            border: 2px solid #E2E8F0;
+            border-radius: 0.75rem; /* 圓角與卡片保持一致 */
+            transition: border-color 0.3s ease, box-shadow 0.3s ease;
         }
         .input-field:focus {
             outline: none;
-            border-color: #14B8A6;
-            box-shadow: 0 0 0 2px rgba(20, 184, 166, 0.4);
+            border-color: #14B8A6; /* Teal color for focus */
+            box-shadow: 0 0 0 3px rgba(20, 184, 166, 0.4);
         }
+        /* 提示工具樣式 */
         .info-icon {
             cursor: pointer;
             margin-left: 8px;
             color: #A0AEC0;
+            transition: color 0.3s;
+        }
+        .info-icon:hover {
+            color: #14B8A6;
         }
         .tooltip {
             position: relative;
@@ -44,34 +53,26 @@
         }
         .tooltip .tooltiptext {
             visibility: hidden;
-            width: 220px;
+            width: 250px;
             background-color: #1F2937;
             color: #fff;
             text-align: center;
-            border-radius: 6px;
-            padding: 8px;
+            border-radius: 0.5rem;
+            padding: 0.75rem;
             position: absolute;
-            z-index: 1;
+            z-index: 10;
             bottom: 125%;
             left: 50%;
-            margin-left: -110px;
+            margin-left: -125px;
             opacity: 0;
-            transition: opacity 0.3s;
+            transition: opacity 0.3s, transform 0.3s;
             font-size: 0.875rem;
+            box-shadow: 0 5px 15px -3px rgba(0, 0, 0, 0.2);
         }
         .tooltip:hover .tooltiptext {
             visibility: visible;
             opacity: 1;
-        }
-        .card {
-            background-color: white;
-            border-radius: 1rem;
-            box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05);
-            transition: transform 0.3s ease, box-shadow 0.3s ease;
-        }
-        .card:hover {
             transform: translateY(-5px);
-            box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.1), 0 10px 10px -5px rgba(0, 0, 0, 0.04);
         }
     </style>
 </head>
@@ -84,7 +85,7 @@
                     <path stroke-linecap="round" stroke-linejoin="round" d="M9 7h6m0 10v-3m-3 3h.01M9 17h.01M9 14h.01M12 14h.01M15 11h.01M12 11h.01M9 11h.01M7 21h10a2 2 0 002-2V5a2 2 0 00-2-2H7a2 2 0 00-2 2v14a2 2 0 002 2z" />
                 </svg>
                 <span class="bg-clip-text text-transparent bg-gradient-to-r from-blue-600 to-teal-500">
-                    LLM 碳足跡計算器
+                    LLM 推論碳排計算器
                 </span>
             </h1>
             <p class="mt-3 text-lg text-gray-600">基於 LLMCarbon 模型，評估您的大型語言模型推論階段碳足跡。</p>
@@ -234,7 +235,13 @@
 
                 <div class="space-y-6">
                     <div class="text-center">
-                        <h3 class="text-lg font-semibold text-gray-600">總碳足跡 (gCO₂eq)</h3>
+                        <h3 class="text-lg font-semibold text-gray-600">
+                            總碳足跡 (gCO₂eq)
+                             <span class="tooltip">
+                                <svg class="info-icon inline w-4 h-4" fill="currentColor" viewBox="0 0 20 20"><path fill-rule="evenodd" d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-7-4a1 1 0 11-2 0 1 1 0 012 0zM9 9a1 1 0 000 2v3a1 1 0 001 1h1a1 1 0 100-2v-3a1 1 0 00-1-1H9z" clip-rule="evenodd"></path></svg>
+                                <span class="tooltiptext">模型在推論任務中，因電力消耗所產生的總碳排。</span>
+                            </span>
+                        </h3>
                         <p id="totalCo2" class="text-5xl font-bold text-transparent bg-clip-text bg-gradient-to-r from-blue-600 to-teal-500 my-2">0.00</p>
                     </div>
 
@@ -243,15 +250,25 @@
                         <div>
                             <h3 class="text-lg font-semibold text-gray-600 mb-3">詳細資訊</h3>
                             <div id="details" class="grid grid-cols-2 gap-4">
-                                <div class="bg-white p-3 rounded-lg text-center border">
-                                    <p class="text-3xl mb-2">⏰</p>
-                                    <p class="text-xl font-bold text-gray-800" id="timeDisplay"></p>
-                                    <p class="text-xs text-gray-600 mt-1">預估推論時間</p>
+                                <div class="bg-gray-50 p-4 rounded-lg border flex flex-col justify-center text-center">
+                                    <h4 class="text-md font-medium text-gray-700 mb-2">
+                                        預估推論時間
+                                        <span class="tooltip">
+                                            <svg class="info-icon inline w-4 h-4" fill="currentColor" viewBox="0 0 20 20"><path fill-rule="evenodd" d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-7-4a1 1 0 11-2 0 1 1 0 012 0zM9 9a1 1 0 000 2v3a1 1 0 001 1h1a1 1 0 100-2v-3a1 1 0 00-1-1H9z" clip-rule="evenodd"></path></svg>
+                                            <span class="tooltiptext">模型完成推論所需的總時間。</span>
+                                        </span>
+                                    </h4>
+                                    <p class="text-2xl font-bold text-gray-800" id="timeDisplay"></p>
                                 </div>
-                                <div class="bg-white p-3 rounded-lg text-center border">
-                                    <p class="text-3xl mb-2">⚡️</p>
-                                    <p class="text-xl font-bold text-gray-800" id="energyDisplay"></p>
-                                    <p class="text-xs text-gray-600 mt-1">總消耗電量</p>
+                                <div class="bg-gray-50 p-4 rounded-lg border flex flex-col justify-center text-center">
+                                    <h4 class="text-md font-medium text-gray-700 mb-2">
+                                        總消耗電量
+                                        <span class="tooltip">
+                                            <svg class="info-icon inline w-4 h-4" fill="currentColor" viewBox="0 0 20 20"><path fill-rule="evenodd" d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-7-4a1 1 0 11-2 0 1 1 0 012 0zM9 9a1 1 0 000 2v3a1 1 0 001 1h1a1 1 0 100-2v-3a1 1 0 00-1-1H9z" clip-rule="evenodd"></path></svg>
+                                            <span class="tooltiptext">模型推論期間，資料中心總共消耗的電量。</span>
+                                        </span>
+                                    </h4>
+                                    <p class="text-2xl font-bold text-gray-800" id="energyDisplay"></p>
                                 </div>
                             </div>
                         </div>
@@ -298,13 +315,12 @@
             'TPUv4': { peakTFLOPs: 275, systemPower: 250, cpa: 1.6, area: 400 }, // TSMC 7nm
             'custom': { peakTFLOPs: 125, systemPower: 330, cpa: 1.2, area: 815 } // 預設同 V100
         };
-
-        // 日常物品碳足跡資料 (單位: gCO₂eq)，在地化數據
+        
         const dailyEquivalents_g = {
-            'sms': { name: '個簡訊', value: 0.014, icon: `💬`},
-            'google_search': { name: '次 Google 搜尋', value: 0.2, icon: `🔍`},
-            'youtube_stream': { name: '小時 YouTube 影片串流', value: 10, icon: `▶️`},
-            'video_conference': { name: '小時線上視訊會議', value: 12, icon: `💻`},
+            'sms': { name: '個簡訊', value: 0.014, icon: `💬`, tooltip: '一則簡訊的平均碳排。' },
+            'google_search': { name: '次 Google 搜尋', value: 0.2, icon: `🔍`, tooltip: '一次 Google 搜尋的平均碳排。' },
+            'youtube_stream': { name: '小時 YouTube 串流', value: 10, icon: `▶️`, tooltip: '觀看一小時 YouTube 影片的平均碳排。' },
+            'video_conference': { name: '小時線上會議', value: 12, icon: `💻`, tooltip: '一小時線上視訊會議的平均碳排。' },
         };
 
         // ===== 事件監聽 =====
@@ -391,38 +407,21 @@
 
         function validateInputs(inputs) {
             for (const key in inputs) {
-                if (key === 'baseModelParamsB' && inputs.modelType !== 'MoE') {
-                    // Skip validation for baseModelParamsB if model is not MoE
+                if (key === 'baseModelParamsB' && inputs.modelType !== 'MoE') continue;
+                
+                // Skip validation for non-numeric string fields
+                if (key === 'modelType' || key === 'deviceType') {
                     continue;
                 }
-                if (isNaN(inputs[key]) && typeof inputs[key] !== 'string') {
+
+                if (isNaN(inputs[key])) {
                     showModal(`請輸入有效的數值: ${key}`);
                     return false;
                 }
-                 if (inputs[key] < 0) {
+                if (inputs[key] < 0) {
                     showModal(`數值 "${key}" 必須大於等於 0`);
                     return false;
                 }
-            }
-            if (inputs.parametersB <= 0) {
-                showModal(`總參數數量必須大於 0`);
-                return false;
-            }
-            if (inputs.modelType === 'MoE' && inputs.baseModelParamsB <= 0) {
-                 showModal(`MoE 模型的基礎模型參數必須大於 0`);
-                 return false;
-            }
-            if (inputs.tokensT <= 0) {
-                showModal(`處理 Token 數量必須大於 0`);
-                return false;
-            }
-            if (inputs.deviceNum <= 0) {
-                showModal(`裝置數量必須大於 0`);
-                return false;
-            }
-            if (inputs.hardwareEfficiency > 100) {
-                showModal(`硬體效率必須小於等於 100`);
-                return false;
             }
             if (inputs.pue < 1) {
                 showModal(`PUE 必須大於等於 1`);
@@ -432,20 +431,14 @@
         }
 
         function calculateCarbonFootprint(inputs) {
-            // 1. 計算總 FLOPs (Floating Point Operations)
-            // 推論階段 (Inference Phase) 的 FLOPs 計算，參考論文公式 5: IC ≈ 2PD
-            // P (參數數量，單位 B)，D (Tokens，單位 T)
             const activeParamsB = inputs.modelType === 'MoE' ? inputs.baseModelParamsB : inputs.parametersB;
             const totalZettaFLOPs = 2 * activeParamsB * inputs.tokensT;
             const totalFLOPs = totalZettaFLOPs * 1e21;
 
-            // 2. 計算推論時間
             const preset = hardwarePresets[inputs.deviceType];
             const TFLOPsPerSecond = preset.peakTFLOPs * (inputs.hardwareEfficiency / 100);
             const inferenceSeconds = totalFLOPs / (inputs.deviceNum * TFLOPsPerSecond * 1e12);
 
-            // 3. 計算總碳排 (Operational Carbon)
-            // 參考論文公式 8, 9, 10
             const totalPowerKW = (inputs.systemPower * inputs.deviceNum) / 1000;
             const totalEnergyKWh = totalPowerKW * (inferenceSeconds / 3600) * inputs.pue;
             const totalCo2_g = totalEnergyKWh * inputs.co2eqkwh;
@@ -456,51 +449,36 @@
         function displayResults(results) {
             document.getElementById('totalCo2').textContent = results.totalCo2_g.toFixed(4);
 
-            // 更新詳細資訊
-            const totalTimeMinutes = results.totalTimeSeconds / 60;
-            const totalTimeHours = totalTimeMinutes / 60;
-            const totalTimeDays = totalTimeHours / 24;
-
-            let timeString = '';
-            if (totalTimeDays >= 1) {
-                 timeString = `${totalTimeDays.toFixed(2)} 天`;
-            } else if (totalTimeHours >= 1) {
-                 timeString = `${totalTimeHours.toFixed(2)} 小時`;
-            } else if (totalTimeMinutes >= 1) {
-                 timeString = `${totalTimeMinutes.toFixed(2)} 分鐘`;
+            const totalTimeSeconds = results.totalTimeSeconds;
+            let timeString;
+            if (totalTimeSeconds < 60) {
+                timeString = `${totalTimeSeconds.toFixed(2)} 秒`;
+            } else if (totalTimeSeconds < 3600) {
+                timeString = `${(totalTimeSeconds / 60).toFixed(2)} 分鐘`;
             } else {
-                 timeString = `${results.totalTimeSeconds.toFixed(2)} 秒`;
+                timeString = `${(totalTimeSeconds / 3600).toFixed(2)} 小時`;
             }
-
-            // 將總耗電量從 kWh 轉換為 Wh
-            const totalEnergyWh = results.totalEnergyKWh * 1000;
-
             document.getElementById('timeDisplay').textContent = timeString;
+            
+            const totalEnergyWh = results.totalEnergyKWh * 1000;
             document.getElementById('energyDisplay').textContent = `${totalEnergyWh.toFixed(2)} Wh`;
 
-            // 更新日常物品換算
             const equivalentsContainer = document.getElementById('equivalents');
-            equivalentsContainer.innerHTML = ''; // 清空舊結果
+            equivalentsContainer.innerHTML = ''; 
 
-            // 日常物品碳足跡資料 (單位: gCO₂eq)，在地化數據
-            const dailyEquivalents_g = {
-                'sms': { name: '個簡訊', value: 0.014, icon: `💬`},
-                'google_search': { name: '次 Google 搜尋', value: 0.2, icon: `🔍`},
-                'youtube_stream': { name: '小時 YouTube 影片串流', value: 10, icon: `▶️`},
-                'video_conference': { name: '小時線上視訊會議', value: 12, icon: `💻`},
-            };
-            
             for (const key in dailyEquivalents_g) {
                 const item = dailyEquivalents_g[key];
                 const equivalentAmount = results.totalCo2_g / item.value;
                 const formattedAmount = equivalentAmount < 1 && equivalentAmount > 0 ? equivalentAmount.toFixed(4) : Math.round(equivalentAmount).toLocaleString('zh-TW');
-                const nameText = equivalentAmount < 1 && equivalentAmount > 0 ? item.name : item.name;
 
                 const listItemHTML = `
-                    <div class="bg-white p-3 rounded-lg text-center transition duration-300 ease-in-out hover:shadow-md transform hover:-translate-y-1 border">
-                        <p class="text-3xl">${item.icon}</p>
-                        <p class="text-xl font-bold text-gray-800">${formattedAmount}</p>
-                        <p class="text-xs text-gray-600 mt-1">${nameText}</p>
+                    <div class="bg-white p-3 rounded-lg text-center transition duration-300 ease-in-out shadow-sm hover:shadow-lg transform hover:-translate-y-1 border">
+                         <div class="tooltip">
+                            <span class="text-3xl">${item.icon}</span>
+                            <span class="tooltiptext">${item.tooltip} 碳排：${item.value.toFixed(4).replace(/0+$/, '').replace(/\.$/, '')} gCO₂eq</span>
+                        </div>
+                        <p class="text-xl font-bold text-gray-800 mt-2">${formattedAmount}</p>
+                        <p class="text-xs text-gray-600 mt-1">${item.name}</p>
                     </div>
                 `;
                 equivalentsContainer.innerHTML += listItemHTML;
@@ -532,31 +510,23 @@
             });
         }
 
-        // Initialize form on page load
         function initializeForm() {
             const preset = modelPresetSelect.value;
             if (modelPresets[preset]) {
                 const model = modelPresets[preset];
-                
-                // Hide custom section if a preset is selected
                 customModelSection.classList.add('hidden');
-
-                // Update model settings
                 parametersBInput.value = model.parametersB;
                 modelTypeSelect.value = model.type;
                 baseModelParamsContainer.classList.toggle('hidden', model.type !== 'MoE');
                  if (model.type === 'MoE') {
                     baseModelParamsBInput.value = model.baseModelParamsB;
                 }
-                
-                // Update hardware settings
                 deviceTypeSelect.value = model.deviceType;
                 deviceNumInput.value = model.deviceNum;
                 systemPowerInput.value = model.systemPower;
             }
         }
         
-        // Call initialization function when the page content is loaded
         document.addEventListener('DOMContentLoaded', initializeForm);
     </script>
 </body>

@@ -9,40 +9,46 @@
     <style>
         body {
             font-family: 'Inter', sans-serif;
-            background-color: #F8FAFC;
+            -webkit-font-smoothing: antialiased;
+            -moz-osx-font-smoothing: grayscale;
         }
-        .input-group {
-            margin-bottom: 1.5rem;
+        /* 自定義卡片樣式 */
+        .card {
+            background-color: white;
+            border-radius: 1.5rem; /* 更大的圓角 */
+            box-shadow: 0 10px 25px -3px rgba(0, 0, 0, 0.1), 0 4px 10px -2px rgba(0, 0, 0, 0.05);
+            transition: transform 0.3s cubic-bezier(0.25, 0.46, 0.45, 0.94), box-shadow 0.3s cubic-bezier(0.25, 0.46, 0.45, 0.94);
         }
-        .input-label {
-            display: block;
-            margin-bottom: 0.5rem;
-            color: #4A5568;
-            font-weight: 500;
+        .card:hover {
+            transform: translateY(-8px);
+            box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.15);
         }
+        /* 輸入欄位樣式 */
         .input-field {
             width: 100%;
-            padding: 0.75rem;
-            border: 1px solid #E2E8F0;
-            border-radius: 0.5rem;
-            transition: border-color 0.2s, background-color 0.2s;
+            padding: 0.875rem; /* 稍微增加內距 */
+            border: 2px solid #E2E8F0;
+            border-radius: 0.75rem; /* 圓角與卡片保持一致 */
+            transition: border-color 0.3s ease, box-shadow 0.3s ease;
         }
         .input-field:focus {
             outline: none;
-            border-color: #2563EB;
-            box-shadow: 0 0 0 2px rgba(37, 99, 235, 0.4);
+            border-color: #14B8A6; /* Teal color for focus */
+            box-shadow: 0 0 0 3px rgba(20, 184, 166, 0.4);
         }
-        .input-field:read-only {
-            background-color: #F1F5F9;
-        }
-        .input-field:disabled {
+        .input-field:read-only, .input-field:disabled {
             background-color: #F1F5F9;
             color: #64748B;
         }
+        /* 提示工具樣式 */
         .info-icon {
             cursor: pointer;
             margin-left: 8px;
-            color: #94A3B8;
+            color: #A0AEC0;
+            transition: color 0.3s;
+        }
+        .info-icon:hover {
+            color: #14B8A6;
         }
         .tooltip {
             position: relative;
@@ -54,42 +60,34 @@
             background-color: #1F2937;
             color: #fff;
             text-align: center;
-            border-radius: 6px;
-            padding: 8px;
+            border-radius: 0.5rem;
+            padding: 0.75rem;
             position: absolute;
-            z-index: 1;
+            z-index: 10;
             bottom: 125%;
             left: 50%;
             margin-left: -110px;
             opacity: 0;
-            transition: opacity 0.3s;
+            transition: opacity 0.3s, transform 0.3s;
             font-size: 0.875rem;
+            box-shadow: 0 5px 15px -3px rgba(0, 0, 0, 0.2);
         }
         .tooltip:hover .tooltiptext {
             visibility: visible;
             opacity: 1;
-        }
-        .card {
-            background-color: white;
-            border-radius: 1rem;
-            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
-            transition: transform 0.3s ease, box-shadow 0.3s ease;
-        }
-        .card:hover {
-            transform: translateY(-3px);
-            box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05);
+            transform: translateY(-5px);
         }
     </style>
 </head>
-<body class="bg-blue-50 text-gray-800">
+<body class="bg-gradient-to-br from-blue-50 to-green-50 text-gray-800">
 
     <div class="container mx-auto p-4 md:p-8">
         <header class="text-center mb-10">
             <h1 class="text-4xl md:text-5xl font-bold text-gray-900 flex items-center justify-center">
-                <svg xmlns="http://www.w3.org/2000/svg" class="h-10 w-10 md:h-12 md:w-12 mr-3 text-blue-500" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+                <svg xmlns="http://www.w3.org/2000/svg" class="h-10 w-10 md:h-12 md:w-12 mr-3 text-green-500" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
                     <path stroke-linecap="round" stroke-linejoin="round" d="M9 7h6m0 10v-3m-3 3h.01M9 17h.01M9 14h.01M12 14h.01M15 11h.01M12 11h.01M9 11h.01M7 21h10a2 2 0 002-2V5a2 2 0 00-2-2H7a2 2 0 00-2 2v14a2 2 0 002 2z" />
                 </svg>
-                <span class="bg-clip-text text-transparent bg-gradient-to-r from-blue-700 to-sky-500">
+                <span class="bg-clip-text text-transparent bg-gradient-to-r from-blue-600 to-teal-500">
                     LLM 碳排計算器
                 </span>
             </h1>
@@ -225,7 +223,7 @@
                 </section>
 
                 <div class="text-center mt-8">
-                    <button id="calculateBtn" class="bg-gradient-to-r from-blue-600 to-sky-500 text-white font-bold py-3 px-8 rounded-lg hover:from-blue-700 hover:to-sky-600 transition-all duration-300 text-lg shadow-lg hover:shadow-xl transform hover:-translate-y-1 flex items-center justify-center mx-auto">
+                    <button id="calculateBtn" class="bg-gradient-to-r from-blue-600 to-teal-500 text-white font-bold py-3 px-8 rounded-lg hover:from-blue-700 hover:to-teal-600 transition-all duration-300 text-lg shadow-lg hover:shadow-xl transform hover:-translate-y-1 flex items-center justify-center mx-auto">
                         <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6 mr-2" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
                             <path stroke-linecap="round" stroke-linejoin="round" d="M13 10V3L4 14h7v7l9-11h-7z" />
                         </svg>
@@ -235,80 +233,58 @@
             </div>
 
             <!-- ===== 結果顯示區 ===== -->
-            <div id="results-container" class="card p-8 shadow-xl xl:sticky xl:top-8 transition-all duration-300 hover:shadow-2xl">
+            <div id="results-container" class="card p-8 shadow-xl xl:sticky xl:top-8 transition-all duration-300 hover:shadow-2xl hidden">
                 <h2 class="text-2xl font-semibold mb-6 border-b-2 border-gray-200 pb-4">計算結果</h2>
                 
                 <div class="space-y-6">
                     <div id="key-metrics" class="grid grid-cols-2 gap-4 text-center">
-                        <!-- Key metrics will be populated by JavaScript -->
-                        <div class="bg-blue-100 p-6 rounded-lg shadow-md border-2 border-transparent transition duration-300 ease-in-out hover:border-blue-500 flex flex-col justify-center">
-                            <div class="tooltip">
-                                <h4 class="text-lg font-medium text-gray-800">訓練碳排</h4>
-                                <span class="tooltiptext">模型訓練期間，因電力消耗所產生的碳排。</span>
-                            </div>
+                        <div class="bg-white p-6 rounded-lg border">
+                            <h4 class="text-lg font-medium text-gray-800">
+                                訓練碳排
+                                <span class="tooltip">
+                                    <svg class="info-icon inline w-4 h-4" fill="currentColor" viewBox="0 0 20 20"><path fill-rule="evenodd" d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-7-4a1 1 0 11-2 0 1 1 0 012 0zM9 9a1 1 0 000 2v3a1 1 0 001 1h1a1 1 0 100-2v-3a1 1 0 00-1-1H9z" clip-rule="evenodd"></path></svg>
+                                    <span class="tooltiptext">模型訓練期間，因電力消耗所產生的碳排。</span>
+                                </span>
+                            </h4>
                             <p id="operationalCo2Display" class="text-3xl font-bold text-blue-700 mt-2">0.00 <span class="text-base font-normal">tCO₂eq</span></p>
                         </div>
-                        <div class="bg-sky-100 p-6 rounded-lg shadow-md border-2 border-transparent transition duration-300 ease-in-out hover:border-sky-500 flex flex-col justify-center">
-                            <div class="tooltip">
-                                <h4 class="text-lg font-medium text-gray-800">總消耗電量</h4>
-                                <span class="tooltiptext">模型訓練期間，資料中心總共消耗的電量。</span>
-                            </div>
+                        <div class="bg-white p-6 rounded-lg border">
+                            <h4 class="text-lg font-medium text-gray-800">
+                                總消耗電量
+                                <span class="tooltip">
+                                    <svg class="info-icon inline w-4 h-4" fill="currentColor" viewBox="0 0 20 20"><path fill-rule="evenodd" d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-7-4a1 1 0 11-2 0 1 1 0 012 0zM9 9a1 1 0 000 2v3a1 1 0 001 1h1a1 1 0 100-2v-3a1 1 0 00-1-1H9z" clip-rule="evenodd"></path></svg>
+                                    <span class="tooltiptext">模型訓練期間，資料中心總共消耗的電量。</span>
+                                </span>
+                            </h4>
                             <p id="totalEnergyMWhDisplay" class="text-3xl font-bold text-sky-700 mt-2">0.00 <span class="text-base font-normal">MWh</span></p>
                         </div>
-                         <div class="bg-indigo-100 p-6 rounded-lg shadow-md border-2 border-transparent transition duration-300 ease-in-out hover:border-indigo-500 flex flex-col justify-center">
-                            <div class="tooltip">
-                                <h4 class="text-lg font-medium text-gray-800">預估訓練時間</h4>
-                                <span class="tooltiptext">模型完成訓練所需的總時間。</span>
-                            </div>
+                         <div class="bg-white p-6 rounded-lg border">
+                            <h4 class="text-lg font-medium text-gray-800">
+                                預估訓練時間
+                                <span class="tooltip">
+                                    <svg class="info-icon inline w-4 h-4" fill="currentColor" viewBox="0 0 20 20"><path fill-rule="evenodd" d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-7-4a1 1 0 11-2 0 1 1 0 012 0zM9 9a1 1 0 000 2v3a1 1 0 001 1h1a1 1 0 100-2v-3a1 1 0 00-1-1H9z" clip-rule="evenodd"></path></svg>
+                                    <span class="tooltiptext">模型完成訓練所需的總時間。</span>
+                                </span>
+                            </h4>
                             <p id="trainingDurationDisplay" class="text-3xl font-bold text-indigo-700 mt-2">0.00 天</p>
                         </div>
-                        <div class="bg-purple-100 p-6 rounded-lg shadow-md border-2 border-transparent transition duration-300 ease-in-out hover:border-purple-500 flex flex-col justify-center">
-                            <div class="tooltip">
-                                <h4 class="text-lg font-medium text-gray-800">預估訓練成本 (USD)</h4>
-                                <span class="tooltiptext">模型訓練期間所需的硬體租用成本。</span>
-                            </div>
+                        <div class="bg-white p-6 rounded-lg border">
+                            <h4 class="text-lg font-medium text-gray-800">
+                                預估訓練成本
+                                <span class="tooltip">
+                                    <svg class="info-icon inline w-4 h-4" fill="currentColor" viewBox="0 0 20 20"><path fill-rule="evenodd" d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-7-4a1 1 0 11-2 0 1 1 0 012 0zM9 9a1 1 0 000 2v3a1 1 0 001 1h1a1 1 0 100-2v-3a1 1 0 00-1-1H9z" clip-rule="evenodd"></path></svg>
+                                    <span class="tooltiptext">模型訓練期間所需的硬體租用成本 (USD)。</span>
+                                </span>
+                            </h4>
                             <p id="trainingCostDisplay" class="text-3xl font-bold text-purple-700 mt-2">$0</p>
                         </div>
                     </div>
 
                     <div class="border-t pt-6 mt-6">
-                        <!-- ===== 日常物品換算區 ===== -->
                         <div>
                             <h3 class="text-lg font-semibold text-gray-600 mb-3">日常換算</h3>
                             <div id="equivalents" class="grid grid-cols-2 gap-4">
                                 <!-- JavaScript will populate this section -->
-                                <div class="bg-white p-3 rounded-lg text-center transition duration-300 ease-in-out shadow-md hover:shadow-lg transform hover:-translate-y-1 border-2 border-transparent hover:border-blue-500">
-                                    <div class="tooltip">
-                                        <span class="text-3xl">✈️</span>
-                                        <span class="tooltiptext">一趟台北飛往東京的來回航班所產生的碳排：0.40 tCO₂eq。</span>
-                                    </div>
-                                    <p class="text-xl font-bold text-gray-800 mt-2">0</p>
-                                    <p class="text-xs text-gray-600 mt-1">趟台北-東京航班</p>
-                                </div>
-                                <div class="bg-white p-3 rounded-lg text-center transition duration-300 ease-in-out shadow-md hover:shadow-lg transform hover:-translate-y-1 border-2 border-transparent hover:border-blue-500">
-                                    <div class="tooltip">
-                                        <span class="text-3xl">🚗</span>
-                                        <span class="tooltiptext">一輛普通家用汽車行駛一年所產生的平均碳排：1.90 tCO₂eq。</span>
-                                    </div>
-                                    <p class="text-xl font-bold text-gray-800 mt-2">0</p>
-                                    <p class="text-xs text-gray-600 mt-1">輛汽車年排碳</p>
-                                </div>
-                                <div class="bg-white p-3 rounded-lg text-center transition duration-300 ease-in-out shadow-md hover:shadow-lg transform hover:-translate-y-1 border-2 border-transparent hover:border-blue-500">
-                                    <div class="tooltip">
-                                        <span class="text-3xl">🌳</span>
-                                        <span class="tooltiptext">一棵樹一年所能吸收的二氧化碳總量：0.012 tCO₂eq。</span>
-                                    </div>
-                                    <p class="text-xl font-bold text-gray-800 mt-2">0</p>
-                                    <p class="text-xs text-gray-600 mt-1">棵樹年吸碳量</p>
-                                </div>
-                                <div class="bg-white p-3 rounded-lg text-center transition duration-300 ease-in-out shadow-md hover:shadow-lg transform hover:-translate-y-1 border-2 border-transparent hover:border-blue-500">
-                                    <div class="tooltip">
-                                        <span class="text-3xl">🍱</span>
-                                        <span class="tooltiptext">一個排骨便當從生產到消費所產生的碳排：0.0015 tCO₂eq。</span>
-                                    </div>
-                                    <p class="text-xl font-bold text-gray-800 mt-2">0</p>
-                                    <p class="text-xs text-gray-600 mt-1">個排骨便當</p>
-                                </div>
                             </div>
                         </div>
                     </div>
@@ -325,7 +301,6 @@
         const resultsContainer = document.getElementById('results-container');
         const deviceTypeSelect = document.getElementById('deviceType');
         const modelPresetSelect = document.getElementById('modelPreset');
-        // 新增的 DOM 元素 ID，用於更新計算結果
         const operationalCo2Display = document.getElementById('operationalCo2Display');
         const totalEnergyMWhDisplay = document.getElementById('totalEnergyMWhDisplay');
         const trainingDurationDisplay = document.getElementById('trainingDurationDisplay');
@@ -333,88 +308,61 @@
 
         // 模型預設資料庫
         const modelPresets = {
-            'GPT3': { name: 'GPT-3 (175B)', type: 'dense', params: 175, baseParams: '', tokens: 300 },
-            'GPT4': { name: 'GPT-4 (1.8T)', type: 'MoE', params: 1800, baseParams: 111, tokens: 13000 },
+            'GPT3': { name: 'GPT-3 (175B)', type: 'dense', params: 175, baseParams: '', tokens: 300, deviceType: 'V100', deviceNum: 10000 },
+            'GPT4': { name: 'GPT-4 (1.8T)', type: 'MoE', params: 1800, baseParams: 111, tokens: 13000, deviceType: 'A100', deviceNum: 25000 },
             'custom': { name: '自訂模型' },
         };
 
-        // 預設硬體參數 (參考 LLMCarbon 論文 Table 3 & 4)
         const hardwarePresets = {
-            'V100': { peakTFLOPs: 125, systemPower: 330, cpa: 1.2, area: 815 }, // TSMC 12nm
-            'A100': { peakTFLOPs: 312, systemPower: 550, cpa: 1.5, area: 826 }, // TSMC 7nm
-            'H100': { peakTFLOPs: 1979, systemPower: 800, cpa: 1.8, area: 814 }, // TSMC 4nm
-            'TPUv3': { peakTFLOPs: 123, systemPower: 288, cpa: 1.0, area: 700 }, // TSMC 16nm
-            'TPUv4': { peakTFLOPs: 275, systemPower: 250, cpa: 1.6, area: 400 }, // TSMC 7nm
-            'custom': { peakTFLOPs: 125, systemPower: 330, cpa: 1.2, area: 815 } // 預設同 V100
+            'V100': { peakTFLOPs: 125, systemPower: 330 },
+            'A100': { peakTFLOPs: 312, systemPower: 550 },
+            'H100': { peakTFLOPs: 1979, systemPower: 800 },
+            'TPUv3': { peakTFLOPs: 123, systemPower: 288 },
+            'TPUv4': { peakTFLOPs: 275, systemPower: 250 },
+            'custom': { peakTFLOPs: 125, systemPower: 330 }
         };
         
-        // 日常物品碳足跡資料 (單位: tCO₂eq)，在地化數據
         const dailyEquivalents = {
-            flight: { 
-                name: '趟台北-東京航班', 
-                value: 0.4, 
-                icon: `✈️`,
-                tooltip: '一趟台北飛往東京的來回航班所產生的碳排。'
-            },
-            car: { 
-                name: '輛汽車年排碳', 
-                value: 1.9,
-                icon: `🚗`,
-                tooltip: '一輛普通家用汽車行駛一年所產生的平均碳排。'
-            },
-            tree: { 
-                name: '棵樹年吸碳量', 
-                value: 0.012,
-                icon: `🌳`,
-                tooltip: '一棵樹一年所能吸收的二氧化碳總量。'
-            },
-            bento: { 
-                name: '個排骨便當', 
-                value: 0.0015,
-                icon: `🍱`,
-                tooltip: '一個排骨便當從生產到消費所產生的碳排。'
-            },
+            flight: { name: '趟台北-東京航班', value: 0.4, icon: `✈️`, tooltip: '一趟台北飛往東京的來回航班所產生的碳排。' },
+            car: { name: '輛汽車年排碳', value: 1.9, icon: `🚗`, tooltip: '一輛普通家用汽車行駛一年所產生的平均碳排。' },
+            tree: { name: '棵樹年吸碳量', value: 0.012, icon: `🌳`, tooltip: '一棵樹一年所能吸收的二氧化碳總量。' },
+            bento: { name: '個排骨便當', value: 0.0015, icon: `🍱`, tooltip: '一個排骨便當從生產到消費所產生的碳排。' },
         };
-        
-        // ===== 事件監聽 =====
         
         document.addEventListener('DOMContentLoaded', () => {
-            // Populate model presets dropdown
             for (const key in modelPresets) {
                 const option = document.createElement('option');
                 option.value = key;
                 option.textContent = modelPresets[key].name;
                 modelPresetSelect.appendChild(option);
             }
-            // Set initial state to GPT-3
             modelPresetSelect.value = 'GPT3';
             modelPresetSelect.dispatchEvent(new Event('change'));
         });
 
-
         modelPresetSelect.addEventListener('change', (e) => {
             const selectedModelKey = e.target.value;
             const preset = modelPresets[selectedModelKey];
-
-            // Get input elements
             const modelTypeInput = document.getElementById('modelType');
             const parametersBInput = document.getElementById('parametersB');
             const baseModelParamsBInput = document.getElementById('baseModelParamsB');
             const tokensBInput = document.getElementById('tokensB');
-            
+            const deviceTypeInput = document.getElementById('deviceType');
+            const deviceNumInput = document.getElementById('deviceNum');
             const isCustom = selectedModelKey === 'custom';
 
-            // Toggle disabled state
             modelTypeInput.disabled = !isCustom;
             parametersBInput.disabled = !isCustom;
             baseModelParamsBInput.disabled = !isCustom;
             tokensBInput.disabled = !isCustom;
             
             if (!isCustom) {
-                // Populate fields from preset
                 modelTypeInput.value = preset.type;
                 parametersBInput.value = preset.params;
                 tokensBInput.value = preset.tokens;
+                deviceTypeInput.value = preset.deviceType;
+                deviceNumInput.value = preset.deviceNum;
+                deviceTypeInput.dispatchEvent(new Event('change'));
                 
                 if (preset.type === 'MoE') {
                     baseModelParamsContainer.classList.remove('hidden');
@@ -424,12 +372,10 @@
                     baseModelParamsBInput.value = '';
                 }
             } else {
-                 // Unlock and clear fields for custom input
                 modelTypeInput.disabled = false;
                 parametersBInput.disabled = false;
                 baseModelParamsBInput.disabled = false;
                 tokensBInput.disabled = false;
-                
                 parametersBInput.value = '';
                 baseModelParamsBInput.value = '';
                 tokensBInput.value = '';
@@ -444,10 +390,8 @@
         });
 
         deviceTypeSelect.addEventListener('change', (e) => {
-            if (e.target.value !== 'custom') {
-                const preset = hardwarePresets[e.target.value];
-                document.getElementById('systemPower').value = preset.systemPower;
-            }
+            const preset = hardwarePresets[e.target.value] || hardwarePresets['custom'];
+            document.getElementById('systemPower').value = preset.systemPower;
         });
 
         calculateBtn.addEventListener('click', () => {
@@ -458,17 +402,12 @@
             displayResults(results);
             resultsContainer.classList.remove('hidden');
 
-            // 針對不同螢幕尺寸，滾動到結果區
-            // 大螢幕：滾動到主內容區塊的頂部
-            // 小螢幕：直接滾動到結果卡片的位置
             if (window.innerWidth >= 1280) {
                  document.getElementById('main-content').scrollIntoView({ behavior: 'smooth' });
             } else {
                 resultsContainer.scrollIntoView({ behavior: 'smooth' });
             }
         });
-
-        // ===== 核心功能函式 =====
 
         function getInputs() {
             return {
@@ -488,16 +427,14 @@
 
         function validateInputs(inputs) {
             for (const key in inputs) {
-                // For dense models, skip the validation for baseModelParamsB as it's not applicable and will be NaN
-                if (inputs.modelType === 'dense' && key === 'baseModelParamsB') {
-                    continue;
-                }
+                if (inputs.modelType === 'dense' && key === 'baseModelParamsB') continue;
+                if (key === 'modelType' || key === 'deviceType') continue;
 
-                if (isNaN(inputs[key]) && typeof inputs[key] !== 'string') {
+                if (isNaN(inputs[key])) {
                     showModal(`請輸入有效的數值 for: ${key}`);
                     return false;
                 }
-                 if (inputs[key] <= 0 && key !== 'baseModelParamsB' && key !== 'modelType' && key !== 'deviceType' && key !== 'modelPreset') {
+                 if (inputs[key] <= 0 && key !== 'baseModelParamsB') {
                      showModal(`數值 "${key}" 必須大於 0`);
                      return false;
                  }
@@ -515,53 +452,32 @@
             } else {
                 const years = Math.floor(totalDays / 365);
                 const remainingDays = Math.round(totalDays % 365);
-                if (remainingDays === 0) {
-                    return `${years} 年`;
-                }
                 return `${years} 年 ${remainingDays} 天`;
             }
         }
 
         function calculateCarbonFootprint(inputs) {
-            // 1. 計算總 FLOPs (Floating Point Operations)
             const activeParamsB = inputs.modelType === 'MoE' ? inputs.baseModelParamsB : inputs.parametersB;
-            // 根據論文公式 4: TC ≈ 6PD (P=參數, D=Tokens)
-            // 單位轉換: P (Billion), D (Billion) -> 1e9 * 1e9 = 1e18 (Exa)
-            // 轉換為 ZettaFLOPs (1e21)
             const totalZettaFLOPs = 6 * activeParamsB * inputs.tokensB / 1000;
             const totalFLOPs = totalZettaFLOPs * 1e21;
 
-            // 2. 計算訓練時間
             const preset = hardwarePresets[inputs.deviceType];
             const TFLOPsPerSecond = preset.peakTFLOPs * (inputs.hardwareEfficiency / 100);
-            // 根據論文公式 7
             const trainingSeconds = totalFLOPs / (inputs.deviceNum * TFLOPsPerSecond * 1e12);
             const trainingDays = trainingSeconds / (3600 * 24);
 
-            // 3. 計算訓練碳排 (Operational Carbon)
-            // 根據論文公式 8, 9, 10
             const totalPowerKW = (inputs.systemPower * inputs.deviceNum) / 1000;
             const totalEnergyKWh = totalPowerKW * (trainingDays * 24) * inputs.pue;
-            // inputs.co2eqkwh is now in kg/kWh. Convert kg to tonnes (t).
             const operationalCo2 = (totalEnergyKWh * inputs.co2eqkwh) / 1000;
             const totalEnergyMWh = totalEnergyKWh / 1000;
-
-            // 隱含碳排移除，設定為 0
-            const embodiedCo2 = 0;
-
-            // 4. 計算總碳排
-            const totalCo2 = operationalCo2;
-
-            // 5. 計算訓練成本
+            
             const totalGpuHours = trainingDays * 24 * inputs.deviceNum;
             const trainingCost = totalGpuHours * inputs.gpuCostPerHour;
 
-
-            return { totalCo2, operationalCo2, embodiedCo2, trainingDays, totalEnergyMWh, trainingCost };
+            return { operationalCo2, trainingDays, totalEnergyMWh, trainingCost };
         }
         
-        // 動態數字動畫函式
-        function animateValue(element, start, end, duration, unit, isCurrency) {
+        function animateValue(element, start, end, duration, unit, isCurrency, isDuration) {
             let startTimestamp = null;
             const step = (timestamp) => {
                 if (!startTimestamp) startTimestamp = timestamp;
@@ -570,17 +486,22 @@
 
                 if (isCurrency) {
                     element.textContent = `$${Math.floor(currentValue).toLocaleString('en-US')}`;
-                } else {
+                } else if (isDuration) {
+                    element.textContent = formatTrainingDuration(currentValue);
+                }
+                else {
                     element.innerHTML = `${currentValue.toFixed(2)} <span class="text-base font-normal">${unit}</span>`;
                 }
 
                 if (progress < 1) {
                     window.requestAnimationFrame(step);
                 } else {
-                    // 確保動畫結束時顯示最終的精確值
                     if (isCurrency) {
                         element.textContent = `$${Math.floor(end).toLocaleString('en-US')}`;
-                    } else {
+                    } else if (isDuration) {
+                        element.textContent = formatTrainingDuration(end);
+                    }
+                    else {
                         element.innerHTML = `${end.toFixed(2)} <span class="text-base font-normal">${unit}</span>`;
                     }
                 }
@@ -589,25 +510,21 @@
         }
 
         function displayResults(results) {
-            // 使用動畫函式更新關鍵指標
-            animateValue(operationalCo2Display, 0, results.operationalCo2, 1500, 'tCO₂eq', false);
-            animateValue(totalEnergyMWhDisplay, 0, results.totalEnergyMWh, 1500, 'MWh', false);
-            animateValue(trainingCostDisplay, 0, results.trainingCost, 1500, '', true);
-            
-            // 直接更新訓練時間（因格式較複雜，不使用數字動畫）
-            trainingDurationDisplay.textContent = formatTrainingDuration(results.trainingDays);
+            animateValue(operationalCo2Display, 0, results.operationalCo2, 1500, 'tCO₂eq', false, false);
+            animateValue(totalEnergyMWhDisplay, 0, results.totalEnergyMWh, 1500, 'MWh', false, false);
+            animateValue(trainingCostDisplay, 0, results.trainingCost, 1500, '', true, false);
+            animateValue(trainingDurationDisplay, 0, results.trainingDays, 1500, '', false, true);
 
-            // 更新日常物品換算
             const equivalentsContainer = document.getElementById('equivalents');
-            equivalentsContainer.innerHTML = ''; // 清空舊結果
+            equivalentsContainer.innerHTML = ''; 
 
             for (const key in dailyEquivalents) {
                 const item = dailyEquivalents[key];
-                const equivalentAmount = results.totalCo2 / item.value;
+                const equivalentAmount = results.operationalCo2 / item.value;
                 const formattedAmount = Math.round(equivalentAmount).toLocaleString('zh-TW');
 
                 const listItemHTML = `
-                    <div class="bg-white p-3 rounded-lg text-center transition duration-300 ease-in-out shadow-md hover:shadow-lg transform hover:-translate-y-1 border-2 border-transparent hover:border-blue-500">
+                    <div class="bg-white p-3 rounded-lg text-center transition duration-300 ease-in-out shadow-sm hover:shadow-lg transform hover:-translate-y-1 border">
                         <div class="tooltip">
                             <span class="text-3xl">${item.icon}</span>
                             <span class="tooltiptext">${item.tooltip} 碳排：${item.value.toFixed(4).replace(/0+$/, '').replace(/\.$/, '')} tCO₂eq</span>
@@ -620,9 +537,7 @@
             }
         }
         
-        // 顯示自訂提示框
         function showModal(message) {
-            // 移除舊的 modal
             const oldModal = document.getElementById('alert-modal');
             if (oldModal) {
                 oldModal.remove();
@@ -649,6 +564,5 @@
     </script>
 </body>
 </html>
-
 
 
