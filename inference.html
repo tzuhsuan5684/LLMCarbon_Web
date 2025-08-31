@@ -1,0 +1,534 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>LLM 碳足跡計算器 | LLMCarbon</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+        body {
+            font-family: 'Inter', sans-serif;
+            -webkit-font-smoothing: antialiased;
+            -moz-osx-font-smoothing: grayscale;
+        }
+        /* 自定義卡片樣式 */
+        .card {
+            background-color: white;
+            border-radius: 1.5rem; /* 更大的圓角 */
+            box-shadow: 0 10px 25px -3px rgba(0, 0, 0, 0.1), 0 4px 10px -2px rgba(0, 0, 0, 0.05);
+            transition: transform 0.3s cubic-bezier(0.25, 0.46, 0.45, 0.94), box-shadow 0.3s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+        }
+        .card:hover {
+            transform: translateY(-8px);
+            box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.15);
+        }
+        /* 輸入欄位樣式 */
+        .input-field {
+            width: 100%;
+            padding: 0.875rem; /* 稍微增加內距 */
+            border: 2px solid #E2E8F0;
+            border-radius: 0.75rem; /* 圓角與卡片保持一致 */
+            transition: border-color 0.3s ease, box-shadow 0.3s ease;
+        }
+        .input-field:focus {
+            outline: none;
+            border-color: #14B8A6; /* Teal color for focus */
+            box-shadow: 0 0 0 3px rgba(20, 184, 166, 0.4);
+        }
+        /* 提示工具樣式 */
+        .info-icon {
+            cursor: pointer;
+            margin-left: 8px;
+            color: #A0AEC0;
+            transition: color 0.3s;
+        }
+        .info-icon:hover {
+            color: #14B8A6;
+        }
+        .tooltip {
+            position: relative;
+            display: inline-block;
+        }
+        .tooltip .tooltiptext {
+            visibility: hidden;
+            width: 250px;
+            background-color: #1F2937;
+            color: #fff;
+            text-align: center;
+            border-radius: 0.5rem;
+            padding: 0.75rem;
+            position: absolute;
+            z-index: 10;
+            bottom: 125%;
+            left: 50%;
+            margin-left: -125px;
+            opacity: 0;
+            transition: opacity 0.3s, transform 0.3s;
+            font-size: 0.875rem;
+            box-shadow: 0 5px 15px -3px rgba(0, 0, 0, 0.2);
+        }
+        .tooltip:hover .tooltiptext {
+            visibility: visible;
+            opacity: 1;
+            transform: translateY(-5px);
+        }
+    </style>
+</head>
+<body class="bg-gradient-to-br from-blue-50 to-green-50 text-gray-800">
+
+    <div class="container mx-auto p-4 md:p-8">
+        <header class="text-center mb-10">
+            <h1 class="text-4xl md:text-5xl font-bold text-gray-900 flex items-center justify-center">
+                <svg xmlns="http://www.w3.org/2000/svg" class="h-10 w-10 md:h-12 md:w-12 mr-3 text-teal-500" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+                    <path stroke-linecap="round" stroke-linejoin="round" d="M9 7h6m0 10v-3m-3 3h.01M9 17h.01M9 14h.01M12 14h.01M15 11h.01M12 11h.01M9 11h.01M7 21h10a2 2 0 002-2V5a2 2 0 00-2-2H7a2 2 0 00-2 2v14a2 2 0 002 2z" />
+                </svg>
+                <span class="bg-clip-text text-transparent bg-gradient-to-r from-blue-600 to-teal-500">
+                    LLM 推論碳排計算器
+                </span>
+            </h1>
+            <p class="mt-3 text-lg text-gray-600">基於 LLMCarbon 模型，評估您的大型語言模型推論階段碳足跡。</p>
+        </header>
+
+        <div class="grid grid-cols-1 xl:grid-cols-2 gap-8">
+            <!-- ===== 輸入參數區 ===== -->
+            <div class="card p-8">
+                <h2 class="text-2xl font-semibold mb-6 border-b-2 border-gray-200 pb-4">參數設定</h2>
+
+                <!-- LLM 模型設定 -->
+                <section>
+                    <h3 class="text-xl font-semibold text-blue-700 mb-4">1. LLM 模型設定</h3>
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-6 input-group">
+                        <div>
+                            <label for="modelPreset" class="input-label">選擇預設模型</label>
+                            <select id="modelPreset" class="input-field bg-white">
+                                <option value="GPT3" selected>GPT3</option>
+                                <option value="GPT4">GPT4</option>
+                                <option value="custom">自訂</option>
+                            </select>
+                        </div>
+                        <div>
+                            <label for="tokensT" class="input-label">
+                                處理 Token 數量
+                                 <span class="tooltip">
+                                    <svg class="info-icon inline w-4 h-4" fill="currentColor" viewBox="0 0 20 20"><path fill-rule="evenodd" d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-7-4a1 1 0 11-2 0 1 1 0 012 0zM9 9a1 1 0 000 2v3a1 1 0 001 1h1a1 1 0 100-2v-3a1 1 0 00-1-1H9z" clip-rule="evenodd"></path></svg>
+                                    <span class="tooltiptext">根據常見任務類型預設的 Token 數量。</span>
+                                </span>
+                            </label>
+                            <select id="tokensT" class="input-field bg-white">
+                                <option value="5e-9">問答 (RAG) (約 5k tokens)</option>
+                                <option value="5e-8">翻譯 (約 50k tokens)</option>
+                                <option value="2e-8">程式碼生成/Debug (約 20k tokens)</option>
+                                <option value="1.5e-7">文件摘要 (約 150k tokens)</option>
+                            </select>
+                        </div>
+                    </div>
+                    <div id="customModelSection" class="mt-6 hidden">
+                        <div class="grid grid-cols-1 md:grid-cols-2 gap-6 input-group">
+                            <div>
+                                <label for="modelType" class="input-label">模型類型</label>
+                                <select id="modelType" class="input-field bg-white">
+                                    <option value="dense">Dense (密集模型)</option>
+                                    <option value="MoE">MoE (專家混合模型)</option>
+                                </select>
+                            </div>
+                            <div>
+                                <label for="parametersB" class="input-label">
+                                    總參數數量 (B)
+                                    <span class="tooltip">
+                                        <svg class="info-icon inline w-4 h-4" fill="currentColor" viewBox="0 0 20 20"><path fill-rule="evenodd" d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-7-4a1 1 0 11-2 0 1 1 0 012 0zM9 9a1 1 0 000 2v3a1 1 0 001 1h1a1 1 0 100-2v-3a1 1 0 00-1-1H9z" clip-rule="evenodd"></path></svg>
+                                        <span class="tooltiptext">模型的總參數數量，單位為十億 (Billion)。</span>
+                                    </span>
+                                </label>
+                                <input type="number" id="parametersB" class="input-field" value="175" min="0">
+                            </div>
+                            <div id="baseModelParamsContainer" class="hidden">
+                                <label for="baseModelParamsB" class="input-label">
+                                    基礎模型參數 (B)
+                                    <span class="tooltip">
+                                        <svg class="info-icon inline w-4 h-4" fill="currentColor" viewBox="0 0 20 20"><path fill-rule="evenodd" d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-7-4a1 1 0 11-2 0 1 1 0 012 0zM9 9a1 1 0 000 2v3a1 1 0 001 1h1a1 1 0 100-2v-3a1 1 0 00-1-1H9z" clip-rule="evenodd"></path></svg>
+                                        <span class="tooltiptext">對於 MoE 模型，其對應的密集基礎模型參數數量。</span>
+                                    </span>
+                                </label>
+                                <input type="number" id="baseModelParamsB" class="input-field" value="2.3" min="0">
+                            </div>
+                        </div>
+                    </div>
+                </section>
+
+                <!-- 硬體與資料中心設定 -->
+                <section>
+                    <h3 class="text-xl font-semibold text-teal-700 mb-4">2. 硬體與資料中心設定</h3>
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-6 input-group">
+                        <div>
+                            <label for="deviceType" class="input-label">運算裝置</label>
+                            <select id="deviceType" class="input-field bg-white">
+                                <option value="V100">NVIDIA V100</option>
+                                <option value="H100">NVIDIA H100</option>
+                                <option value="A100">NVIDIA A100</option>
+                                <option value="TPUv3">Google TPUv3</option>
+                                <option value="TPUv4">Google TPUv4</option>
+                                <option value="custom">自訂</option>
+                            </select>
+                        </div>
+                        <div>
+                            <label for="deviceNum" class="input-label">裝置數量</label>
+                            <input type="number" id="deviceNum" class="input-field" value="10000" min="0">
+                        </div>
+                         <div>
+                            <label for="systemPower" class="input-label">
+                                平均系統功耗 (W/裝置)
+                                 <span class="tooltip">
+                                    <svg class="info-icon inline w-4 h-4" fill="currentColor" viewBox="0 0 20 20"><path fill-rule="evenodd" d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-7-4a1 1 0 11-2 0 1 1 0 012 0zM9 9a1 1 0 000 2v3a1 1 0 001 1h1a1 1 0 100-2v-3a1 1 0 00-1-1H9z" clip-rule="evenodd"></path></svg>
+                                    <span class="tooltiptext">每台運算裝置（包含主機、記憶體等）的平均總功耗。</span>
+                                </span>
+                            </label>
+                            <input type="number" id="systemPower" class="input-field" value="330" min="0">
+                        </div>
+                        <div>
+                            <label for="hardwareEfficiency" class="input-label">
+                                硬體效率 (%)
+                                 <span class="tooltip">
+                                    <svg class="info-icon inline w-4 h-4" fill="currentColor" viewBox="0 0 20 20"><path fill-rule="evenodd" d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-7-4a1 1 0 11-2 0 1 1 0 012 0zM9 9a1 1 0 000 2v3a1 1 0 001 1h1a1 1 0 100-2v-3a1 1 0 00-1-1H9z" clip-rule="evenodd"></path></svg>
+                                    <span class="tooltiptext">實際運算吞吐量相對於理論峰值吞吐量的百分比。</span>
+                                </span>
+                            </label>
+                            <input type="number" id="hardwareEfficiency" class="input-field" value="19.7" step="0.1" min="0" max="100">
+                        </div>
+                        <div>
+                            <label for="pue" class="input-label">
+                                PUE (電力使用效率)
+                                 <span class="tooltip">
+                                    <svg class="info-icon inline w-4 h-4" fill="currentColor" viewBox="0 0 20 20"><path fill-rule="evenodd" d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-7-4a1 1 0 11-2 0 1 1 0 012 0zM9 9a1 1 0 000 2v3a1 1 0 001 1h1a1 1 0 100-2v-3a1 1 0 00-1-1H9z" clip-rule="evenodd"></path></svg>
+                                    <span class="tooltiptext">資料中心總耗能與 IT 設備耗能的比值，越接近 1 效率越高。</span>
+                                </span>
+                            </label>
+                            <input type="number" id="pue" class="input-field" value="1.1" step="0.01" min="1">
+                        </div>
+                        <div>
+                            <label for="co2eqkwh" class="input-label">
+                                碳強度 (gCO₂eq/kWh)
+                                 <span class="tooltip">
+                                    <svg class="info-icon inline w-4 h-4" fill="currentColor" viewBox="0 0 20 20"><path fill-rule="evenodd" d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-7-4a1 1 0 11-2 0 1 1 0 012 0zM9 9a1 1 0 000 2v3a1 1 0 001 1h1a1 1 0 100-2v-3a1 1 0 00-1-1H9z" clip-rule="evenodd"></path></svg>
+                                    <span class="tooltiptext">資料中心每消耗一度電（kWh）所產生的二氧化碳當量。預設值為美國平均。</span>
+                                </span>
+                            </label>
+                            <input type="number" id="co2eqkwh" class="input-field" value="429" min="0">
+                        </div>
+                    </div>
+                </section>
+
+                <div class="text-center mt-8">
+                    <button id="calculateBtn" class="bg-gradient-to-r from-blue-600 to-teal-500 text-white font-bold py-3 px-8 rounded-lg hover:from-blue-700 hover:to-teal-600 transition-all duration-300 text-lg shadow-lg hover:shadow-xl transform hover:-translate-y-1 flex items-center justify-center mx-auto">
+                        <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6 mr-2" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+                            <path stroke-linecap="round" stroke-linejoin="round" d="M13 10V3L4 14h7v7l9-11h-7z" />
+                        </svg>
+                        開始計算碳足跡
+                    </button>
+                </div>
+            </div>
+
+            <!-- ===== 結果顯示區 ===== -->
+            <div id="results-container" class="card p-8 hidden xl:sticky xl:top-8">
+                <h2 class="text-2xl font-semibold mb-6 border-b-2 border-gray-200 pb-4">計算結果</h2>
+
+                <div class="space-y-6">
+                    <div class="text-center">
+                        <h3 class="text-lg font-semibold text-gray-600">
+                            總碳足跡 (gCO₂eq)
+                             <span class="tooltip">
+                                <svg class="info-icon inline w-4 h-4" fill="currentColor" viewBox="0 0 20 20"><path fill-rule="evenodd" d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-7-4a1 1 0 11-2 0 1 1 0 012 0zM9 9a1 1 0 000 2v3a1 1 0 001 1h1a1 1 0 100-2v-3a1 1 0 00-1-1H9z" clip-rule="evenodd"></path></svg>
+                                <span class="tooltiptext">模型在推論任務中，因電力消耗所產生的總碳排。</span>
+                            </span>
+                        </h3>
+                        <p id="totalCo2" class="text-5xl font-bold text-transparent bg-clip-text bg-gradient-to-r from-blue-600 to-teal-500 my-2">0.00</p>
+                    </div>
+
+                    <div class="border-t pt-6 mt-6 space-y-6">
+                        <!-- ===== 詳細資訊 ===== -->
+                        <div>
+                            <h3 class="text-lg font-semibold text-gray-600 mb-3">詳細資訊</h3>
+                            <div id="details" class="grid grid-cols-2 gap-4">
+                                <div class="bg-gray-50 p-4 rounded-lg border flex flex-col justify-center text-center">
+                                    <h4 class="text-md font-medium text-gray-700 mb-2">
+                                        預估推論時間
+                                        <span class="tooltip">
+                                            <svg class="info-icon inline w-4 h-4" fill="currentColor" viewBox="0 0 20 20"><path fill-rule="evenodd" d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-7-4a1 1 0 11-2 0 1 1 0 012 0zM9 9a1 1 0 000 2v3a1 1 0 001 1h1a1 1 0 100-2v-3a1 1 0 00-1-1H9z" clip-rule="evenodd"></path></svg>
+                                            <span class="tooltiptext">模型完成推論所需的總時間。</span>
+                                        </span>
+                                    </h4>
+                                    <p class="text-2xl font-bold text-gray-800" id="timeDisplay"></p>
+                                </div>
+                                <div class="bg-gray-50 p-4 rounded-lg border flex flex-col justify-center text-center">
+                                    <h4 class="text-md font-medium text-gray-700 mb-2">
+                                        總消耗電量
+                                        <span class="tooltip">
+                                            <svg class="info-icon inline w-4 h-4" fill="currentColor" viewBox="0 0 20 20"><path fill-rule="evenodd" d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-7-4a1 1 0 11-2 0 1 1 0 012 0zM9 9a1 1 0 000 2v3a1 1 0 001 1h1a1 1 0 100-2v-3a1 1 0 00-1-1H9z" clip-rule="evenodd"></path></svg>
+                                            <span class="tooltiptext">模型推論期間，資料中心總共消耗的電量。</span>
+                                        </span>
+                                    </h4>
+                                    <p class="text-2xl font-bold text-gray-800" id="energyDisplay"></p>
+                                </div>
+                            </div>
+                        </div>
+                        <!-- ===== 日常物品換算區 ===== -->
+                        <div>
+                            <h3 class="text-lg font-semibold text-gray-600 mb-3">日常換算</h3>
+                            <div id="equivalents" class="grid grid-cols-2 gap-4">
+                                <!-- JavaScript will populate this section -->
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // DOM 元素
+        const modelPresetSelect = document.getElementById('modelPreset');
+        const customModelSection = document.getElementById('customModelSection');
+        const modelTypeSelect = document.getElementById('modelType');
+        const parametersBInput = document.getElementById('parametersB');
+        const baseModelParamsContainer = document.getElementById('baseModelParamsContainer');
+        const baseModelParamsBInput = document.getElementById('baseModelParamsB');
+        const calculateBtn = document.getElementById('calculateBtn');
+        const resultsContainer = document.getElementById('results-container');
+        const deviceTypeSelect = document.getElementById('deviceType');
+        const deviceNumInput = document.getElementById('deviceNum');
+        const systemPowerInput = document.getElementById('systemPower');
+
+        // 模型參數預設值
+        const modelPresets = {
+            'GPT3': { parametersB: 175, type: 'dense', baseModelParamsB: null, deviceType: 'A100', deviceNum: 8, systemPower: 550 },
+            'GPT4': { parametersB: 1800, type: 'MoE', baseModelParamsB: 200, deviceType: 'A100', deviceNum: 16, systemPower: 550 },
+            'custom': null
+        };
+
+        // 預設硬體參數 (參考 LLMCarbon 論文 Table 3 & 4)
+        const hardwarePresets = {
+            'V100': { peakTFLOPs: 125, systemPower: 330, cpa: 1.2, area: 815 }, // TSMC 12nm
+            'H100': { peakTFLOPs: 1979, systemPower: 800, cpa: 1.8, area: 814 }, // TSMC 4nm
+            'A100': { peakTFLOPs: 312, systemPower: 550, cpa: 1.6, area: 826 }, // TSMC 7nm
+            'TPUv3': { peakTFLOPs: 123, systemPower: 288, cpa: 1.0, area: 700 }, // TSMC 16nm
+            'TPUv4': { peakTFLOPs: 275, systemPower: 250, cpa: 1.6, area: 400 }, // TSMC 7nm
+            'custom': { peakTFLOPs: 125, systemPower: 330, cpa: 1.2, area: 815 } // 預設同 V100
+        };
+        
+        const dailyEquivalents_g = {
+            'sms': { name: '個簡訊', value: 0.014, icon: `💬`, tooltip: '一則簡訊的平均碳排。' },
+            'google_search': { name: '次 Google 搜尋', value: 0.2, icon: `🔍`, tooltip: '一次 Google 搜尋的平均碳排。' },
+            'youtube_stream': { name: '小時 YouTube 串流', value: 10, icon: `▶️`, tooltip: '觀看一小時 YouTube 影片的平均碳排。' },
+            'video_conference': { name: '小時線上會議', value: 12, icon: `💻`, tooltip: '一小時線上視訊會議的平均碳排。' },
+        };
+
+        // ===== 事件監聽 =====
+        
+        modelPresetSelect.addEventListener('change', (e) => {
+            const preset = e.target.value;
+            if (preset === 'custom') {
+                customModelSection.classList.remove('hidden');
+                deviceNumInput.value = 10000;
+                systemPowerInput.value = 330;
+                deviceTypeSelect.value = 'V100';
+            } else {
+                customModelSection.classList.add('hidden');
+                const model = modelPresets[preset];
+                parametersBInput.value = model.parametersB;
+                modelTypeSelect.value = model.type;
+                baseModelParamsContainer.classList.toggle('hidden', model.type !== 'MoE');
+                if (model.type === 'MoE') {
+                    baseModelParamsBInput.value = model.baseModelParamsB;
+                }
+                // Update hardware settings for preset models
+                deviceTypeSelect.value = model.deviceType;
+                deviceNumInput.value = model.deviceNum;
+                systemPowerInput.value = model.systemPower;
+            }
+        });
+
+        modelTypeSelect.addEventListener('change', (e) => {
+            baseModelParamsContainer.classList.toggle('hidden', e.target.value !== 'MoE');
+        });
+
+        deviceTypeSelect.addEventListener('change', (e) => {
+            if (e.target.value !== 'custom') {
+                const preset = hardwarePresets[e.target.value];
+                systemPowerInput.value = preset.systemPower;
+            }
+        });
+
+        calculateBtn.addEventListener('click', () => {
+            const inputs = getInputs();
+            if (!validateInputs(inputs)) return;
+
+            const results = calculateCarbonFootprint(inputs);
+            displayResults(results);
+            resultsContainer.classList.remove('hidden');
+        });
+
+        // ===== 核心功能函式 =====
+
+        function getInputs() {
+            const preset = modelPresetSelect.value;
+            let modelType, parametersB, baseModelParamsB, deviceType, deviceNum, systemPower;
+
+            if (preset === 'custom') {
+                modelType = modelTypeSelect.value;
+                parametersB = parseFloat(parametersBInput.value);
+                baseModelParamsB = parseFloat(baseModelParamsBInput.value);
+                deviceType = deviceTypeSelect.value;
+                deviceNum = parseInt(deviceNumInput.value);
+                systemPower = parseFloat(systemPowerInput.value);
+            } else {
+                const model = modelPresets[preset];
+                modelType = model.type;
+                parametersB = model.parametersB;
+                baseModelParamsB = model.baseModelParamsB;
+                deviceType = model.deviceType;
+                deviceNum = model.deviceNum;
+                systemPower = model.systemPower;
+            }
+
+            return {
+                modelType: modelType,
+                parametersB: parametersB,
+                baseModelParamsB: baseModelParamsB,
+                tokensT: parseFloat(document.getElementById('tokensT').value),
+                deviceType: deviceType,
+                deviceNum: deviceNum,
+                systemPower: systemPower,
+                hardwareEfficiency: parseFloat(document.getElementById('hardwareEfficiency').value),
+                pue: parseFloat(document.getElementById('pue').value),
+                co2eqkwh: parseFloat(document.getElementById('co2eqkwh').value),
+            };
+        }
+
+        function validateInputs(inputs) {
+            for (const key in inputs) {
+                if (key === 'baseModelParamsB' && inputs.modelType !== 'MoE') continue;
+                
+                // Skip validation for non-numeric string fields
+                if (key === 'modelType' || key === 'deviceType') {
+                    continue;
+                }
+
+                if (isNaN(inputs[key])) {
+                    showModal(`請輸入有效的數值: ${key}`);
+                    return false;
+                }
+                if (inputs[key] < 0) {
+                    showModal(`數值 "${key}" 必須大於等於 0`);
+                    return false;
+                }
+            }
+            if (inputs.pue < 1) {
+                showModal(`PUE 必須大於等於 1`);
+                return false;
+            }
+            return true;
+        }
+
+        function calculateCarbonFootprint(inputs) {
+            const activeParamsB = inputs.modelType === 'MoE' ? inputs.baseModelParamsB : inputs.parametersB;
+            const totalZettaFLOPs = 2 * activeParamsB * inputs.tokensT;
+            const totalFLOPs = totalZettaFLOPs * 1e21;
+
+            const preset = hardwarePresets[inputs.deviceType];
+            const TFLOPsPerSecond = preset.peakTFLOPs * (inputs.hardwareEfficiency / 100);
+            const inferenceSeconds = totalFLOPs / (inputs.deviceNum * TFLOPsPerSecond * 1e12);
+
+            const totalPowerKW = (inputs.systemPower * inputs.deviceNum) / 1000;
+            const totalEnergyKWh = totalPowerKW * (inferenceSeconds / 3600) * inputs.pue;
+            const totalCo2_g = totalEnergyKWh * inputs.co2eqkwh;
+
+            return { totalCo2_g, totalEnergyKWh, totalTimeSeconds: inferenceSeconds };
+        }
+
+        function displayResults(results) {
+            document.getElementById('totalCo2').textContent = results.totalCo2_g.toFixed(4);
+
+            const totalTimeSeconds = results.totalTimeSeconds;
+            let timeString;
+            if (totalTimeSeconds < 60) {
+                timeString = `${totalTimeSeconds.toFixed(2)} 秒`;
+            } else if (totalTimeSeconds < 3600) {
+                timeString = `${(totalTimeSeconds / 60).toFixed(2)} 分鐘`;
+            } else {
+                timeString = `${(totalTimeSeconds / 3600).toFixed(2)} 小時`;
+            }
+            document.getElementById('timeDisplay').textContent = timeString;
+            
+            const totalEnergyWh = results.totalEnergyKWh * 1000;
+            document.getElementById('energyDisplay').textContent = `${totalEnergyWh.toFixed(2)} Wh`;
+
+            const equivalentsContainer = document.getElementById('equivalents');
+            equivalentsContainer.innerHTML = ''; 
+
+            for (const key in dailyEquivalents_g) {
+                const item = dailyEquivalents_g[key];
+                const equivalentAmount = results.totalCo2_g / item.value;
+                const formattedAmount = equivalentAmount < 1 && equivalentAmount > 0 ? equivalentAmount.toFixed(4) : Math.round(equivalentAmount).toLocaleString('zh-TW');
+
+                const listItemHTML = `
+                    <div class="bg-white p-3 rounded-lg text-center transition duration-300 ease-in-out shadow-sm hover:shadow-lg transform hover:-translate-y-1 border">
+                         <div class="tooltip">
+                            <span class="text-3xl">${item.icon}</span>
+                            <span class="tooltiptext">${item.tooltip} 碳排：${item.value.toFixed(4).replace(/0+$/, '').replace(/\.$/, '')} gCO₂eq</span>
+                        </div>
+                        <p class="text-xl font-bold text-gray-800 mt-2">${formattedAmount}</p>
+                        <p class="text-xs text-gray-600 mt-1">${item.name}</p>
+                    </div>
+                `;
+                equivalentsContainer.innerHTML += listItemHTML;
+            }
+        }
+
+        function showModal(message) {
+            const oldModal = document.getElementById('alert-modal');
+            if (oldModal) {
+                oldModal.remove();
+            }
+
+            const modal = document.createElement('div');
+            modal.id = 'alert-modal';
+            modal.className = 'fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50';
+            modal.innerHTML = `
+                <div class="bg-white rounded-lg shadow-xl p-6 w-11/12 md:w-1/3">
+                    <h3 class="text-lg font-bold text-red-600 mb-4">輸入錯誤</h3>
+                    <p class="text-gray-700">${message}</p>
+                    <div class="mt-6 text-right">
+                        <button id="modal-close-btn" class="bg-blue-600 text-white px-4 py-2 rounded-lg hover:bg-blue-700">確認</button>
+                    </div>
+                </div>
+            `;
+            document.body.appendChild(modal);
+
+            document.getElementById('modal-close-btn').addEventListener('click', () => {
+                modal.remove();
+            });
+        }
+
+        function initializeForm() {
+            const preset = modelPresetSelect.value;
+            if (modelPresets[preset]) {
+                const model = modelPresets[preset];
+                customModelSection.classList.add('hidden');
+                parametersBInput.value = model.parametersB;
+                modelTypeSelect.value = model.type;
+                baseModelParamsContainer.classList.toggle('hidden', model.type !== 'MoE');
+                 if (model.type === 'MoE') {
+                    baseModelParamsBInput.value = model.baseModelParamsB;
+                }
+                deviceTypeSelect.value = model.deviceType;
+                deviceNumInput.value = model.deviceNum;
+                systemPowerInput.value = model.systemPower;
+            }
+        }
+        
+        document.addEventListener('DOMContentLoaded', initializeForm);
+    </script>
+</body>
+</html>
+
