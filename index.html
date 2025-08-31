@@ -108,7 +108,7 @@
                     <div class="input-group">
                         <label for="modelPreset" class="input-label">模型預設</label>
                         <select id="modelPreset" class="input-field bg-white">
-                               <!-- Options populated by JS -->
+                                <!-- Options populated by JS -->
                         </select>
                     </div>
                     <div class="grid grid-cols-1 md:grid-cols-2 gap-6 input-group">
@@ -160,6 +160,7 @@
                             <label for="deviceType" class="input-label">運算裝置</label>
                             <select id="deviceType" class="input-field bg-white">
                                 <option value="V100">NVIDIA V100</option>
+                                <option value="A100">NVIDIA A100</option>
                                 <option value="H100">NVIDIA H100</option>
                                 <option value="TPUv3">Google TPUv3</option>
                                 <option value="TPUv4">Google TPUv4</option>
@@ -219,7 +220,7 @@
                                  </span>
                             </label>
                             <input type="number" id="gpuCostPerHour" class="input-field" value="3.09" step="0.01">
-                         </div>
+                       </div>
                     </div>
                 </section>
 
@@ -240,33 +241,33 @@
                 <div class="space-y-6">
                     <div id="key-metrics" class="grid grid-cols-2 gap-4 text-center">
                         <!-- Key metrics will be populated by JavaScript -->
-                        <div class="bg-white p-4 rounded-lg shadow-md border-2 border-transparent transition duration-300 ease-in-out hover:border-blue-500 flex flex-col justify-center">
+                        <div class="bg-blue-100 p-4 rounded-lg shadow-md border-2 border-transparent transition duration-300 ease-in-out hover:border-blue-500 flex flex-col justify-center">
                             <div class="tooltip">
                                 <h4 class="font-medium text-gray-800">訓練碳排</h4>
                                 <span class="tooltiptext">模型訓練期間，因電力消耗所產生的碳排。</span>
                             </div>
-                            <p id="operationalCo2Display" class="text-2xl font-semibold text-blue-700">0.00 <span class="text-base font-normal">tCO₂eq</span></p>
+                            <p id="operationalCo2Display" class="text-3xl font-bold text-blue-700">0.00 <span class="text-base font-normal">tCO₂eq</span></p>
                         </div>
-                        <div class="bg-white p-4 rounded-lg shadow-md border-2 border-transparent transition duration-300 ease-in-out hover:border-sky-500 flex flex-col justify-center">
+                        <div class="bg-sky-100 p-4 rounded-lg shadow-md border-2 border-transparent transition duration-300 ease-in-out hover:border-sky-500 flex flex-col justify-center">
                             <div class="tooltip">
                                 <h4 class="font-medium text-gray-800">總消耗電量</h4>
                                 <span class="tooltiptext">模型訓練期間，資料中心總共消耗的電量。</span>
                             </div>
-                            <p id="totalEnergyMWhDisplay" class="text-2xl font-semibold text-sky-700">0.00 <span class="text-base font-normal">MWh</span></p>
+                            <p id="totalEnergyMWhDisplay" class="text-3xl font-bold text-sky-700">0.00 <span class="text-base font-normal">MWh</span></p>
                         </div>
-                         <div class="bg-white p-4 rounded-lg shadow-md border-2 border-transparent transition duration-300 ease-in-out hover:border-slate-500 flex flex-col justify-center">
+                         <div class="bg-slate-100 p-4 rounded-lg shadow-md border-2 border-transparent transition duration-300 ease-in-out hover:border-slate-500 flex flex-col justify-center">
                             <div class="tooltip">
                                 <h4 class="font-medium text-gray-800">預估訓練時間</h4>
                                 <span class="tooltiptext">模型完成訓練所需的總時間。</span>
                             </div>
-                            <p id="trainingDurationDisplay" class="text-2xl font-semibold text-slate-700">0.00 天</p>
+                            <p id="trainingDurationDisplay" class="text-3xl font-bold text-slate-700">0.00 天</p>
                         </div>
-                        <div class="bg-white p-4 rounded-lg shadow-md border-2 border-transparent transition duration-300 ease-in-out hover:border-indigo-500 flex flex-col justify-center">
+                        <div class="bg-indigo-100 p-4 rounded-lg shadow-md border-2 border-transparent transition duration-300 ease-in-out hover:border-indigo-500 flex flex-col justify-center">
                             <div class="tooltip">
                                 <h4 class="font-medium text-gray-800">預估訓練成本 (USD)</h4>
                                 <span class="tooltiptext">模型訓練期間所需的硬體租用成本。</span>
                             </div>
-                            <p id="trainingCostDisplay" class="text-2xl font-semibold text-indigo-700">$0</p>
+                            <p id="trainingCostDisplay" class="text-3xl font-bold text-indigo-700">$0</p>
                         </div>
                     </div>
 
@@ -276,7 +277,7 @@
                             <h3 class="text-lg font-semibold text-gray-600 mb-3">日常換算</h3>
                             <div id="equivalents" class="grid grid-cols-2 gap-4">
                                 <!-- JavaScript will populate this section -->
-                                <div class="bg-white p-3 rounded-lg text-center transition duration-300 ease-in-out hover:shadow-md transform hover:-translate-y-1 border-2 border-transparent hover:border-blue-500">
+                                <div class="bg-white p-3 rounded-lg text-center transition duration-300 ease-in-out shadow-md hover:shadow-lg transform hover:-translate-y-1 border-2 border-transparent hover:border-blue-500">
                                     <div class="tooltip">
                                         <span class="text-3xl">✈️</span>
                                         <span class="tooltiptext">一趟台北飛往東京的來回航班所產生的碳排：0.40 tCO₂eq。</span>
@@ -284,7 +285,7 @@
                                     <p class="text-xl font-bold text-gray-800 mt-2">0</p>
                                     <p class="text-xs text-gray-600 mt-1">趟台北-東京航班</p>
                                 </div>
-                                <div class="bg-white p-3 rounded-lg text-center transition duration-300 ease-in-out hover:shadow-md transform hover:-translate-y-1 border-2 border-transparent hover:border-blue-500">
+                                <div class="bg-white p-3 rounded-lg text-center transition duration-300 ease-in-out shadow-md hover:shadow-lg transform hover:-translate-y-1 border-2 border-transparent hover:border-blue-500">
                                     <div class="tooltip">
                                         <span class="text-3xl">🚗</span>
                                         <span class="tooltiptext">一輛普通家用汽車行駛一年所產生的平均碳排：1.90 tCO₂eq。</span>
@@ -292,7 +293,7 @@
                                     <p class="text-xl font-bold text-gray-800 mt-2">0</p>
                                     <p class="text-xs text-gray-600 mt-1">輛汽車年排碳</p>
                                 </div>
-                                <div class="bg-white p-3 rounded-lg text-center transition duration-300 ease-in-out hover:shadow-md transform hover:-translate-y-1 border-2 border-transparent hover:border-blue-500">
+                                <div class="bg-white p-3 rounded-lg text-center transition duration-300 ease-in-out shadow-md hover:shadow-lg transform hover:-translate-y-1 border-2 border-transparent hover:border-blue-500">
                                     <div class="tooltip">
                                         <span class="text-3xl">🌳</span>
                                         <span class="tooltiptext">一棵樹一年所能吸收的二氧化碳總量：0.012 tCO₂eq。</span>
@@ -300,7 +301,7 @@
                                     <p class="text-xl font-bold text-gray-800 mt-2">0</p>
                                     <p class="text-xs text-gray-600 mt-1">棵樹年吸碳量</p>
                                 </div>
-                                <div class="bg-white p-3 rounded-lg text-center transition duration-300 ease-in-out hover:shadow-md transform hover:-translate-y-1 border-2 border-transparent hover:border-blue-500">
+                                <div class="bg-white p-3 rounded-lg text-center transition duration-300 ease-in-out shadow-md hover:shadow-lg transform hover:-translate-y-1 border-2 border-transparent hover:border-blue-500">
                                     <div class="tooltip">
                                         <span class="text-3xl">🍱</span>
                                         <span class="tooltiptext">一個排骨便當從生產到消費所產生的碳排：0.0015 tCO₂eq。</span>
@@ -340,6 +341,7 @@
         // 預設硬體參數 (參考 LLMCarbon 論文 Table 3 & 4)
         const hardwarePresets = {
             'V100': { peakTFLOPs: 125, systemPower: 330, cpa: 1.2, area: 815 }, // TSMC 12nm
+            'A100': { peakTFLOPs: 312, systemPower: 550, cpa: 1.5, area: 826 }, // TSMC 7nm
             'H100': { peakTFLOPs: 1979, systemPower: 800, cpa: 1.8, area: 814 }, // TSMC 4nm
             'TPUv3': { peakTFLOPs: 123, systemPower: 288, cpa: 1.0, area: 700 }, // TSMC 16nm
             'TPUv4': { peakTFLOPs: 275, systemPower: 250, cpa: 1.6, area: 400 }, // TSMC 7nm
@@ -487,9 +489,9 @@
                     return false;
                 }
                  if (inputs[key] <= 0 && key !== 'baseModelParamsB' && key !== 'modelType' && key !== 'deviceType' && key !== 'modelPreset') {
-                    showModal(`數值 "${key}" 必須大於 0`);
-                    return false;
-                }
+                     showModal(`數值 "${key}" 必須大於 0`);
+                     return false;
+                 }
             }
             if (inputs.modelType === 'MoE' && inputs.baseModelParamsB <= 0) {
                  showModal(`MoE 模型的基礎模型參數必須大於 0`);
@@ -548,13 +550,43 @@
 
             return { totalCo2, operationalCo2, embodiedCo2, trainingDays, totalEnergyMWh, trainingCost };
         }
+        
+        // 動態數字動畫函式
+        function animateValue(element, start, end, duration, unit, isCurrency) {
+            let startTimestamp = null;
+            const step = (timestamp) => {
+                if (!startTimestamp) startTimestamp = timestamp;
+                const progress = Math.min((timestamp - startTimestamp) / duration, 1);
+                const currentValue = progress * (end - start) + start;
+
+                if (isCurrency) {
+                    element.textContent = `$${Math.floor(currentValue).toLocaleString('en-US')}`;
+                } else {
+                    element.innerHTML = `${currentValue.toFixed(2)} <span class="text-base font-normal">${unit}</span>`;
+                }
+
+                if (progress < 1) {
+                    window.requestAnimationFrame(step);
+                } else {
+                    // 確保動畫結束時顯示最終的精確值
+                    if (isCurrency) {
+                        element.textContent = `$${Math.floor(end).toLocaleString('en-US')}`;
+                    } else {
+                        element.innerHTML = `${end.toFixed(2)} <span class="text-base font-normal">${unit}</span>`;
+                    }
+                }
+            };
+            window.requestAnimationFrame(step);
+        }
 
         function displayResults(results) {
-            // 透過 ID 更新四個關鍵指標區塊的內容
-            operationalCo2Display.innerHTML = `${results.operationalCo2.toFixed(2)} <span class="text-base font-normal">tCO₂eq</span>`;
-            totalEnergyMWhDisplay.innerHTML = `${results.totalEnergyMWh.toFixed(2)} <span class="text-base font-normal">MWh</span>`;
+            // 使用動畫函式更新關鍵指標
+            animateValue(operationalCo2Display, 0, results.operationalCo2, 1500, 'tCO₂eq', false);
+            animateValue(totalEnergyMWhDisplay, 0, results.totalEnergyMWh, 1500, 'MWh', false);
+            animateValue(trainingCostDisplay, 0, results.trainingCost, 1500, '', true);
+            
+            // 直接更新訓練時間（因格式較複雜，不使用數字動畫）
             trainingDurationDisplay.textContent = formatTrainingDuration(results.trainingDays);
-            trainingCostDisplay.textContent = `$${results.trainingCost.toLocaleString('en-US', { maximumFractionDigits: 0 })}`;
 
             // 更新日常物品換算
             const equivalentsContainer = document.getElementById('equivalents');
@@ -566,7 +598,7 @@
                 const formattedAmount = Math.round(equivalentAmount).toLocaleString('zh-TW');
 
                 const listItemHTML = `
-                    <div class="bg-white p-3 rounded-lg text-center transition duration-300 ease-in-out hover:shadow-md transform hover:-translate-y-1 border-2 border-transparent hover:border-blue-500">
+                    <div class="bg-white p-3 rounded-lg text-center transition duration-300 ease-in-out shadow-md hover:shadow-lg transform hover:-translate-y-1 border-2 border-transparent hover:border-blue-500">
                         <div class="tooltip">
                             <span class="text-3xl">${item.icon}</span>
                             <span class="tooltiptext">${item.tooltip} 碳排：${item.value.toFixed(4).replace(/0+$/, '').replace(/\.$/, '')} tCO₂eq</span>
@@ -608,3 +640,4 @@
     </script>
 </body>
 </html>
+
