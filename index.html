@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>LLM 碳足跡評估工具</title>
+    <title id="page-title">LLM 碳足跡評估工具</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
@@ -12,32 +12,33 @@
 <body class="bg-gray-100 dark:bg-gray-900 text-gray-800 dark:text-gray-200 flex justify-center min-h-screen p-4">
 
     <div class="w-full max-w-6xl bg-white dark:bg-gray-800 rounded-2xl shadow-lg overflow-hidden my-8">
-        <header class="p-6 bg-gray-50 dark:bg-gray-700/50">
-            <h1 class="text-2xl font-bold text-center text-gray-900 dark:text-white">LLM 碳足跡評估工具</h1>
-            <p class="text-sm text-center text-gray-500 dark:text-gray-400 mt-1">整合 LLM 訓練、推論及硬體生命週期的碳排計算</p>
-            <p class="text-xs text-center text-gray-400 dark:text-gray-500 mt-2">Developed By 黃子瑄</p>
+        <header class="relative p-6 bg-gray-50 dark:bg-gray-700/50">
+            <!-- Language Switcher -->
+            <div class="absolute top-4 right-4 z-20">
+                <div class="flex space-x-1 bg-gray-200 dark:bg-gray-700 p-1 rounded-lg">
+                    <button id="lang-zh" class="lang-btn active-lang px-3 py-1 text-sm font-semibold rounded-md">中</button>
+                    <button id="lang-en" class="lang-btn px-3 py-1 text-sm font-semibold rounded-md">EN</button>
+                </div>
+            </div>
+            <h1 id="main-title" class="text-2xl font-bold text-center text-gray-900 dark:text-white">LLM 碳足跡評估工具</h1>
+            <p id="sub-title" class="text-sm text-center text-gray-500 dark:text-gray-400 mt-1">整合 LLM 訓練、推論及硬體生命週期的碳排計算</p>
+            <p id="developer-credit" class="text-xs text-center text-gray-400 dark:text-gray-500 mt-2">Developed By 黃子瑄</p>
         </header>
 
         <!-- 書籤式頁籤導覽列 -->
         <div class="border-b border-gray-200 dark:border-gray-700 sticky top-0 bg-white dark:bg-gray-800 z-10">
             <nav class="-mb-px flex" aria-label="Tabs" id="tab-buttons">
                 <button class="tab-button active-tab group w-1/3 inline-flex items-center justify-center py-4 px-1 border-b-2 font-medium text-sm text-indigo-600 dark:text-indigo-400 border-indigo-500" data-tab="tool1">
-                    <svg xmlns="http://www.w3.org/2000/svg" class="w-5 h-5 mr-2" viewBox="0 0 24 24" fill="currentColor">
-                        <path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm0 18c-4.41 0-8-3.59-8-8s3.59-8 8-8 8 3.59 8 8-3.59 8-8 8zm-1-12h2v6h-2v-6zm0 8h2v2h-2v-2z"/>
-                    </svg>
-                    AI 晶片 LCA
+                    <svg xmlns="http://www.w3.org/2000/svg" class="w-5 h-5 mr-2" viewBox="0 0 24 24" fill="currentColor"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm0 18c-4.41 0-8-3.59-8-8s3.59-8 8-8 8 3.59 8 8-3.59 8-8 8zm-1-12h2v6h-2v-6zm0 8h2v2h-2v-2z"/></svg>
+                    <span id="tab-lca">AI 晶片 LCA</span>
                 </button>
                 <button class="tab-button inactive-tab group w-1/3 inline-flex items-center justify-center py-4 px-1 border-b-2 font-medium text-sm text-gray-500 hover:text-gray-700 hover:border-gray-300 dark:text-gray-400 dark:hover:text-gray-300 dark:hover:border-gray-500" data-tab="tool2">
-                    <svg xmlns="http://www.w3.org/2000/svg" class="w-5 h-5 mr-2" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
-                        <path stroke-linecap="round" stroke-linejoin="round" d="M9 7h6m0 10v-3m-3 3h.01M9 17h.01M9 14h.01M12 14h.01M15 11h.01M12 11h.01M9 11h.01M7 21h10a2 2 0 002-2V5a2 2 0 00-2-2H7a2 2 0 00-2 2v14a2 2 0 002 2z" />
-                    </svg>
-                    LLM 訓練碳排
+                    <svg xmlns="http://www.w3.org/2000/svg" class="w-5 h-5 mr-2" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M9 7h6m0 10v-3m-3 3h.01M9 17h.01M9 14h.01M12 14h.01M15 11h.01M12 11h.01M9 11h.01M7 21h10a2 2 0 002-2V5a2 2 0 00-2-2H7a2 2 0 00-2 2v14a2 2 0 002 2z" /></svg>
+                    <span id="tab-training">LLM 訓練碳排</span>
                 </button>
                 <button class="tab-button inactive-tab group w-1/3 inline-flex items-center justify-center py-4 px-1 border-b-2 font-medium text-sm text-gray-500 hover:text-gray-700 hover:border-gray-300 dark:text-gray-400 dark:hover:text-gray-300 dark:hover:border-gray-500" data-tab="tool3">
-                        <svg xmlns="http://www.w3.org/2000/svg" class="w-5 h-5 mr-2" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
-                            <path stroke-linecap="round" stroke-linejoin="round" d="M13 10V3L4 14h7v7l9-11h-7z" />
-                        </svg>
-                    LLM 推論碳排
+                    <svg xmlns="http://www.w3.org/2000/svg" class="w-5 h-5 mr-2" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M13 10V3L4 14h7v7l9-11h-7z" /></svg>
+                    <span id="tab-inference">LLM 推論碳排</span>
                 </button>
             </nav>
         </div>
@@ -48,9 +49,9 @@
             <div id="tool1" class="tab-content">
                  <div class="grid grid-cols-1 xl:grid-cols-2 gap-8">
                     <div class="p-2">
-                        <h2 class="text-2xl font-semibold mb-6 border-b-2 border-gray-200 dark:border-gray-600 pb-4">參數設定</h2>
+                        <h2 id="lca-settings-title" class="text-2xl font-semibold mb-6 border-b-2 border-gray-200 dark:border-gray-600 pb-4">參數設定</h2>
                         <div class="mb-6">
-                            <label for="gpuChip" class="block text-gray-700 dark:text-gray-300 font-bold mb-2">選擇 AI 晶片模型</label>
+                            <label for="gpuChip" id="lca-chip-model-label" class="block text-gray-700 dark:text-gray-300 font-bold mb-2">選擇 AI 晶片模型</label>
                             <div class="relative">
                                 <select id="gpuChip" class="lca-input input-field w-full p-3 border border-gray-300 rounded-lg dark:bg-gray-700 dark:border-gray-600 appearance-none bg-white dark:bg-gray-700">
                                     <option value="A100">NVIDIA A100</option>
@@ -58,23 +59,21 @@
                                     <option value="B200">NVIDIA B200</option>
                                     <option value="B300">NVIDIA B300</option>
                                 </select>
-                                <div class="pointer-events-none absolute inset-y-0 right-0 flex items-center px-2 text-gray-700 dark:text-gray-300">
-                                    <svg class="fill-current h-4 w-4" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20"><path d="M9.293 12.95l.707.707L15 9.707l-1.414-1.414L10 11.586l-3.586-3.586L5 9.707z"/></svg>
-                                </div>
+                                <div class="pointer-events-none absolute inset-y-0 right-0 flex items-center px-2 text-gray-700 dark:text-gray-300"><svg class="fill-current h-4 w-4" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20"><path d="M9.293 12.95l.707.707L15 9.707l-1.414-1.414L10 11.586l-3.586-3.586L5 9.707z"/></svg></div>
                             </div>
                         </div>
                         <div class="grid grid-cols-1 sm:grid-cols-2 gap-6 mb-6">
                             <div>
-                                <label for="lifespan" class="block text-gray-700 dark:text-gray-300 font-bold mb-2">預估使用年限 (年)<span class="tooltip"><svg class="info-icon inline w-4 h-4" fill="currentColor" viewBox="0 0 20 20"><path fill-rule="evenodd" d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-7-4a1 1 0 11-2 0 1 1 0 012 0zM9 9a1 1 0 000 2v3a1 1 0 001 1h1a1 1 0 100-2v-3a1 1 0 00-1-1H9z" clip-rule="evenodd"></path></svg><span class="tooltiptext">AI 晶片在資料中心或伺服器環境中的典型運作壽命，通常為 5 年。</span></span></label>
+                                <label for="lifespan" id="lca-lifespan-label" class="block text-gray-700 dark:text-gray-300 font-bold mb-2">預估使用年限 (年)<span class="tooltip"><svg class="info-icon inline w-4 h-4" fill="currentColor" viewBox="0 0 20 20"><path fill-rule="evenodd" d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-7-4a1 1 0 11-2 0 1 1 0 012 0zM9 9a1 1 0 000 2v3a1 1 0 001 1h1a1 1 0 100-2v-3a1 1 0 00-1-1H9z" clip-rule="evenodd"></path></svg><span id="lca-lifespan-tooltip" class="tooltiptext">AI 晶片在資料中心或伺服器環境中的典型運作壽命，通常為 5 年。</span></span></label>
                                 <input type="number" id="lifespan" class="lca-input input-field w-full p-3 border border-gray-300 rounded-lg dark:bg-gray-700 dark:border-gray-600" value="5" min="1">
                             </div>
                             <div>
-                                <label for="utilization" class="block text-gray-700 dark:text-gray-300 font-bold mb-2">每日運作時數 (小時)<span class="tooltip"><svg class="info-icon inline w-4 h-4" fill="currentColor" viewBox="0 0 20 20"><path fill-rule="evenodd" d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-7-4a1 1 0 11-2 0 1 1 0 012 0zM9 9a1 1 0 000 2v3a1 1 0 001 1h1a1 1 0 100-2v-3a1 1 0 00-1-1H9z" clip-rule="evenodd"></path></svg><span class="tooltiptext">AI 晶片在一天中進行訓練或推論任務的平均時間，建議值為 24 小時。</span></span></label>
+                                <label for="utilization" id="lca-utilization-label" class="block text-gray-700 dark:text-gray-300 font-bold mb-2">每日運作時數 (小時)<span class="tooltip"><svg class="info-icon inline w-4 h-4" fill="currentColor" viewBox="0 0 20 20"><path fill-rule="evenodd" d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-7-4a1 1 0 11-2 0 1 1 0 012 0zM9 9a1 1 0 000 2v3a1 1 0 001 1h1a1 1 0 100-2v-3a1 1 0 00-1-1H9z" clip-rule="evenodd"></path></svg><span id="lca-utilization-tooltip" class="tooltiptext">AI 晶片在一天中進行訓練或推論任務的平均時間，建議值為 24 小時。</span></span></label>
                                 <input type="number" id="utilization" class="lca-input input-field w-full p-3 border border-gray-300 rounded-lg dark:bg-gray-700 dark:border-gray-600" value="24" min="0" max="24">
                             </div>
                         </div>
                         <div class="mb-6">
-                            <label for="carbonIntensity" class="block text-gray-700 dark:text-gray-300 font-bold mb-2">電網碳強度 (kgCO₂e/kWh)<span class="tooltip"><svg class="info-icon inline w-4 h-4" fill="currentColor" viewBox="0 0 20 20"><path fill-rule="evenodd" d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-7-4a1 1 0 11-2 0 1 1 0 012 0zM9 9a1 1 0 000 2v3a1 1 0 001 1h1a1 1 0 100-2v-3a1 1 0 00-1-1H9z" clip-rule="evenodd"></path></svg><span class="tooltiptext">每產生一度電所產生的碳排放量。台灣 2022 年平均值約為 0.416 kgCO₂e/kWh。</span></span></label>
+                            <label for="carbonIntensity" id="lca-carbon-intensity-label" class="block text-gray-700 dark:text-gray-300 font-bold mb-2">電網碳強度 (kgCO₂e/kWh)<span class="tooltip"><svg class="info-icon inline w-4 h-4" fill="currentColor" viewBox="0 0 20 20"><path fill-rule="evenodd" d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-7-4a1 1 0 11-2 0 1 1 0 012 0zM9 9a1 1 0 000 2v3a1 1 0 001 1h1a1 1 0 100-2v-3a1 1 0 00-1-1H9z" clip-rule="evenodd"></path></svg><span id="lca-carbon-intensity-tooltip" class="tooltiptext">每產生一度電所產生的碳排放量。台灣 2022 年平均值約為 0.416 kgCO₂e/kWh。</span></span></label>
                             <input type="number" id="carbonIntensity" class="lca-input input-field w-full p-3 border border-gray-300 rounded-lg dark:bg-gray-700 dark:border-gray-600" value="0.416" step="0.001">
                         </div>
                         <div class="text-center mt-8">
@@ -82,39 +81,39 @@
                         </div>
                     </div>
                     <div id="lca-results-container" class="p-2 results-container">
-                        <h2 class="text-2xl font-semibold mb-6 border-b-2 border-gray-200 dark:border-gray-600 pb-4">計算結果</h2>
+                        <h2 id="lca-results-title" class="text-2xl font-semibold mb-6 border-b-2 border-gray-200 dark:border-gray-600 pb-4">計算結果</h2>
                         <div class="grid grid-cols-1 md:grid-cols-3 gap-6 mb-6">
                             <div class="bg-emerald-50 dark:bg-emerald-900/50 p-4 rounded-xl flex flex-col items-center justify-center text-center transition hover:scale-105 border border-emerald-200 dark:border-emerald-800">
                                 <span role="img" aria-label="cloud-with-emissions" class="text-4xl mb-2">💨</span>
-                                <h4 class="font-medium text-emerald-800 dark:text-emerald-200 mb-2">總碳足跡<span class="tooltip"><svg class="info-icon inline w-4 h-4" fill="currentColor" viewBox="0 0 20 20"><path fill-rule="evenodd" d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-7-4a1 1 0 11-2 0 1 1 0 012 0zM9 9a1 1 0 000 2v3a1 1 0 001 1h1a1 1 0 100-2v-3a1 1 0 00-1-1H9z" clip-rule="evenodd"></path></svg><span class="tooltiptext">晶片在整個生命週期中產生的溫室氣體總排放量，包含製造與運作階段。</span></span></h4>
+                                <h4 id="lca-total-co2-label" class="font-medium text-emerald-800 dark:text-emerald-200 mb-2">總碳足跡<span class="tooltip"><svg class="info-icon inline w-4 h-4" fill="currentColor" viewBox="0 0 20 20"><path fill-rule="evenodd" d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-7-4a1 1 0 11-2 0 1 1 0 012 0zM9 9a1 1 0 000 2v3a1 1 0 001 1h1a1 1 0 100-2v-3a1 1 0 00-1-1H9z" clip-rule="evenodd"></path></svg><span id="lca-total-co2-tooltip" class="tooltiptext">晶片在整個生命週期中產生的溫室氣體總排放量，包含製造與運作階段。</span></span></h4>
                                 <p id="totalCo2" class="text-3xl font-bold text-emerald-900 dark:text-emerald-100">-- <span class="text-base font-normal">tCO₂eq</span></p>
                             </div>
                             <div class="bg-sky-50 dark:bg-sky-900/50 p-4 rounded-xl flex flex-col items-center justify-center text-center transition hover:scale-105 border border-sky-200 dark:border-sky-800">
                                 <span role="img" aria-label="water-droplet" class="text-4xl mb-2">💧</span>
-                                <h4 class="font-medium text-sky-800 dark:text-sky-200 mb-2">水資源消耗<span class="tooltip"><svg class="info-icon inline w-4 h-4" fill="currentColor" viewBox="0 0 20 20"><path fill-rule="evenodd" d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-7-4a1 1 0 11-2 0 1 1 0 012 0zM9 9a1 1 0 000 2v3a1 1 0 001 1h1a1 1 0 100-2v-3a1 1 0 00-1-1H9z" clip-rule="evenodd"></path></svg><span class="tooltiptext">晶片在其使用壽命內，於製造及運作過程中消耗的總水量。</span></span></h4>
+                                <h4 id="lca-water-label" class="font-medium text-sky-800 dark:text-sky-200 mb-2">水資源消耗<span class="tooltip"><svg class="info-icon inline w-4 h-4" fill="currentColor" viewBox="0 0 20 20"><path fill-rule="evenodd" d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-7-4a1 1 0 11-2 0 1 1 0 012 0zM9 9a1 1 0 000 2v3a1 1 0 001 1h1a1 1 0 100-2v-3a1 1 0 00-1-1H9z" clip-rule="evenodd"></path></svg><span id="lca-water-tooltip" class="tooltiptext">晶片在其使用壽命內，於製造及運作過程中消耗的總水量。</span></span></h4>
                                 <p id="waterConsumption" class="text-3xl font-bold text-sky-900 dark:text-sky-100">-- <span class="text-base font-normal">L</span></p>
                             </div>
                             <div class="bg-lime-50 dark:bg-lime-900/50 p-4 rounded-xl flex flex-col items-center justify-center text-center transition hover:scale-105 border border-lime-200 dark:border-lime-800">
                                 <span role="img" aria-label="waste-bin" class="text-4xl mb-2">🗑️</span>
-                                <h4 class="font-medium text-lime-800 dark:text-lime-200 mb-2">電子廢棄物<span class="tooltip"><svg class="info-icon inline w-4 h-4" fill="currentColor" viewBox="0 0 20 20"><path fill-rule="evenodd" d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-7-4a1 1 0 11-2 0 1 1 0 012 0zM9 9a1 1 0 000 2v3a1 1 0 001 1h1a1 1 0 100-2v-3a1 1 0 00-1-1H9z" clip-rule="evenodd"></path></svg><span class="tooltiptext">晶片在生命週期結束後產生的廢棄物重量，通常指產品本身的重量。</span></span></h4>
+                                <h4 id="lca-ewaste-label" class="font-medium text-lime-800 dark:text-lime-200 mb-2">電子廢棄物<span class="tooltip"><svg class="info-icon inline w-4 h-4" fill="currentColor" viewBox="0 0 20 20"><path fill-rule="evenodd" d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-7-4a1 1 0 11-2 0 1 1 0 012 0zM9 9a1 1 0 000 2v3a1 1 0 001 1h1a1 1 0 100-2v-3a1 1 0 00-1-1H9z" clip-rule="evenodd"></path></svg><span id="lca-ewaste-tooltip" class="tooltiptext">晶片在生命週期結束後產生的廢棄物重量，通常指產品本身的重量。</span></span></h4>
                                 <p id="eWaste" class="text-3xl font-bold text-lime-900 dark:text-lime-100">-- <span class="text-base font-normal">kg</span></p>
                             </div>
                         </div>
                         <div class="border-t pt-6 mt-6 space-y-6">
-                            <h3 class="text-lg font-semibold text-gray-600 dark:text-gray-300 mb-3">碳排細項分析</h3>
+                            <h3 id="lca-breakdown-title" class="text-lg font-semibold text-gray-600 dark:text-gray-300 mb-3">碳排細項分析</h3>
                             <div class="grid grid-cols-2 gap-4 text-center">
                                 <div class="bg-blue-100 dark:bg-blue-900/50 p-4 rounded-xl border border-blue-200 dark:border-blue-800 flex flex-col justify-center transition hover:scale-105">
-                                    <h4 class="font-medium text-blue-800 dark:text-blue-200">營運碳排<span class="tooltip"><svg class="info-icon inline w-4 h-4" fill="currentColor" viewBox="0 0 20 20"><path fill-rule="evenodd" d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-7-4a1 1 0 11-2 0 1 1 0 012 0zM9 9a1 1 0 000 2v3a1 1 0 001 1h1a1 1 0 100-2v-3a1 1 0 00-1-1H9z" clip-rule="evenodd"></path></svg><span class="tooltiptext">晶片在運作期間，因電力消耗所產生的碳排。</span></span></h4>
+                                    <h4 id="lca-op-co2-label" class="font-medium text-blue-800 dark:text-blue-200">營運碳排<span class="tooltip"><svg class="info-icon inline w-4 h-4" fill="currentColor" viewBox="0 0 20 20"><path fill-rule="evenodd" d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-7-4a1 1 0 11-2 0 1 1 0 012 0zM9 9a1 1 0 000 2v3a1 1 0 001 1h1a1 1 0 100-2v-3a1 1 0 00-1-1H9z" clip-rule="evenodd"></path></svg><span id="lca-op-co2-tooltip" class="tooltiptext">晶片在運作期間，因電力消耗所產生的碳排。</span></span></h4>
                                     <p id="operationalCo2" class="text-2xl font-semibold text-blue-900 dark:text-blue-100">-- <span class="text-base font-normal">tCO₂eq</span></p>
                                 </div>
                                 <div class="bg-teal-100 dark:bg-teal-900/50 p-4 rounded-xl border border-teal-200 dark:border-teal-800 flex flex-col justify-center transition hover:scale-105">
-                                    <h4 class="font-medium text-teal-800 dark:text-teal-200">隱含碳排<span class="tooltip"><svg class="info-icon inline w-4 h-4" fill="currentColor" viewBox="0 0 20 20"><path fill-rule="evenodd" d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-7-4a1 1 0 11-2 0 1 1 0 012 0zM9 9a1 1 0 000 2v3a1 1 0 001 1h1a1 1 0 100-2v-3a1 1 0 00-1-1H9z" clip-rule="evenodd"></path></svg><span class="tooltiptext">晶片在製造、運輸及棄置階段所產生的碳排。</span></span></h4>
+                                    <h4 id="lca-em-co2-label" class="font-medium text-teal-800 dark:text-teal-200">隱含碳排<span class="tooltip"><svg class="info-icon inline w-4 h-4" fill="currentColor" viewBox="0 0 20 20"><path fill-rule="evenodd" d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-7-4a1 1 0 11-2 0 1 1 0 012 0zM9 9a1 1 0 000 2v3a1 1 0 001 1h1a1 1 0 100-2v-3a1 1 0 00-1-1H9z" clip-rule="evenodd"></path></svg><span id="lca-em-co2-tooltip" class="tooltiptext">晶片在製造、運輸及棄置階段所產生的碳排。</span></span></h4>
                                     <p id="embodiedCo2" class="text-2xl font-semibold text-teal-900 dark:text-teal-100">-- <span class="text-base font-normal">tCO₂eq</span></p>
                                 </div>
                             </div>
                             <div class="max-w-xs mx-auto mb-6"><canvas id="carbonChart"></canvas></div>
                             <div>
-                                <h3 class="text-lg font-semibold text-gray-600 dark:text-gray-300 mb-3">日常換算</h3>
+                                <h3 id="lca-equivalents-title" class="text-lg font-semibold text-gray-600 dark:text-gray-300 mb-3">日常換算</h3>
                                 <div id="lca-equivalents" class="grid grid-cols-2 lg:grid-cols-4 gap-4"></div>
                             </div>
                         </div>
@@ -126,74 +125,73 @@
             <div id="tool2" class="tab-content hidden">
                  <div class="grid grid-cols-1 xl:grid-cols-2 gap-8">
                     <div class="p-2">
-                        <h2 class="text-2xl font-semibold mb-6 border-b-2 border-gray-200 dark:border-gray-600 pb-4">參數設定</h2>
+                        <h2 id="training-settings-title" class="text-2xl font-semibold mb-6 border-b-2 border-gray-200 dark:border-gray-600 pb-4">參數設定</h2>
                         <section>
-                            <h3 class="text-xl font-semibold text-blue-600 dark:text-blue-400 mb-4">1. LLM 模型設定</h3>
+                            <h3 id="training-model-settings-title" class="text-xl font-semibold text-blue-600 dark:text-blue-400 mb-4">1. LLM 模型設定</h3>
                             <div class="space-y-4">
                                 <div>
-                                    <label for="modelPreset" class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">模型預設</label>
-                                    <select id="modelPreset" class="training-input input-field w-full p-3 border border-gray-300 rounded-lg dark:bg-gray-700 dark:border-gray-600 bg-white">
-                                    </select>
+                                    <label for="modelPreset" id="training-preset-label" class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">模型預設</label>
+                                    <select id="modelPreset" class="training-input input-field w-full p-3 border border-gray-300 rounded-lg dark:bg-gray-700 dark:border-gray-600 bg-white"></select>
                                 </div>
                                 <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
                                     <div>
-                                        <label for="modelType" class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">模型類型</label>
+                                        <label for="modelType" id="training-model-type-label" class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">模型類型</label>
                                         <select id="modelType" class="training-input input-field w-full p-3 border border-gray-300 rounded-lg dark:bg-gray-700 dark:border-gray-600 bg-white">
-                                            <option value="dense">Dense (密集模型)</option>
-                                            <option value="MoE">MoE (專家混合模型)</option>
+                                            <option id="training-model-type-dense" value="dense">Dense (密集模型)</option>
+                                            <option id="training-model-type-moe" value="MoE">MoE (專家混合模型)</option>
                                         </select>
                                     </div>
                                     <div>
-                                        <label for="parametersB" class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">總參數數量 (B)<span class="tooltip"><svg class="info-icon inline w-4 h-4" fill="currentColor" viewBox="0 0 20 20"><path fill-rule="evenodd" d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-7-4a1 1 0 11-2 0 1 1 0 012 0zM9 9a1 1 0 000 2v3a1 1 0 001 1h1a1 1 0 100-2v-3a1 1 0 00-1-1H9z" clip-rule="evenodd"></path></svg><span class="tooltiptext">模型的總參數數量，單位為十億 (Billion)。</span></span></label>
+                                        <label for="parametersB" id="training-total-params-label" class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">總參數數量 (B)<span class="tooltip"><svg class="info-icon inline w-4 h-4" fill="currentColor" viewBox="0 0 20 20"><path fill-rule="evenodd" d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-7-4a1 1 0 11-2 0 1 1 0 012 0zM9 9a1 1 0 000 2v3a1 1 0 001 1h1a1 1 0 100-2v-3a1 1 0 00-1-1H9z" clip-rule="evenodd"></path></svg><span id="training-total-params-tooltip" class="tooltiptext">模型的總參數數量，單位為十億 (Billion)。</span></span></label>
                                         <input type="number" id="parametersB" class="training-input input-field w-full p-3 border border-gray-300 rounded-lg dark:bg-gray-700 dark:border-gray-600">
                                     </div>
                                     <div id="baseModelParamsContainer" class="hidden">
-                                        <label for="baseModelParamsB" class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">基礎模型參數 (B)<span class="tooltip"><svg class="info-icon inline w-4 h-4" fill="currentColor" viewBox="0 0 20 20"><path fill-rule="evenodd" d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-7-4a1 1 0 11-2 0 1 1 0 012 0zM9 9a1 1 0 000 2v3a1 1 0 001 1h1a1 1 0 100-2v-3a1 1 0 00-1-1H9z" clip-rule="evenodd"></path></svg><span class="tooltiptext">對於 MoE 模型，其對應的密集基礎模型參數數量。</span></span></label>
+                                        <label for="baseModelParamsB" id="training-base-params-label" class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">基礎模型參數 (B)<span class="tooltip"><svg class="info-icon inline w-4 h-4" fill="currentColor" viewBox="0 0 20 20"><path fill-rule="evenodd" d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-7-4a1 1 0 11-2 0 1 1 0 012 0zM9 9a1 1 0 000 2v3a1 1 0 001 1h1a1 1 0 100-2v-3a1 1 0 00-1-1H9z" clip-rule="evenodd"></path></svg><span id="training-base-params-tooltip" class="tooltiptext">對於 MoE 模型，其對應的密集基礎模型參數數量。</span></span></label>
                                         <input type="number" id="baseModelParamsB" class="training-input input-field w-full p-3 border border-gray-300 rounded-lg dark:bg-gray-700 dark:border-gray-600">
                                     </div>
                                     <div>
-                                        <label for="tokensB" class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">處理 Token 數量 (B)<span class="tooltip"><svg class="info-icon inline w-4 h-4" fill="currentColor" viewBox="0 0 20 20"><path fill-rule="evenodd" d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-7-4a1 1 0 11-2 0 1 1 0 012 0zM9 9a1 1 0 000 2v3a1 1 0 001 1h1a1 1 0 100-2v-3a1 1 0 00-1-1H9z" clip-rule="evenodd"></path></svg><span class="tooltiptext">模型在訓練或推論過程中處理的 Token 總數，單位為十億 (Billion)。</span></span></label>
+                                        <label for="tokensB" id="training-tokens-label" class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">處理 Token 數量 (B)<span class="tooltip"><svg class="info-icon inline w-4 h-4" fill="currentColor" viewBox="0 0 20 20"><path fill-rule="evenodd" d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-7-4a1 1 0 11-2 0 1 1 0 012 0zM9 9a1 1 0 000 2v3a1 1 0 001 1h1a1 1 0 100-2v-3a1 1 0 00-1-1H9z" clip-rule="evenodd"></path></svg><span id="training-tokens-tooltip" class="tooltiptext">模型在訓練或推論過程中處理的 Token 總數，單位為十億 (Billion)。</span></span></label>
                                         <input type="number" id="tokensB" class="training-input input-field w-full p-3 border border-gray-300 rounded-lg dark:bg-gray-700 dark:border-gray-600">
                                     </div>
                                 </div>
                             </div>
                         </section>
                         <section class="mt-6">
-                            <h3 class="text-xl font-semibold text-sky-600 dark:text-sky-400 mb-4">2. 硬體與資料中心設定</h3>
+                            <h3 id="training-hardware-settings-title" class="text-xl font-semibold text-sky-600 dark:text-sky-400 mb-4">2. 硬體與資料中心設定</h3>
                             <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
                                 <div>
-                                    <label for="deviceType" class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">運算裝置</label>
+                                    <label for="deviceType" id="training-device-label" class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">運算裝置</label>
                                     <select id="deviceType" class="training-input input-field w-full p-3 border border-gray-300 rounded-lg dark:bg-gray-700 dark:border-gray-600 bg-white">
                                         <option value="V100">NVIDIA V100</option>
                                         <option value="A100">NVIDIA A100</option>
                                         <option value="H100">NVIDIA H100</option>
                                         <option value="TPUv3">Google TPUv3</option>
                                         <option value="TPUv4">Google TPUv4</option>
-                                        <option value="custom">自訂</option>
+                                        <option id="training-device-custom" value="custom">自訂</option>
                                     </select>
                                 </div>
                                 <div>
-                                    <label for="deviceNum" class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">裝置數量</label>
+                                    <label for="deviceNum" id="training-device-num-label" class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">裝置數量</label>
                                     <input type="number" id="deviceNum" class="training-input input-field w-full p-3 border border-gray-300 rounded-lg dark:bg-gray-700 dark:border-gray-600" value="10000">
                                 </div>
                                 <div>
-                                    <label for="systemPower" class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">平均系統功耗 (W/裝置)<span class="tooltip"><svg class="info-icon inline w-4 h-4" fill="currentColor" viewBox="0 0 20 20"><path fill-rule="evenodd" d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-7-4a1 1 0 11-2 0 1 1 0 012 0zM9 9a1 1 0 000 2v3a1 1 0 001 1h1a1 1 0 100-2v-3a1 1 0 00-1-1H9z" clip-rule="evenodd"></path></svg><span class="tooltiptext">每台運算裝置（包含主機、記憶體等）的平均總功耗。</span></span></label>
+                                    <label for="systemPower" id="training-power-label" class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">平均系統功耗 (W/裝置)<span class="tooltip"><svg class="info-icon inline w-4 h-4" fill="currentColor" viewBox="0 0 20 20"><path fill-rule="evenodd" d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-7-4a1 1 0 11-2 0 1 1 0 012 0zM9 9a1 1 0 000 2v3a1 1 0 001 1h1a1 1 0 100-2v-3a1 1 0 00-1-1H9z" clip-rule="evenodd"></path></svg><span id="training-power-tooltip" class="tooltiptext">每台運算裝置（包含主機、記憶體等）的平均總功耗。</span></span></label>
                                     <input type="number" id="systemPower" class="training-input input-field w-full p-3 border border-gray-300 rounded-lg dark:bg-gray-700 dark:border-gray-600" value="330">
                                 </div>
                                 <div>
-                                    <label for="hardwareEfficiency" class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">硬體效率 (%)<span class="tooltip"><svg class="info-icon inline w-4 h-4" fill="currentColor" viewBox="0 0 20 20"><path fill-rule="evenodd" d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-7-4a1 1 0 11-2 0 1 1 0 012 0zM9 9a1 1 0 000 2v3a1 1 0 001 1h1a1 1 0 100-2v-3a1 1 0 00-1-1H9z" clip-rule="evenodd"></path></svg><span class="tooltiptext">實際運算吞吐量相對於理論峰值吞吐量的百分比。</span></span></label>
+                                    <label for="hardwareEfficiency" id="training-efficiency-label" class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">硬體效率 (%)<span class="tooltip"><svg class="info-icon inline w-4 h-4" fill="currentColor" viewBox="0 0 20 20"><path fill-rule="evenodd" d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-7-4a1 1 0 11-2 0 1 1 0 012 0zM9 9a1 1 0 000 2v3a1 1 0 001 1h1a1 1 0 100-2v-3a1 1 0 00-1-1H9z" clip-rule="evenodd"></path></svg><span id="training-efficiency-tooltip" class="tooltiptext">實際運算吞吐量相對於理論峰值吞吐量的百分比。</span></span></label>
                                     <input type="number" id="hardwareEfficiency" class="training-input input-field w-full p-3 border border-gray-300 rounded-lg dark:bg-gray-700 dark:border-gray-600" value="19.7" step="0.1">
                                 </div>
                                 <div>
-                                    <label for="pue" class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">PUE<span class="tooltip"><svg class="info-icon inline w-4 h-4" fill="currentColor" viewBox="0 0 20 20"><path fill-rule="evenodd" d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-7-4a1 1 0 11-2 0 1 1 0 012 0zM9 9a1 1 0 000 2v3a1 1 0 001 1h1a1 1 0 100-2v-3a1 1 0 00-1-1H9z" clip-rule="evenodd"></path></svg><span class="tooltiptext">電力使用效率 (Power Usage Effectiveness)，資料中心總耗能與 IT 設備耗能的比值，越接近 1 效率越高。</span></span></label>
+                                    <label for="pue" id="training-pue-label" class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">PUE<span class="tooltip"><svg class="info-icon inline w-4 h-4" fill="currentColor" viewBox="0 0 20 20"><path fill-rule="evenodd" d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-7-4a1 1 0 11-2 0 1 1 0 012 0zM9 9a1 1 0 000 2v3a1 1 0 001 1h1a1 1 0 100-2v-3a1 1 0 00-1-1H9z" clip-rule="evenodd"></path></svg><span id="training-pue-tooltip" class="tooltiptext">電力使用效率 (Power Usage Effectiveness)，資料中心總耗能與 IT 設備耗能的比值，越接近 1 效率越高。</span></span></label>
                                     <input type="number" id="pue" class="training-input input-field w-full p-3 border border-gray-300 rounded-lg dark:bg-gray-700 dark:border-gray-600" value="1.1" step="0.01">
                                 </div>
                                 <div>
-                                    <label for="trainingCo2eqkwh" class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">碳強度 (kgCO₂eq/kWh)<span class="tooltip"><svg class="info-icon inline w-4 h-4" fill="currentColor" viewBox="0 0 20 20"><path fill-rule="evenodd" d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-7-4a1 1 0 11-2 0 1 1 0 012 0zM9 9a1 1 0 000 2v3a1 1 0 001 1h1a1 1 0 100-2v-3a1 1 0 00-1-1H9z" clip-rule="evenodd"></path></svg><span class="tooltiptext">資料中心每消耗一度電（kWh）所產生的二氧化碳當量(公斤)。預設值為美國平均。</span></span></label>
+                                    <label for="trainingCo2eqkwh" id="training-ci-label" class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">碳強度 (kgCO₂eq/kWh)<span class="tooltip"><svg class="info-icon inline w-4 h-4" fill="currentColor" viewBox="0 0 20 20"><path fill-rule="evenodd" d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-7-4a1 1 0 11-2 0 1 1 0 012 0zM9 9a1 1 0 000 2v3a1 1 0 001 1h1a1 1 0 100-2v-3a1 1 0 00-1-1H9z" clip-rule="evenodd"></path></svg><span id="training-ci-tooltip" class="tooltiptext">資料中心每消耗一度電（kWh）所產生的二氧化碳當量(公斤)。預設值為美國平均。</span></span></label>
                                     <input type="number" id="trainingCo2eqkwh" class="training-input input-field w-full p-3 border border-gray-300 rounded-lg dark:bg-gray-700 dark:border-gray-600" value="0.429" step="0.001">
                                 </div>
                                 <div class="md:col-span-2">
-                                     <label for="gpuCostPerHour" class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">GPU 單位成本 ($/小時)<span class="tooltip"><svg class="info-icon inline w-4 h-4" fill="currentColor" viewBox="0 0 20 20"><path fill-rule="evenodd" d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-7-4a1 1 0 11-2 0 1 1 0 012 0zM9 9a1 1 0 000 2v3a1 1 0 001 1h1a1 1 0 100-2v-3a1 1 0 00-1-1H9z" clip-rule="evenodd"></path></svg><span class="tooltiptext">單一 GPU 每小時的運算成本。預設值參考 Microsoft Azure V100 隨用隨付價格。</span></span></label>
+                                     <label for="gpuCostPerHour" id="training-cost-label" class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">GPU 單位成本 ($/小時)<span class="tooltip"><svg class="info-icon inline w-4 h-4" fill="currentColor" viewBox="0 0 20 20"><path fill-rule="evenodd" d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-7-4a1 1 0 11-2 0 1 1 0 012 0zM9 9a1 1 0 000 2v3a1 1 0 001 1h1a1 1 0 100-2v-3a1 1 0 00-1-1H9z" clip-rule="evenodd"></path></svg><span id="training-cost-tooltip" class="tooltiptext">單一 GPU 每小時的運算成本。預設值參考 Microsoft Azure V100 隨用隨付價格。</span></span></label>
                                     <input type="number" id="gpuCostPerHour" class="training-input input-field w-full p-3 border border-gray-300 rounded-lg dark:bg-gray-700 dark:border-gray-600" value="3.09" step="0.01">
                                </div>
                             </div>
@@ -203,31 +201,30 @@
                         </div>
                     </div>
                     <div id="training-results-container" class="p-2 results-container">
-                        <h2 class="text-2xl font-semibold mb-6 border-b-2 border-gray-200 dark:border-gray-600 pb-4">計算結果</h2>
+                        <h2 id="training-results-title" class="text-2xl font-semibold mb-6 border-b-2 border-gray-200 dark:border-gray-600 pb-4">計算結果</h2>
                         <div class="space-y-6">
                             <div id="key-metrics" class="grid grid-cols-2 gap-4 text-center">
                                 <div class="bg-gray-50 dark:bg-gray-700/50 p-4 rounded-lg border dark:border-gray-600">
-                                    <h4 class="text-md font-medium text-gray-800 dark:text-gray-300">訓練碳排<span class="tooltip"><svg class="info-icon inline w-4 h-4" fill="currentColor" viewBox="0 0 20 20"><path fill-rule="evenodd" d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-7-4a1 1 0 11-2 0 1 1 0 012 0zM9 9a1 1 0 000 2v3a1 1 0 001 1h1a1 1 0 100-2v-3a1 1 0 00-1-1H9z" clip-rule="evenodd"></path></svg><span class="tooltiptext">模型訓練期間，因電力消耗所產生的碳排。</span></span></h4>
+                                    <h4 id="training-co2-label" class="text-md font-medium text-gray-800 dark:text-gray-300">訓練碳排<span class="tooltip"><svg class="info-icon inline w-4 h-4" fill="currentColor" viewBox="0 0 20 20"><path fill-rule="evenodd" d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-7-4a1 1 0 11-2 0 1 1 0 012 0zM9 9a1 1 0 000 2v3a1 1 0 001 1h1a1 1 0 100-2v-3a1 1 0 00-1-1H9z" clip-rule="evenodd"></path></svg><span id="training-co2-tooltip" class="tooltiptext">模型訓練期間，因電力消耗所產生的碳排。</span></span></h4>
                                     <p id="operationalCo2Display" class="text-2xl font-bold text-blue-700 dark:text-blue-400 mt-2">-- <span class="text-base font-normal">tCO₂eq</span></p>
                                 </div>
                                 <div class="bg-gray-50 dark:bg-gray-700/50 p-4 rounded-lg border dark:border-gray-600">
-                                    <h4 class="text-md font-medium text-gray-800 dark:text-gray-300">總消耗電量<span class="tooltip"><svg class="info-icon inline w-4 h-4" fill="currentColor" viewBox="0 0 20 20"><path fill-rule="evenodd" d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-7-4a1 1 0 11-2 0 1 1 0 012 0zM9 9a1 1 0 000 2v3a1 1 0 001 1h1a1 1 0 100-2v-3a1 1 0 00-1-1H9z" clip-rule="evenodd"></path></svg><span class="tooltiptext">模型訓練期間，資料中心總共消耗的電量。</span></span></h4>
+                                    <h4 id="training-energy-label" class="text-md font-medium text-gray-800 dark:text-gray-300">總消耗電量<span class="tooltip"><svg class="info-icon inline w-4 h-4" fill="currentColor" viewBox="0 0 20 20"><path fill-rule="evenodd" d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-7-4a1 1 0 11-2 0 1 1 0 012 0zM9 9a1 1 0 000 2v3a1 1 0 001 1h1a1 1 0 100-2v-3a1 1 0 00-1-1H9z" clip-rule="evenodd"></path></svg><span id="training-energy-tooltip" class="tooltiptext">模型訓練期間，資料中心總共消耗的電量。</span></span></h4>
                                     <p id="totalEnergyMWhDisplay" class="text-2xl font-bold text-sky-700 dark:text-sky-400 mt-2">-- <span class="text-base font-normal">MWh</span></p>
                                 </div>
                                 <div class="bg-gray-50 dark:bg-gray-700/50 p-4 rounded-lg border dark:border-gray-600">
-                                    <h4 class="text-md font-medium text-gray-800 dark:text-gray-300">預估訓練時間<span class="tooltip"><svg class="info-icon inline w-4 h-4" fill="currentColor" viewBox="0 0 20 20"><path fill-rule="evenodd" d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-7-4a1 1 0 11-2 0 1 1 0 012 0zM9 9a1 1 0 000 2v3a1 1 0 001 1h1a1 1 0 100-2v-3a1 1 0 00-1-1H9z" clip-rule="evenodd"></path></svg><span class="tooltiptext">模型完成訓練所需的總時間。</span></span></h4>
+                                    <h4 id="training-duration-label" class="text-md font-medium text-gray-800 dark:text-gray-300">預估訓練時間<span class="tooltip"><svg class="info-icon inline w-4 h-4" fill="currentColor" viewBox="0 0 20 20"><path fill-rule="evenodd" d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-7-4a1 1 0 11-2 0 1 1 0 012 0zM9 9a1 1 0 000 2v3a1 1 0 001 1h1a1 1 0 100-2v-3a1 1 0 00-1-1H9z" clip-rule="evenodd"></path></svg><span id="training-duration-tooltip" class="tooltiptext">模型完成訓練所需的總時間。</span></span></h4>
                                     <p id="trainingDurationDisplay" class="text-2xl font-bold text-indigo-700 dark:text-indigo-400 mt-2">-- 天</p>
                                 </div>
                                 <div class="bg-gray-50 dark:bg-gray-700/50 p-4 rounded-lg border dark:border-gray-600">
-                                    <h4 class="text-md font-medium text-gray-800 dark:text-gray-300">預估訓練成本<span class="tooltip"><svg class="info-icon inline w-4 h-4" fill="currentColor" viewBox="0 0 20 20"><path fill-rule="evenodd" d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-7-4a1 1 0 11-2 0 1 1 0 012 0zM9 9a1 1 0 000 2v3a1 1 0 001 1h1a1 1 0 100-2v-3a1 1 0 00-1-1H9z" clip-rule="evenodd"></path></svg><span class="tooltiptext">模型訓練期間所需的硬體租用成本 (USD)。</span></span></h4>
+                                    <h4 id="training-cost-est-label" class="text-md font-medium text-gray-800 dark:text-gray-300">預估訓練成本<span class="tooltip"><svg class="info-icon inline w-4 h-4" fill="currentColor" viewBox="0 0 20 20"><path fill-rule="evenodd" d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-7-4a1 1 0 11-2 0 1 1 0 012 0zM9 9a1 1 0 000 2v3a1 1 0 001 1h1a1 1 0 100-2v-3a1 1 0 00-1-1H9z" clip-rule="evenodd"></path></svg><span id="training-cost-est-tooltip" class="tooltiptext">模型訓練期間所需的硬體租用成本 (USD)。</span></span></h4>
                                     <p id="trainingCostDisplay" class="text-2xl font-bold text-purple-700 dark:text-purple-400 mt-2">--</p>
                                 </div>
                             </div>
                             <div class="border-t dark:border-gray-600 pt-6 mt-6">
                                 <div>
-                                    <h3 class="text-lg font-semibold text-gray-600 dark:text-gray-300 mb-3">日常換算</h3>
-                                    <div id="training-equivalents" class="grid grid-cols-2 gap-4">
-                                    </div>
+                                    <h3 id="training-equivalents-title" class="text-lg font-semibold text-gray-600 dark:text-gray-300 mb-3">日常換算</h3>
+                                    <div id="training-equivalents" class="grid grid-cols-2 gap-4"></div>
                                 </div>
                             </div>
                         </div>
@@ -239,42 +236,42 @@
             <div id="tool3" class="tab-content hidden">
                  <div class="grid grid-cols-1 xl:grid-cols-2 gap-8">
                     <div class="p-2">
-                        <h2 class="text-2xl font-semibold mb-6 border-b-2 border-gray-200 dark:border-gray-600 pb-4">參數設定</h2>
+                        <h2 id="inf-settings-title" class="text-2xl font-semibold mb-6 border-b-2 border-gray-200 dark:border-gray-600 pb-4">參數設定</h2>
                         <section>
-                            <h3 class="text-xl font-semibold text-blue-700 dark:text-blue-400 mb-4">1. LLM 模型設定</h3>
+                            <h3 id="inf-model-settings-title" class="text-xl font-semibold text-blue-700 dark:text-blue-400 mb-4">1. LLM 模型設定</h3>
                             <div class="space-y-4">
                                 <div>
-                                    <label for="inf-modelPreset" class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">選擇預設模型</label>
+                                    <label for="inf-modelPreset" id="inf-preset-label" class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">選擇預設模型</label>
                                     <select id="inf-modelPreset" class="inf-input input-field w-full p-3 border border-gray-300 rounded-lg dark:bg-gray-700 dark:border-gray-600 bg-white">
                                         <option value="GPT3" selected>GPT-3 (175B)</option>
                                         <option value="GPT4">GPT-4 (1.8T)</option>
-                                        <option value="custom">自訂</option>
+                                        <option id="inf-preset-custom" value="custom">自訂</option>
                                     </select>
                                 </div>
                                 <div>
-                                    <label for="inf-tokensT" class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">處理 Token 數量<span class="tooltip"><svg class="info-icon inline w-4 h-4" fill="currentColor" viewBox="0 0 20 20"><path fill-rule="evenodd" d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-7-4a1 1 0 11-2 0 1 1 0 012 0zM9 9a1 1 0 000 2v3a1 1 0 001 1h1a1 1 0 100-2v-3a1 1 0 00-1-1H9z" clip-rule="evenodd"></path></svg><span class="tooltiptext">根據常見任務類型預設的 Token 數量。</span></span></label>
+                                    <label for="inf-tokensT" id="inf-tokens-label" class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">處理 Token 數量<span class="tooltip"><svg class="info-icon inline w-4 h-4" fill="currentColor" viewBox="0 0 20 20"><path fill-rule="evenodd" d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-7-4a1 1 0 11-2 0 1 1 0 012 0zM9 9a1 1 0 000 2v3a1 1 0 001 1h1a1 1 0 100-2v-3a1 1 0 00-1-1H9z" clip-rule="evenodd"></path></svg><span id="inf-tokens-tooltip" class="tooltiptext">根據常見任務類型預設的 Token 數量。</span></span></label>
                                     <select id="inf-tokensT" class="inf-input input-field w-full p-3 border border-gray-300 rounded-lg dark:bg-gray-700 dark:border-gray-600 bg-white">
-                                        <option value="5e-9">問答 (RAG) (約 5k tokens)</option>
-                                        <option value="5e-8">翻譯 (約 50k tokens)</option>
-                                        <option value="2e-8">程式碼生成/Debug (約 20k tokens)</option>
-                                        <option value="1.5e-7">文件摘要 (約 150k tokens)</option>
+                                        <option id="inf-task-rag" value="5e-9">問答 (RAG) (約 5k tokens)</option>
+                                        <option id="inf-task-translation" value="5e-8">翻譯 (約 50k tokens)</option>
+                                        <option id="inf-task-code" value="2e-8">程式碼生成/Debug (約 20k tokens)</option>
+                                        <option id="inf-task-summary" value="1.5e-7">文件摘要 (約 150k tokens)</option>
                                     </select>
                                 </div>
                                 <div id="inf-customModelSection" class="pt-2 hidden space-y-4">
                                     <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
                                         <div>
-                                            <label for="inf-modelType" class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">模型類型</label>
+                                            <label for="inf-modelType" id="inf-model-type-label" class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">模型類型</label>
                                             <select id="inf-modelType" class="inf-input input-field w-full p-3 border border-gray-300 rounded-lg dark:bg-gray-700 dark:border-gray-600 bg-white">
-                                                <option value="dense">Dense (密集模型)</option>
-                                                <option value="MoE">MoE (專家混合模型)</option>
+                                                <option id="inf-model-type-dense" value="dense">Dense (密集模型)</option>
+                                                <option id="inf-model-type-moe" value="MoE">MoE (專家混合模型)</option>
                                             </select>
                                         </div>
                                         <div>
-                                            <label for="inf-parametersB" class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">總參數數量 (B)<span class="tooltip"><svg class="info-icon inline w-4 h-4" fill="currentColor" viewBox="0 0 20 20"><path fill-rule="evenodd" d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-7-4a1 1 0 11-2 0 1 1 0 012 0zM9 9a1 1 0 000 2v3a1 1 0 001 1h1a1 1 0 100-2v-3a1 1 0 00-1-1H9z" clip-rule="evenodd"></path></svg><span class="tooltiptext">模型的總參數數量，單位為十億 (Billion)。</span></span></label>
+                                            <label for="inf-parametersB" id="inf-total-params-label" class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">總參數數量 (B)<span class="tooltip"><svg class="info-icon inline w-4 h-4" fill="currentColor" viewBox="0 0 20 20"><path fill-rule="evenodd" d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-7-4a1 1 0 11-2 0 1 1 0 012 0zM9 9a1 1 0 000 2v3a1 1 0 001 1h1a1 1 0 100-2v-3a1 1 0 00-1-1H9z" clip-rule="evenodd"></path></svg><span id="inf-total-params-tooltip" class="tooltiptext">模型的總參數數量，單位為十億 (Billion)。</span></span></label>
                                             <input type="number" id="inf-parametersB" class="inf-input input-field w-full p-3 border border-gray-300 rounded-lg dark:bg-gray-700 dark:border-gray-600" value="175" min="0">
                                         </div>
                                         <div id="inf-baseModelParamsContainer" class="hidden">
-                                            <label for="inf-baseModelParamsB" class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">基礎模型參數 (B)<span class="tooltip"><svg class="info-icon inline w-4 h-4" fill="currentColor" viewBox="0 0 20 20"><path fill-rule="evenodd" d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-7-4a1 1 0 11-2 0 1 1 0 012 0zM9 9a1 1 0 000 2v3a1 1 0 001 1h1a1 1 0 100-2v-3a1 1 0 00-1-1H9z" clip-rule="evenodd"></path></svg><span class="tooltiptext">對於 MoE 模型，其對應的密集基礎模型參數數量。</span></span></label>
+                                            <label for="inf-baseModelParamsB" id="inf-base-params-label" class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">基礎模型參數 (B)<span class="tooltip"><svg class="info-icon inline w-4 h-4" fill="currentColor" viewBox="0 0 20 20"><path fill-rule="evenodd" d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-7-4a1 1 0 11-2 0 1 1 0 012 0zM9 9a1 1 0 000 2v3a1 1 0 001 1h1a1 1 0 100-2v-3a1 1 0 00-1-1H9z" clip-rule="evenodd"></path></svg><span id="inf-base-params-tooltip" class="tooltiptext">對於 MoE 模型，其對應的密集基礎模型參數數量。</span></span></label>
                                             <input type="number" id="inf-baseModelParamsB" class="inf-input input-field w-full p-3 border border-gray-300 rounded-lg dark:bg-gray-700 dark:border-gray-600" value="2.3" min="0">
                                         </div>
                                     </div>
@@ -282,37 +279,37 @@
                             </div>
                         </section>
                         <section class="mt-6">
-                            <h3 class="text-xl font-semibold text-teal-700 dark:text-teal-400 mb-4">2. 硬體與資料中心設定</h3>
+                            <h3 id="inf-hardware-settings-title" class="text-xl font-semibold text-teal-700 dark:text-teal-400 mb-4">2. 硬體與資料中心設定</h3>
                             <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
                                 <div>
-                                    <label for="inf-deviceType" class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">運算裝置</label>
+                                    <label for="inf-deviceType" id="inf-device-label" class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">運算裝置</label>
                                     <select id="inf-deviceType" class="inf-input input-field w-full p-3 border border-gray-300 rounded-lg dark:bg-gray-700 dark:border-gray-600 bg-white">
                                         <option value="V100">NVIDIA V100</option>
                                         <option value="H100">NVIDIA H100</option>
                                         <option value="A100">NVIDIA A100</option>
                                         <option value="TPUv3">Google TPUv3</option>
                                         <option value="TPUv4">Google TPUv4</option>
-                                        <option value="custom">自訂</option>
+                                        <option id="inf-device-custom" value="custom">自訂</option>
                                     </select>
                                 </div>
                                 <div>
-                                    <label for="inf-deviceNum" class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">裝置數量</label>
+                                    <label for="inf-deviceNum" id="inf-device-num-label" class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">裝置數量</label>
                                     <input type="number" id="inf-deviceNum" class="inf-input input-field w-full p-3 border border-gray-300 rounded-lg dark:bg-gray-700 dark:border-gray-600" value="8" min="1">
                                 </div>
                                 <div>
-                                    <label for="inf-systemPower" class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">平均系統功耗 (W/裝置)<span class="tooltip"><svg class="info-icon inline w-4 h-4" fill="currentColor" viewBox="0 0 20 20"><path fill-rule="evenodd" d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-7-4a1 1 0 11-2 0 1 1 0 012 0zM9 9a1 1 0 000 2v3a1 1 0 001 1h1a1 1 0 100-2v-3a1 1 0 00-1-1H9z" clip-rule="evenodd"></path></svg><span class="tooltiptext">每台運算裝置（包含主機、記憶體等）的平均總功耗。</span></span></label>
+                                    <label for="inf-systemPower" id="inf-power-label" class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">平均系統功耗 (W/裝置)<span class="tooltip"><svg class="info-icon inline w-4 h-4" fill="currentColor" viewBox="0 0 20 20"><path fill-rule="evenodd" d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-7-4a1 1 0 11-2 0 1 1 0 012 0zM9 9a1 1 0 000 2v3a1 1 0 001 1h1a1 1 0 100-2v-3a1 1 0 00-1-1H9z" clip-rule="evenodd"></path></svg><span id="inf-power-tooltip" class="tooltiptext">每台運算裝置（包含主機、記憶體等）的平均總功耗。</span></span></label>
                                     <input type="number" id="inf-systemPower" class="inf-input input-field w-full p-3 border border-gray-300 rounded-lg dark:bg-gray-700 dark:border-gray-600" value="550" min="0">
                                 </div>
                                 <div>
-                                    <label for="inf-hardwareEfficiency" class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">硬體效率 (%)<span class="tooltip"><svg class="info-icon inline w-4 h-4" fill="currentColor" viewBox="0 0 20 20"><path fill-rule="evenodd" d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-7-4a1 1 0 11-2 0 1 1 0 012 0zM9 9a1 1 0 000 2v3a1 1 0 001 1h1a1 1 0 100-2v-3a1 1 0 00-1-1H9z" clip-rule="evenodd"></path></svg><span class="tooltiptext">實際運算吞吐量相對於理論峰值吞吐量的百分比。</span></span></label>
+                                    <label for="inf-hardwareEfficiency" id="inf-efficiency-label" class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">硬體效率 (%)<span class="tooltip"><svg class="info-icon inline w-4 h-4" fill="currentColor" viewBox="0 0 20 20"><path fill-rule="evenodd" d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-7-4a1 1 0 11-2 0 1 1 0 012 0zM9 9a1 1 0 000 2v3a1 1 0 001 1h1a1 1 0 100-2v-3a1 1 0 00-1-1H9z" clip-rule="evenodd"></path></svg><span id="inf-efficiency-tooltip" class="tooltiptext">實際運算吞吐量相對於理論峰值吞吐量的百分比。</span></span></label>
                                     <input type="number" id="inf-hardwareEfficiency" class="inf-input input-field w-full p-3 border border-gray-300 rounded-lg dark:bg-gray-700 dark:border-gray-600" value="19.7" step="0.1" min="0" max="100">
                                 </div>
                                 <div>
-                                    <label for="inf-pue" class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">PUE<span class="tooltip"><svg class="info-icon inline w-4 h-4" fill="currentColor" viewBox="0 0 20 20"><path fill-rule="evenodd" d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-7-4a1 1 0 11-2 0 1 1 0 012 0zM9 9a1 1 0 000 2v3a1 1 0 001 1h1a1 1 0 100-2v-3a1 1 0 00-1-1H9z" clip-rule="evenodd"></path></svg><span class="tooltiptext">電力使用效率 (Power Usage Effectiveness)，資料中心總耗能與 IT 設備耗能的比值，越接近 1 效率越高。</span></span></label>
+                                    <label for="inf-pue" id="inf-pue-label" class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">PUE<span class="tooltip"><svg class="info-icon inline w-4 h-4" fill="currentColor" viewBox="0 0 20 20"><path fill-rule="evenodd" d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-7-4a1 1 0 11-2 0 1 1 0 012 0zM9 9a1 1 0 000 2v3a1 1 0 001 1h1a1 1 0 100-2v-3a1 1 0 00-1-1H9z" clip-rule="evenodd"></path></svg><span id="inf-pue-tooltip" class="tooltiptext">電力使用效率 (Power Usage Effectiveness)，資料中心總耗能與 IT 設備耗能的比值，越接近 1 效率越高。</span></span></label>
                                     <input type="number" id="inf-pue" class="inf-input input-field w-full p-3 border border-gray-300 rounded-lg dark:bg-gray-700 dark:border-gray-600" value="1.1" step="0.01" min="1">
                                 </div>
                                 <div>
-                                    <label for="inf-co2eqkwh" class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">碳強度 (gCO₂eq/kWh)<span class="tooltip"><svg class="info-icon inline w-4 h-4" fill="currentColor" viewBox="0 0 20 20"><path fill-rule="evenodd" d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-7-4a1 1 0 11-2 0 1 1 0 012 0zM9 9a1 1 0 000 2v3a1 1 0 001 1h1a1 1 0 100-2v-3a1 1 0 00-1-1H9z" clip-rule="evenodd"></path></svg><span class="tooltiptext">資料中心每消耗一度電（kWh）所產生的二氧化碳當量。預設值為美國平均。</span></span></label>
+                                    <label for="inf-co2eqkwh" id="inf-ci-label" class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">碳強度 (gCO₂eq/kWh)<span class="tooltip"><svg class="info-icon inline w-4 h-4" fill="currentColor" viewBox="0 0 20 20"><path fill-rule="evenodd" d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-7-4a1 1 0 11-2 0 1 1 0 012 0zM9 9a1 1 0 000 2v3a1 1 0 001 1h1a1 1 0 100-2v-3a1 1 0 00-1-1H9z" clip-rule="evenodd"></path></svg><span id="inf-ci-tooltip" class="tooltiptext">資料中心每消耗一度電（kWh）所產生的二氧化碳當量。預設值為美國平均。</span></span></label>
                                     <input type="number" id="inf-co2eqkwh" class="inf-input input-field w-full p-3 border border-gray-300 rounded-lg dark:bg-gray-700 dark:border-gray-600" value="429" min="0">
                                 </div>
                             </div>
@@ -322,30 +319,29 @@
                         </div>
                     </div>
                     <div id="inf-results-container" class="p-2 results-container">
-                        <h2 class="text-2xl font-semibold mb-6 border-b-2 border-gray-200 dark:border-gray-600 pb-4">計算結果</h2>
+                        <h2 id="inf-results-title" class="text-2xl font-semibold mb-6 border-b-2 border-gray-200 dark:border-gray-600 pb-4">計算結果</h2>
                         <div class="space-y-6">
                             <div class="text-center">
-                                <h3 class="text-lg font-semibold text-gray-600 dark:text-gray-300">總碳足跡 (gCO₂eq)<span class="tooltip"><svg class="info-icon inline w-4 h-4" fill="currentColor" viewBox="0 0 20 20"><path fill-rule="evenodd" d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-7-4a1 1 0 11-2 0 1 1 0 012 0zM9 9a1 1 0 000 2v3a1 1 0 001 1h1a1 1 0 100-2v-3a1 1 0 00-1-1H9z" clip-rule="evenodd"></path></svg><span class="tooltiptext">模型在推論任務中，因電力消耗所產生的總碳排。</span></span></h3>
+                                <h3 id="inf-total-co2-label" class="text-lg font-semibold text-gray-600 dark:text-gray-300">總碳足跡 (gCO₂eq)<span class="tooltip"><svg class="info-icon inline w-4 h-4" fill="currentColor" viewBox="0 0 20 20"><path fill-rule="evenodd" d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-7-4a1 1 0 11-2 0 1 1 0 012 0zM9 9a1 1 0 000 2v3a1 1 0 001 1h1a1 1 0 100-2v-3a1 1 0 00-1-1H9z" clip-rule="evenodd"></path></svg><span id="inf-total-co2-tooltip" class="tooltiptext">模型在推論任務中，因電力消耗所產生的總碳排。</span></span></h3>
                                 <p id="inf-totalCo2" class="text-5xl font-bold text-transparent bg-clip-text bg-gradient-to-r from-blue-600 to-teal-500 my-2">--</p>
                             </div>
                             <div class="border-t pt-6 mt-6 space-y-6">
                                 <div>
-                                    <h3 class="text-lg font-semibold text-gray-600 dark:text-gray-300 mb-3">詳細資訊</h3>
+                                    <h3 id="inf-details-title" class="text-lg font-semibold text-gray-600 dark:text-gray-300 mb-3">詳細資訊</h3>
                                     <div id="inf-details" class="grid grid-cols-2 gap-4">
                                         <div class="bg-gray-50 dark:bg-gray-700/50 p-4 rounded-lg border flex flex-col justify-center text-center">
-                                            <h4 class="text-md font-medium text-gray-700 dark:text-gray-300 mb-2">預估推論時間<span class="tooltip"><svg class="info-icon inline w-4 h-4" fill="currentColor" viewBox="0 0 20 20"><path fill-rule="evenodd" d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-7-4a1 1 0 11-2 0 1 1 0 012 0zM9 9a1 1 0 000 2v3a1 1 0 001 1h1a1 1 0 100-2v-3a1 1 0 00-1-1H9z" clip-rule="evenodd"></path></svg><span class="tooltiptext">模型完成推論所需的總時間。</span></span></h4>
+                                            <h4 id="inf-time-label" class="text-md font-medium text-gray-700 dark:text-gray-300 mb-2">預估推論時間<span class="tooltip"><svg class="info-icon inline w-4 h-4" fill="currentColor" viewBox="0 0 20 20"><path fill-rule="evenodd" d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-7-4a1 1 0 11-2 0 1 1 0 012 0zM9 9a1 1 0 000 2v3a1 1 0 001 1h1a1 1 0 100-2v-3a1 1 0 00-1-1H9z" clip-rule="evenodd"></path></svg><span id="inf-time-tooltip" class="tooltiptext">模型完成推論所需的總時間。</span></span></h4>
                                             <p class="text-2xl font-bold text-gray-800 dark:text-gray-200" id="inf-timeDisplay">--</p>
                                         </div>
                                         <div class="bg-gray-50 dark:bg-gray-700/50 p-4 rounded-lg border flex flex-col justify-center text-center">
-                                            <h4 class="text-md font-medium text-gray-700 dark:text-gray-300 mb-2">總消耗電量<span class="tooltip"><svg class="info-icon inline w-4 h-4" fill="currentColor" viewBox="0 0 20 20"><path fill-rule="evenodd" d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-7-4a1 1 0 11-2 0 1 1 0 012 0zM9 9a1 1 0 000 2v3a1 1 0 001 1h1a1 1 0 100-2v-3a1 1 0 00-1-1H9z" clip-rule="evenodd"></path></svg><span class="tooltiptext">模型推論期間，資料中心總共消耗的電量。</span></span></h4>
+                                            <h4 id="inf-energy-label" class="text-md font-medium text-gray-700 dark:text-gray-300 mb-2">總消耗電量<span class="tooltip"><svg class="info-icon inline w-4 h-4" fill="currentColor" viewBox="0 0 20 20"><path fill-rule="evenodd" d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-7-4a1 1 0 11-2 0 1 1 0 012 0zM9 9a1 1 0 000 2v3a1 1 0 001 1h1a1 1 0 100-2v-3a1 1 0 00-1-1H9z" clip-rule="evenodd"></path></svg><span id="inf-energy-tooltip" class="tooltiptext">模型推論期間，資料中心總共消耗的電量。</span></span></h4>
                                             <p class="text-2xl font-bold text-gray-800 dark:text-gray-200" id="inf-energyDisplay">--</p>
                                         </div>
                                     </div>
                                 </div>
                                 <div>
-                                    <h3 class="text-lg font-semibold text-gray-600 dark:text-gray-300 mb-3">日常換算</h3>
-                                    <div id="inf-equivalents" class="grid grid-cols-2 gap-4">
-                                    </div>
+                                    <h3 id="inf-equivalents-title" class="text-lg font-semibold text-gray-600 dark:text-gray-300 mb-3">日常換算</h3>
+                                    <div id="inf-equivalents" class="grid grid-cols-2 gap-4"></div>
                                 </div>
                             </div>
                         </div>

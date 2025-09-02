@@ -58,3 +58,29 @@ body {
 .results-container {
     transition: opacity 0.3s ease-in-out;
 }
+
+/* Language Switcher Styles */
+.lang-btn {
+    transition: background-color 0.2s ease-in-out, color 0.2s ease-in-out;
+}
+
+.lang-btn.active-lang {
+    background-color: #6366F1; /* indigo-500 */
+    color: white;
+    cursor: default;
+}
+
+.lang-btn:not(.active-lang) {
+    background-color: transparent;
+    color: #374151; /* gray-700 */
+}
+.dark .lang-btn:not(.active-lang) {
+    color: #D1D5DB; /* gray-300 */
+}
+
+.lang-btn:not(.active-lang):hover {
+     background-color: #D1D5DB; /* gray-300 */
+}
+.dark .lang-btn:not(.active-lang):hover {
+     background-color: #4B5563; /* gray-600 */
+}
