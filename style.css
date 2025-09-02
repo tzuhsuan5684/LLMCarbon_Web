@@ -1,0 +1,86 @@
+html {
+    scroll-behavior: smooth;
+}
+body {
+    font-family: 'Inter', 'Noto Sans TC', sans-serif;
+}
+.tab-content {
+    transition: opacity 0.3s ease-in-out;
+}
+.tab-content.hidden {
+    opacity: 0;
+    display: none;
+}
+.tooltip {
+    position: relative;
+    display: inline-block;
+}
+.tooltip .tooltiptext {
+    visibility: hidden;
+    width: 250px;
+    background-color: #1F2937;
+    color: #fff;
+    text-align: center;
+    border-radius: 0.5rem;
+    padding: 0.75rem;
+    position: absolute;
+    z-index: 10;
+    bottom: 125%;
+    left: 50%;
+    margin-left: -125px;
+    opacity: 0;
+    transition: opacity 0.3s, transform 0.3s;
+    font-size: 0.875rem;
+    box-shadow: 0 5px 15px -3px rgba(0, 0, 0, 0.2);
+}
+.tooltip:hover .tooltiptext {
+    visibility: visible;
+    opacity: 1;
+    transform: translateY(-5px);
+}
+.info-icon {
+    cursor: pointer;
+    margin-left: 8px;
+    color: #A0AEC0;
+    transition: color 0.3s;
+}
+.info-icon:hover {
+    color: #14B8A6;
+}
+.input-field:read-only, .input-field:disabled {
+    background-color: #F1F5F9;
+    color: #64748B;
+}
+.dark .input-field:read-only, .dark .input-field:disabled {
+    background-color: #4B5563;
+    color: #9CA3AF;
+}
+.results-container {
+    transition: opacity 0.3s ease-in-out;
+}
+
+/* Language Switcher Styles */
+.lang-btn {
+    transition: background-color 0.2s ease-in-out, color 0.2s ease-in-out;
+}
+
+.lang-btn.active-lang {
+    background-color: #6366F1; /* indigo-500 */
+    color: white;
+    cursor: default;
+}
+
+.lang-btn:not(.active-lang) {
+    background-color: transparent;
+    color: #374151; /* gray-700 */
+}
+.dark .lang-btn:not(.active-lang) {
+    color: #D1D5DB; /* gray-300 */
+}
+
+.lang-btn:not(.active-lang):hover {
+     background-color: #D1D5DB; /* gray-300 */
+}
+.dark .lang-btn:not(.active-lang):hover {
+     background-color: #4B5563; /* gray-600 */
+}
