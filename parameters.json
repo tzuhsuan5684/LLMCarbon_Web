@@ -1,0 +1,34 @@
+{
+  "gpuData": {
+    "A100": { "tdp_watt": 400, "cradle_to_gate_kg": 120, "water_L_per_year": [1000, 6000], "e_waste_kg": 2.5 },
+    "H100": { "tdp_watt": 700, "cradle_to_gate_kg": 164, "water_L_per_year": [2000, 8000], "e_waste_kg": 3 },
+    "B200": { "tdp_watt": 1100, "cradle_to_gate_kg": 284, "water_L_per_year": [3500, 10000], "e_waste_kg": 2.5 },
+    "B300": { "tdp_watt": 1300, "cradle_to_gate_kg": 300, "water_L_per_year": [3500, 15000], "e_waste_kg": 3.5 }
+  },
+  "trainingModelPresets": {
+    "GPT3": { "name": "GPT-3 (175B)", "type": "dense", "params": 175, "baseParams": "", "tokens": 300, "deviceType": "V100", "deviceNum": 10000 },
+    "GPT4": { "name": "GPT-4 (1.8T)", "type": "MoE", "params": 1800, "baseParams": 111, "tokens": 13000, "deviceType": "A100", "deviceNum": 25000 },
+    "custom": { "name": "Custom Model" }
+  },
+  "trainingHardwarePresets": {
+    "V100": { "peakTFLOPs": 125, "systemPower": 330 },
+    "A100": { "peakTFLOPs": 312, "systemPower": 550 },
+    "H100": { "peakTFLOPs": 1979, "systemPower": 800 },
+    "TPUv3": { "peakTFLOPs": 123, "systemPower": 288 },
+    "TPUv4": { "peakTFLOPs": 275, "systemPower": 250 },
+    "custom": { "peakTFLOPs": 125, "systemPower": 330 }
+  },
+  "inferenceModelPresets": {
+    "GPT3": { "parametersB": 175, "type": "dense", "baseModelParamsB": null, "deviceType": "A100", "deviceNum": 8, "systemPower": 550 },
+    "GPT4": { "parametersB": 1800, "type": "MoE", "baseModelParamsB": 200, "deviceType": "A100", "deviceNum": 16, "systemPower": 550 },
+    "custom": { "parametersB": 175, "type": "dense", "baseModelParamsB": null, "deviceType": "V100", "deviceNum": 1, "systemPower": 330 }
+  },
+  "inferenceHardwarePresets": {
+    "V100": { "peakTFLOPs": 125, "systemPower": 330 },
+    "H100": { "peakTFLOPs": 1979, "systemPower": 800 },
+    "A100": { "peakTFLOPs": 312, "systemPower": 550 },
+    "TPUv3": { "peakTFLOPs": 123, "systemPower": 288 },
+    "TPUv4": { "peakTFLOPs": 275, "systemPower": 250 },
+    "custom": { "peakTFLOPs": 125, "systemPower": 330 }
+  }
+}
