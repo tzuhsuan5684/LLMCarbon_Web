@@ -1,6 +1,6 @@
 document.addEventListener('DOMContentLoaded', function() {
 
-    // --- Language and Translations ---
+    // --- Language and Translations (這部分保持不變) ---
     let currentLanguage = 'zh';
     let translations = {};
     let equivalentsData = {};
@@ -149,16 +149,18 @@ document.addEventListener('DOMContentLoaded', function() {
         });
     }
 
-    function runLcaCalculation() {
-        const gpuChip = document.getElementById('gpuChip').value;
-        const lifespan = parseFloat(document.getElementById('lifespan').value);
-        const utilization = parseFloat(document.getElementById('utilization').value);
-        const carbonIntensity = parseFloat(document.getElementById('carbonIntensity').value);
+            if (!paramsResponse.ok) {
+                throw new Error(`HTTP error! status: ${paramsResponse.status} for parameters.json`);
+            }
+            if (!translationsResponse.ok) {
+                throw new Error(`HTTP error! status: ${translationsResponse.status} for translations.json`);
+            }
 
         if (isNaN(lifespan) || isNaN(utilization) || isNaN(carbonIntensity) || lifespan <= 0 || utilization < 0 || utilization > 24 || carbonIntensity <= 0) {
             alert((translations[currentLanguage] && translations[currentLanguage].alert_invalid_input) || 'Please enter valid numbers.');
             return;
         }
+    }
 
         const data = gpuData[gpuChip];
         const totalHours = lifespan * 365 * utilization;
@@ -209,9 +211,6 @@ document.addEventListener('DOMContentLoaded', function() {
             } else {
                 option.textContent = modelPresets[key].name;
             }
-            modelPresetSelect.appendChild(option);
-        }
-    }
 
     function updateTrainingForm() {
         if (!modelPresetSelect) return;
@@ -428,7 +427,6 @@ document.addEventListener('DOMContentLoaded', function() {
             const formattedAmount = equivalentAmount < 1 && equivalentAmount > 0 ? equivalentAmount.toFixed(4) : Math.round(equivalentAmount).toLocaleString('en-US');
             equivalentsContainer.innerHTML += `<div class="bg-white dark:bg-gray-700 p-3 rounded-lg text-center transition duration-300 ease-in-out shadow-sm hover:shadow-lg transform hover:-translate-y-1 border dark:border-gray-600"><div class="tooltip"><span class="text-3xl">${item.icon || ''}</span><span class="tooltiptext">${item.tooltip || ''} Emissions: ${itemValue.toFixed ? itemValue.toFixed(4).replace(/0+$/, '').replace(/\.$/, '') : itemValue} gCO₂eq</span></div><p class="text-xl font-bold text-gray-800 dark:text-gray-200 mt-2">${formattedAmount}</p><p class="text-xs text-gray-600 dark:text-gray-400 mt-1">${item.name || ''}</p></div>`;
         }
-    }
 
     const calculateInferenceBtn = document.getElementById('calculateInferenceBtn');
     if (calculateInferenceBtn) calculateInferenceBtn.addEventListener('click', runInferenceCalculation);
