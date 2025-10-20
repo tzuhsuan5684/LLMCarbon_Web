@@ -1,0 +1,42 @@
+{
+  "en": {
+    "lca": {
+      "flight": { "name": "Taipei-Tokyo flights", "value": 0.4, "icon": "✈️", "tooltip": "Carbon emissions from a round-trip flight between Taipei and Tokyo." },
+      "car": { "name": "cars' annual emissions", "value": 1.9, "icon": "🚗", "tooltip": "Average annual carbon emissions from a typical passenger car." },
+      "tree": { "name": "trees' annual absorption", "value": 0.012, "icon": "🌳", "tooltip": "Total amount of carbon dioxide a single tree can absorb in a year." },
+      "bento": { "name": "pork chop bento boxes", "value": 0.0015, "icon": "🍱", "tooltip": "Carbon emissions from the production to consumption of a pork chop bento box." }
+    },
+    "training": {
+      "flight": { "name": "Taipei-Tokyo flights", "value": 0.4, "icon": "✈️", "tooltip": "Carbon emissions from a round-trip flight between Taipei and Tokyo." },
+      "car": { "name": "cars' annual emissions", "value": 1.9, "icon": "🚗", "tooltip": "Average annual carbon emissions from a typical passenger car." },
+      "tree": { "name": "trees' annual absorption", "value": 0.012, "icon": "🌳", "tooltip": "Total amount of carbon dioxide a single tree can absorb in a year." },
+      "bento": { "name": "pork chop bento boxes", "value": 0.0015, "icon": "🍱", "tooltip": "Carbon emissions from the production to consumption of a pork chop bento box." }
+    },
+    "inference": {
+      "sms": { "name": "SMS messages", "value": 0.014, "icon": "💬", "tooltip": "Average carbon footprint of one SMS message." },
+      "google_search": { "name": "Google searches", "value": 0.2, "icon": "🔍", "tooltip": "Average carbon footprint of one Google search." },
+      "youtube_stream": { "name": "hours of YouTube streaming", "value": 10, "icon": "▶️", "tooltip": "Average carbon footprint of streaming one hour of YouTube video." },
+      "video_conference": { "name": "hours of online meetings", "value": 12, "icon": "💻", "tooltip": "Average carbon footprint of a one-hour online video conference." }
+    }
+  },
+  "zh": {
+    "lca": {
+      "flight": { "name": "趟台北-東京航班", "value": 0.4, "icon": "✈️", "tooltip": "一趟台北飛往東京的來回航班所產生的碳排。" },
+      "car": { "name": "輛汽車年排碳", "value": 1.9, "icon": "🚗", "tooltip": "一輛普通家用汽車行駛一年所產生的平均碳排。" },
+      "tree": { "name": "棵樹年吸碳量", "value": 0.012, "icon": "🌳", "tooltip": "一棵樹一年所能吸收的二氧化碳總量。" },
+      "bento": { "name": "個排骨便當", "value": 0.0015, "icon": "🍱", "tooltip": "一個排骨便當從生產到消費所產生的碳排。" }
+    },
+    "training": {
+      "flight": { "name": "趟台北-東京航班", "value": 0.4, "icon": "✈️", "tooltip": "一趟台北飛往東京的來回航班所產生的碳排。" },
+      "car": { "name": "輛汽車年排碳", "value": 1.9, "icon": "🚗", "tooltip": "一輛普通家用汽車行駛一年所產生的平均碳排。" },
+      "tree": { "name": "棵樹年吸碳量", "value": 0.012, "icon": "🌳", "tooltip": "一棵樹一年所能吸收的二氧化碳總量。" },
+      "bento": { "name": "個排骨便當", "value": 0.0015, "icon": "🍱", "tooltip": "一個排骨便當從生產到消費所產生的碳排。" }
+    },
+    "inference": {
+      "sms": { "name": "個簡訊", "value": 0.014, "icon": "💬", "tooltip": "一則簡訊的平均碳排。" },
+      "google_search": { "name": "次 Google 搜尋", "value": 0.2, "icon": "🔍", "tooltip": "一次 Google 搜尋的平均碳排。" },
+      "youtube_stream": { "name": "小時 YouTube 串流", "value": 10, "icon": "▶️", "tooltip": "觀看一小時 YouTube 影片的平均碳排。" },
+      "video_conference": { "name": "小時線上會議", "value": 12, "icon": "💻", "tooltip": "一小時線上視訊會議的平均碳排。" }
+    }
+  }
+}
